@@ -14,9 +14,9 @@ Verificado (en el computador de Maryam) · Aprobado.
 | RNF-01 Hash seguro | RU-06 | 1 Usuarios y sesión | U-09 | `test_seguridad.py`, `test_autenticacion.py` | Probado |
 | RNF-02 JWT en cookie y CSRF | RU-08 | 1 Usuarios y sesión | U-01, U-07, U-08 | `test_autenticacion.py`; U-08 en `frontend/src/api/cliente.test.ts` | Probado (backend); pantallas pendientes |
 | RNF-03 Autorización en el servidor | — | 1 Usuarios y sesión | U-11, CA-16 | `test_permisos.py` | Probado; la tabla crece con cada módulo |
-| RNF-04 Errores centralizados | — | Fase 7 | — | `test_errores.py` | Probado |
-| RNF-08 Dinero decimal exacto | — | Fase 7 (tipo `Dinero`) | — | Se probará con cobros y pagos | Implementado |
-| RNF-10 Fechas en hora de Bogotá | — | Fase 7 | — | `test_tiempo.py`, `test_auditoria.py` | Probado |
-| RNF-11 Separación y capas | — | Fase 7 | — | Revisión de estructura | Implementado |
-| RNF-12 OpenAPI | — | Fase 7 | — | `test_errores.py` (documentación disponible) | Probado |
+| RNF-04 Errores centralizados | — | Estructura base | — | `test_errores.py` | Probado |
+| RNF-08 Dinero decimal exacto | — | Estructura base (tipo `Dinero`) | — | Se probará con cobros y pagos | Implementado |
+| RNF-10 Fechas en hora de Bogotá | — | Estructura base | — | `test_tiempo.py`, `test_auditoria.py` | Probado |
+| RNF-11 Separación y capas | — | Estructura base | — | Revisión de estructura | Implementado |
+| RNF-12 OpenAPI | — | Estructura base | — | `test_errores.py` (documentación disponible) | Probado |
 | RF-03 a RF-22 | RN-01 a RN-31 | Módulos 2 en adelante | CA-01 a CA-15, CA-17, CA-18 | — | Pendiente |

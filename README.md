@@ -7,7 +7,6 @@ horaria de Bogotá.
 - Propuesta aprobada y reglas de negocio: `Propuesta-sistema-apartaestudios.pdf`
   (archivos del proyecto).
 - Decisiones técnicas: [docs/decisiones-fases-3-a-6.md](docs/decisiones-fases-3-a-6.md).
-- Estado de la estructura base: [docs/fase-7-estructura-base.md](docs/fase-7-estructura-base.md).
 - Módulos: [docs/modulos/](docs/modulos/). Trazabilidad: [docs/trazabilidad.md](docs/trazabilidad.md).
 
 ## Estructura
@@ -31,7 +30,7 @@ docs/               Decisiones y documentación por fase
 
 ## Requisitos
 
-- Python 3.12 o superior
+- [uv](https://docs.astral.sh/uv/) (instala y gestiona Python 3.12+ y las dependencias)
 - Node.js 22 o superior
 - PostgreSQL 16 (instalado, o con Docker Desktop usando `docker compose up -d`)
 
@@ -57,14 +56,14 @@ CREATE DATABASE apartaestudios_test OWNER apartaestudios;
 
 ```powershell
 cd backend
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
+uv sync                          # crea .venv e instala todo según uv.lock
 Copy-Item .env.example .env      # luego edita .env con los datos de tu base de datos
-alembic upgrade head
-python -m app.comandos.crear_admin --usuario TU_USUARIO --nombre "Tu nombre"
-uvicorn app.main:app --reload
+uv run alembic upgrade head
+uv run python -m app.comandos.crear_admin --usuario TU_USUARIO --nombre "Tu nombre"
+uv run uvicorn app.main:app --reload
 ```
+
+Para añadir una dependencia: `uv add paquete` (o `uv add --dev paquete` para pruebas).
 
 `crear_admin` pide la contraseña sin mostrarla (mínimo 10 caracteres). Solo se usa para el
 primer administrador o para recuperar el acceso; los demás usuarios los crea un administrador
@@ -88,17 +87,16 @@ npm run dev
 
 La aplicación queda en http://localhost:5173. Vite reenvía `/api` al backend.
 
-En macOS o Linux los comandos son los mismos, salvo `python3 -m venv .venv`,
-`source .venv/bin/activate` y `cp .env.example .env`.
+En macOS o Linux los comandos son los mismos, salvo `cp .env.example .env`.
 
 ## Pruebas y calidad
 
 ```powershell
-# Backend (desde backend/, con el entorno virtual activo)
-pytest                 # unitarias e integración (necesita la base apartaestudios_test)
-pytest -m "not integracion"   # solo unitarias, sin base de datos
-ruff check .
-ruff format --check .
+# Backend (desde backend/)
+uv run pytest                       # unitarias e integración (necesita la base apartaestudios_test)
+uv run pytest -m "not integracion"  # solo unitarias, sin base de datos
+uv run ruff check .
+uv run ruff format --check .
 
 # Frontend (desde frontend/)
 npm test
