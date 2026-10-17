@@ -12,9 +12,12 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name, disable_existing_loggers=False)
 
-# Las pruebas pasan su propia URL; en otro caso se usa la configuración de la aplicación.
+# Las pruebas pasan su propia URL. En otro caso, las migraciones usan el rol dueño de las
+# tablas (APP_DATABASE_URL_MIGRACIONES) y, si no está definido, el de la aplicación.
 if not config.get_main_option("sqlalchemy.url"):
-    config.set_main_option("sqlalchemy.url", obtener_configuracion().database_url)
+    configuracion = obtener_configuracion()
+    url = configuracion.database_url_migraciones or configuracion.database_url
+    config.set_main_option("sqlalchemy.url", url.replace("%", "%%"))
 
 target_metadata = Base.metadata
 

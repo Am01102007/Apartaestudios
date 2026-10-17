@@ -13,6 +13,7 @@ from typing import Any
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import OperationalError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 logger = logging.getLogger(__name__)
@@ -109,6 +110,30 @@ async def _manejar_http(_: Request, exc: StarletteHTTPException) -> JSONResponse
     return respuesta_error(exc.status_code, codigo, mensaje)
 
 
+# Conflictos de concurrencia de PostgreSQL: la operación no se aplicó y puede reintentarse.
+SQLSTATE_REINTENTABLES = {
+    "40P01": "bloqueo mutuo (deadlock)",
+    "40001": "fallo de serialización",
+}
+
+
+async def _manejar_operacional(request: Request, exc: OperationalError) -> JSONResponse:
+    sqlstate = getattr(exc.orig, "sqlstate", None)
+    if sqlstate in SQLSTATE_REINTENTABLES:
+        logger.warning(
+            "Conflicto de concurrencia (%s) en %s %s",
+            SQLSTATE_REINTENTABLES[sqlstate],
+            request.method,
+            request.url.path,
+        )
+        return respuesta_error(
+            status.HTTP_409_CONFLICT,
+            "conflicto_concurrente",
+            "Otra operación modificó los mismos datos al mismo tiempo. Intenta de nuevo.",
+        )
+    return await _manejar_inesperado(request, exc)
+
+
 async def _manejar_inesperado(request: Request, exc: Exception) -> JSONResponse:
     # El detalle va al registro del servidor, nunca al cliente.
     logger.exception("Error no controlado en %s %s", request.method, request.url.path)
@@ -121,4 +146,5 @@ def registrar_manejadores(app: FastAPI) -> None:
     app.add_exception_handler(ErrorAplicacion, _manejar_error_aplicacion)
     app.add_exception_handler(RequestValidationError, _manejar_validacion)
     app.add_exception_handler(StarletteHTTPException, _manejar_http)
+    app.add_exception_handler(OperationalError, _manejar_operacional)
     app.add_exception_handler(Exception, _manejar_inesperado)

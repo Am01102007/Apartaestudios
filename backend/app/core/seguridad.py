@@ -1,6 +1,6 @@
 """Primitivas de seguridad: hash de contraseñas, tokens aleatorios y JWT.
 
-No contiene reglas de negocio; la sesión y los permisos están en app.modulos.sesion.
+No contiene reglas de negocio; la sesión y los permisos están en app.modulos.usuarios.
 """
 
 import hashlib

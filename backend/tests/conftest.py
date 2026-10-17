@@ -5,6 +5,7 @@ desde cero en cada ejecución. Nunca apuntes esa variable a la base de desarroll
 producción.
 """
 
+import os
 from collections.abc import Callable, Iterator
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -17,10 +18,14 @@ from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.api.dependencias import obtener_reloj
-from app.core.config import Configuracion, obtener_configuracion
-from app.db.sesion import crear_motor, obtener_sesion
-from app.main import crear_app
+# La configuración por defecto es de producción; las pruebas declaran su entorno antes de
+# importar la aplicación.
+os.environ.setdefault("APP_ENTORNO", "pruebas")
+
+from app.api.dependencias import obtener_reloj  # noqa: E402
+from app.core.config import Configuracion, obtener_configuracion  # noqa: E402
+from app.db.sesion import crear_motor, obtener_sesion  # noqa: E402
+from app.main import crear_app  # noqa: E402
 
 RAIZ_BACKEND = Path(__file__).resolve().parents[1]
 
@@ -103,7 +108,13 @@ def sesion_bd(motor_pruebas) -> Iterator[Session]:
 @pytest.fixture
 def nuevo_cliente(app, sesion_bd) -> Iterator[Callable[[], TestClient]]:
     """Fabrica clientes independientes (cada uno con sus cookies) sobre la base de pruebas."""
-    app.dependency_overrides[obtener_sesion] = lambda: sesion_bd
+
+    def _sesion_compartida():
+        # Como en producción: lo que la petición no confirmó se descarta al terminar.
+        yield sesion_bd
+        sesion_bd.rollback()
+
+    app.dependency_overrides[obtener_sesion] = _sesion_compartida
     clientes: list[TestClient] = []
 
     def fabricar() -> TestClient:

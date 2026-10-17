@@ -5,6 +5,10 @@ Decisiones aplicadas (fase 6 y D-3):
   `sesiones`, de modo que cerrarla tiene efecto inmediato.
 - La sesión vence tras 30 minutos sin uso o 12 horas desde el ingreso.
 - 5 intentos fallidos seguidos bloquean el ingreso de la cuenta durante 15 minutos.
+
+Como los demás servicios, no confirma la transacción; la confirma el endpoint. Las únicas
+excepciones son las transacciones cortas de `validar_sesion`, que se ejecuta como dependencia
+de todos los endpoints antes del caso de uso.
 """
 
 from dataclasses import dataclass
@@ -30,6 +34,13 @@ from app.modulos.usuarios.modelos import MotivoCierre, Sesion, Usuario
 from app.modulos.usuarios.servicio import ENTIDAD, validar_contrasena
 
 MENSAJE_CREDENCIALES = "Usuario o contraseña incorrectos."
+
+
+class IngresoRechazado(NoAutenticado):
+    """Ingreso rechazado cuyo rastro (intentos, bloqueo, auditoría) debe guardarse igual:
+    quien llama confirma la transacción antes de devolver el error."""
+
+
 # Frecuencia máxima con que se guarda el último uso, para no escribir en cada petición.
 INTERVALO_REGISTRO_USO = timedelta(minutes=1)
 
@@ -64,8 +75,7 @@ def iniciar_sesion(
             despues={"nombre_usuario": nombre_usuario[:30], "motivo": "usuario_inexistente"},
             ip=ip,
         )
-        bd.commit()
-        raise NoAutenticado(MENSAJE_CREDENCIALES, codigo="credenciales_invalidas")
+        raise IngresoRechazado(MENSAJE_CREDENCIALES, codigo="credenciales_invalidas")
 
     if usuario.bloqueado_hasta and usuario.bloqueado_hasta > ahora:
         auditoria.registrar(
@@ -76,8 +86,7 @@ def iniciar_sesion(
             usuario_id=usuario.id,
             ip=ip,
         )
-        bd.commit()
-        raise NoAutenticado(
+        raise IngresoRechazado(
             "La cuenta está bloqueada temporalmente por intentos fallidos. "
             f"Intenta de nuevo en {config.minutos_bloqueo} minutos.",
             codigo="cuenta_bloqueada",
@@ -99,12 +108,10 @@ def iniciar_sesion(
             despues=detalle,
             ip=ip,
         )
-        bd.commit()
-        raise NoAutenticado(MENSAJE_CREDENCIALES, codigo="credenciales_invalidas")
+        raise IngresoRechazado(MENSAJE_CREDENCIALES, codigo="credenciales_invalidas")
 
     # El estado inactivo se revela solo a quien conoce la contraseña.
     if not usuario.activo:
-        bd.rollback()
         raise NoAutenticado(
             "Tu usuario está desactivado. Contacta al administrador.", codigo="usuario_inactivo"
         )
@@ -135,7 +142,7 @@ def iniciar_sesion(
         usuario_id=usuario.id,
         ip=ip,
     )
-    bd.commit()
+    bd.flush()
     jwt = crear_jwt(config.clave_jwt, sesion.id, usuario.id, ahora, sesion.expira_en)
     return Ingreso(usuario=usuario, sesion=sesion, jwt=jwt, token_csrf=token_csrf)
 
@@ -168,14 +175,14 @@ def validar_sesion(
     if sesion.ultimo_uso + timedelta(minutes=config.minutos_inactividad) <= ahora:
         sesion.cerrada_en = ahora
         sesion.motivo_cierre = MotivoCierre.INACTIVIDAD
-        bd.commit()
+        bd.commit()  # transacción corta propia: el cierre se guarda aunque la petición falle
         raise NoAutenticado(
             "La sesión expiró por inactividad. Inicia sesión de nuevo.", codigo="sesion_expirada"
         )
 
     if ahora - sesion.ultimo_uso >= INTERVALO_REGISTRO_USO:
         sesion.ultimo_uso = ahora
-        bd.commit()
+        bd.commit()  # transacción corta propia, antes de empezar el caso de uso
     return sesion
 
 
@@ -194,7 +201,6 @@ def cerrar_sesion(bd: Session, sesion: Sesion, *, ahora: datetime, ip: str | Non
         usuario_id=sesion.usuario_id,
         ip=ip,
     )
-    bd.commit()
 
 
 def cambiar_contrasena(
@@ -231,4 +237,3 @@ def cambiar_contrasena(
         despues={"otras_sesiones_cerradas": cerradas},
         ip=ip,
     )
-    bd.commit()

@@ -182,10 +182,9 @@ def test_usuario_inexistente_responde_404(cliente_admin):
 
 def test_listar_filtra_por_rol(cliente_admin, sesion_bd):
     crear_usuario(sesion_bd, "carla")
-    nombres = [
-        u["nombre_usuario"] for u in cliente_admin.get("/api/v1/usuarios?rol=empleado").json()
-    ]
-    assert nombres == ["carla"]
+    empleados = cliente_admin.get("/api/v1/usuarios?rol=empleado").json()
+    assert "carla" in [u["nombre_usuario"] for u in empleados]
+    assert {u["rol"] for u in empleados} == {"empleado"}
 
 
 def test_u17_cada_operacion_queda_auditada_sin_contrasenas(cliente_admin, sesion_bd, admin):

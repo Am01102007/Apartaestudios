@@ -8,13 +8,12 @@ from fastapi import APIRouter, Depends, Query
 from app.api.dependencias import BD
 from app.modulos.auditoria import servicio
 from app.modulos.auditoria.esquemas import PaginaAuditoria
-from app.modulos.usuarios.dependencias import requiere_rol
-from app.modulos.usuarios.modelos import Rol
+from app.modulos.usuarios.dependencias import solo_administrador
 
 router = APIRouter(
     prefix="/auditoria",
     tags=["auditoría"],
-    dependencies=[Depends(requiere_rol(Rol.ADMINISTRADOR))],
+    dependencies=[Depends(solo_administrador)],
 )
 
 

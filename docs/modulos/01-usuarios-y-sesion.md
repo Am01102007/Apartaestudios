@@ -177,13 +177,25 @@ necesita cerrar sesiones. Separarlos creaba una dependencia circular entre dos d
 | `app/modulos/usuarios/router.py` | `/usuarios/*` |
 | `app/modulos/auditoria/{modelos,esquemas,repositorio,servicio,router}.py` | Tabla `auditoria`, registro y `GET /auditoria` |
 | `app/comandos/crear_admin.py` | `python -m app.comandos.crear_admin` |
+| `app/comandos/purgar_sesiones.py` | Borra sesiones cerradas o vencidas hace más de N días (90 por defecto) |
+| `app/db/permisos.py` | Permisos del rol de la aplicación (lo usa la migración 0003) |
 | `alembic/versions/0002_usuarios_sesiones_auditoria.py` | Tablas, índices y disparador de la auditoría |
+| `alembic/versions/0003_permisos_y_motivo_cierre.py` | Restricción de `motivo_cierre` y permisos del rol `apartaestudios_app` si existe |
+| `scripts/roles.sql` | Crea el rol `apartaestudios_app` (se ejecuta una vez como `postgres`) |
 | `tests/unit/test_seguridad.py` | Pruebas unitarias de seguridad y configuración |
 | `tests/integration/test_{autenticacion,usuarios,auditoria,permisos,comando_crear_admin}.py`, `ayudas.py` | Pruebas de integración |
+| `tests/integration/test_{concurrencia,permisos_bd,purgar_sesiones}.py`, `tests/unit/test_correcciones_revision.py` | Pruebas de las correcciones de la revisión |
 
 **Modificados**: `app/main.py`, `app/api/router.py`, `app/core/config.py`, `app/core/errores.py`
 (errores 422 y 429 de servicio), `app/db/modelos.py`, `pyproject.toml`, `.env.example`,
 `tests/conftest.py` (reloj de prueba y clientes independientes), README.
+
+**Correcciones de la revisión de buenas prácticas (2026-10-17):**
+los servicios ya no confirman (el endpoint o comando hace `bd.commit()`), la auditoría acepta
+`Decimal` y estructuras anidadas, los administradores se bloquean en orden de id antes del
+usuario objetivo, un bloqueo mutuo responde 409, el entorno por defecto es producción, el
+motor de base de datos se crea por aplicación, HSTS en producción, el límite por IP olvida
+las IP inactivas, `rol` y `motivo_cierre` son enumeraciones y el rol se verifica una sola vez.
 
 ---
 
@@ -206,7 +218,8 @@ necesita cerrar sesiones. Separarlos creaba una dependencia circular entre dos d
 ## 8. Pruebas y resultados
 
 Ejecutadas el 2026-10-17 en el entorno de desarrollo de Claude (Linux, Python 3.13,
-PostgreSQL 16). **Todavía no se han ejecutado en tu computador.**
+PostgreSQL 16), después de las correcciones de la revisión. La versión anterior (79 pruebas)
+ya pasó en tu computador; esta versión todavía no.
 
 | Archivo | Pruebas | Criterios | Resultado |
 |---|---|---|---|
@@ -216,8 +229,12 @@ PostgreSQL 16). **Todavía no se han ejecutado en tu computador.**
 | `integration/test_auditoria.py` | 5 | U-18; filtros por día de Bogotá | 5 aprobadas |
 | `integration/test_permisos.py` | 4 | U-11 (todos los endpoints con cada rol y sin sesión) | 4 aprobadas |
 | `integration/test_comando_crear_admin.py` | 2 | Creación del primer administrador | 2 aprobadas |
+| `integration/test_concurrencia.py` | 3 | I1 (todo o nada), I3 (sin bloqueo mutuo), nombre duplicado simultáneo | 3 aprobadas |
+| `integration/test_permisos_bd.py` | 10 | I4: el rol de la aplicación no puede alterar ni borrar la auditoría | 10 aprobadas (se omiten si el rol no existe) |
+| `integration/test_purgar_sesiones.py` | 1 | M8 | 1 aprobada |
+| `unit/test_correcciones_revision.py` | 9 | I2, I5, M1, M6, M9, 409 por bloqueo mutuo | 9 aprobadas |
 | Pruebas de la fase 7 | 18 | Errores, fechas, salud, migraciones | 18 aprobadas |
-| **Total** | **79** | | **79 aprobadas, 0 fallidas** |
+| **Total** | **102** | | **102 aprobadas, 0 fallidas** |
 
 `ruff check` y `ruff format --check`: sin hallazgos.
 
@@ -239,6 +256,7 @@ fase 7 ya lo cumple y tiene su prueba.
 | Bloqueo por intentos usado para bloquear a otro a propósito | El bloqueo dura 15 minutos y el administrador puede restablecer la contraseña, lo que lo levanta |
 | El mensaje "cuenta bloqueada" revela que el usuario existe | Solo aparece tras 5 intentos; se aceptó para que un empleado legítimo entienda por qué no entra |
 | El límite por IP vive en memoria | Si se despliega con varios procesos, cada uno cuenta aparte; se moverá a la base de datos si hace falta |
+| Crecimiento de la tabla `sesiones` | `python -m app.comandos.purgar_sesiones`, programado en el servidor (fase 10) |
 | Detrás de un proxy, la IP registrada será la del proxy | Se configurará al preparar el despliegue (fase 10) |
 | Quedarse sin administrador | Regla RU-04 con bloqueo de filas y comando `crear_admin` como recuperación |
 
@@ -249,7 +267,8 @@ usarán `SesionActual`, `SesionAdministrador` y `auditoria.registrar`.
 
 ## 10. Lista de verificación de finalización
 
-- [x] Migración 0002 aplicada y reversible
+- [x] Migraciones 0002 y 0003 aplicadas y reversibles
+- [x] Correcciones I1 a I5 y M1 a M12 de la revisión aplicadas (M7 queda como riesgo aceptado)
 - [x] Criterios U-01 a U-18 cubiertos por pruebas ejecutadas y aprobadas (salvo U-08, que es de frontend)
 - [x] Prueba de permisos por rol recorriendo todos los endpoints
 - [x] Ruff sin hallazgos

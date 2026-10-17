@@ -1,12 +1,14 @@
 """Registro y consulta de la auditoría (RF-23).
 
 `registrar` añade el registro a la transacción en curso: si la operación auditada se
-revierte, su registro también, y nunca queda una operación sin su rastro.
+revierte, su registro también, y nunca queda una operación sin su rastro. Los montos
+`Decimal` se guardan como texto ("850000") para no perder exactitud.
 """
 
 from datetime import date, datetime, time, timedelta
 from typing import Any
 
+from pydantic_core import to_jsonable_python
 from sqlalchemy.orm import Session
 
 from app.core.tiempo import ZONA_NEGOCIO
@@ -17,14 +19,23 @@ from app.modulos.auditoria.modelos import RegistroAuditoria
 CAMPOS_SENSIBLES = {"hash_contrasena", "contrasena", "contrasena_temporal", "hash_csrf"}
 
 
+def _sin_sensibles(valor: Any) -> Any:
+    if isinstance(valor, dict):
+        return {
+            clave: _sin_sensibles(contenido)
+            for clave, contenido in valor.items()
+            if clave not in CAMPOS_SENSIBLES
+        }
+    if isinstance(valor, list | tuple):
+        return [_sin_sensibles(elemento) for elemento in valor]
+    return valor
+
+
 def _limpiar(valores: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Quita campos sensibles en cualquier nivel y convierte a JSON (Decimal, fechas, Enum)."""
     if valores is None:
         return None
-    return {
-        clave: (valor.isoformat() if isinstance(valor, datetime | date) else valor)
-        for clave, valor in valores.items()
-        if clave not in CAMPOS_SENSIBLES
-    }
+    return to_jsonable_python(_sin_sensibles(valores))
 
 
 def registrar(

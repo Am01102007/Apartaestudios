@@ -25,7 +25,6 @@ frontend/           Interfaz web (React, TypeScript, Vite)
   src/componentes/  Componentes comunes
   src/paginas/      Páginas
 docs/               Decisiones y documentación por fase
-.github/workflows/  Integración continua
 ```
 
 ## Requisitos
@@ -65,6 +64,29 @@ uv run uvicorn app.main:app --reload
 
 Para añadir una dependencia: `uv add paquete` (o `uv add --dev paquete` para pruebas).
 
+### 3. Rol de la aplicación (recomendado)
+
+Así la API no se conecta como dueña de las tablas y no puede desactivar la protección de la
+auditoría. Una sola vez, como superusuario de PostgreSQL y desde `backend`:
+
+```powershell
+psql -U postgres -d apartaestudios -v clave_app="UNA_CONTRASEÑA_NUEVA" -f scripts/roles.sql
+```
+
+Después, en `.env`, la API usa el rol nuevo y las migraciones siguen con el dueño:
+
+```
+APP_DATABASE_URL=postgresql+psycopg://apartaestudios_app:UNA_CONTRASEÑA_NUEVA@localhost:5432/apartaestudios
+APP_DATABASE_URL_MIGRACIONES=postgresql+psycopg://apartaestudios:apartaestudios@localhost:5432/apartaestudios
+```
+
+Las migraciones nuevas otorgan sus permisos a ese rol automáticamente.
+
+### Mantenimiento
+
+`uv run python -m app.comandos.purgar_sesiones` borra las sesiones cerradas o vencidas hace
+más de 90 días (`--dias N` para cambiarlo). Conviene programarlo semanalmente.
+
 `crear_admin` pide la contraseña sin mostrarla (mínimo 10 caracteres). Solo se usa para el
 primer administrador o para recuperar el acceso; los demás usuarios los crea un administrador
 desde la API.
@@ -75,7 +97,7 @@ La API queda en http://localhost:8000 y su documentación en http://localhost:80
 En las operaciones `POST`, `PATCH` y `DELETE` escribe en el campo `X-CSRF-Token` el valor de
 la cookie `csrf_token` (en el navegador: F12 → Aplicación → Cookies).
 
-### 3. Frontend
+### 4. Frontend
 
 En otra terminal:
 

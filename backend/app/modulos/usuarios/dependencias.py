@@ -4,7 +4,8 @@
   usuario no tenga pendiente el cambio de contraseña.
 - `SesionConCambioPendiente`: igual, pero permite entrar a quien debe cambiar la contraseña;
   solo la usan /auth/yo, /auth/logout y /auth/cambiar-contrasena.
-- `requiere_rol(...)`: además, exige uno de los roles indicados.
+- `requiere_rol(...)`: además, exige uno de los roles indicados; `solo_administrador` es la
+  instancia para el administrador.
 """
 
 from typing import Annotated
@@ -68,4 +69,7 @@ def requiere_rol(*roles: Rol):
     return _verificar
 
 
-SesionAdministrador = Annotated[Sesion, Depends(requiere_rol(Rol.ADMINISTRADOR))]
+# Una sola instancia: FastAPI ejecuta una vez por petición cada dependencia, aunque se use en
+# el router y en el endpoint.
+solo_administrador = requiere_rol(Rol.ADMINISTRADOR)
+SesionAdministrador = Annotated[Sesion, Depends(solo_administrador)]

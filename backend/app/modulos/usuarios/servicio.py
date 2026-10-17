@@ -1,7 +1,7 @@
 """Gestión de usuarios por el administrador (RF-02).
 
-Cada función es un caso de uso completo: valida las reglas, modifica, audita y confirma la
-transacción. Si algo falla, nada queda guardado.
+Cada función valida las reglas, modifica y audita, pero no confirma: confirma quien llama
+(ver app.db.sesion). Si algo falla, nada queda guardado.
 """
 
 from datetime import datetime
@@ -48,8 +48,31 @@ def _usuario_duplicado(nombre_usuario: str) -> ReglaDeNegocio:
     )
 
 
+def _guardar(sesion: Session, nombre_usuario: str) -> None:
+    """flush dentro de un punto de guardado: si otra petición registró el mismo nombre de
+    usuario al mismo tiempo, se revierte solo este cambio y se informa como regla de negocio."""
+    try:
+        with sesion.begin_nested():
+            sesion.flush()
+    except IntegrityError as exc:
+        raise _usuario_duplicado(nombre_usuario) from exc
+
+
 def obtener(sesion: Session, usuario_id: int) -> Usuario:
     usuario = repositorio.obtener(sesion, usuario_id)
+    if usuario is None:
+        raise NoEncontrado("El usuario no existe.")
+    return usuario
+
+
+def _obtener_bloqueado(sesion: Session, usuario_id: int, *, si_es_admin: bool) -> Usuario:
+    """Bloquea la fila del usuario. Si `si_es_admin` y el usuario es administrador, bloquea
+    antes a todos los administradores activos (en orden de id), para que el orden de los
+    bloqueos sea siempre el mismo y dos peticiones no se esperen mutuamente (RU-04)."""
+    usuario = obtener(sesion, usuario_id)
+    if si_es_admin and usuario.es_administrador:
+        repositorio.bloquear_administradores_activos(sesion)
+    usuario = repositorio.obtener(sesion, usuario_id, bloquear=True)
     if usuario is None:
         raise NoEncontrado("El usuario no existe.")
     return usuario
@@ -83,11 +106,7 @@ def crear(
         intentos_fallidos=0,
     )
     sesion.add(usuario)
-    try:
-        sesion.flush()
-    except IntegrityError as exc:  # otra petición creó el mismo nombre al mismo tiempo
-        sesion.rollback()
-        raise _usuario_duplicado(datos.nombre_usuario) from exc
+    _guardar(sesion, datos.nombre_usuario)
 
     auditoria.registrar(
         sesion,
@@ -98,7 +117,6 @@ def crear(
         despues=instantanea(usuario),
         ip=ip,
     )
-    sesion.commit()
     return usuario
 
 
@@ -119,9 +137,7 @@ def editar(
     ip: str | None,
     ahora: datetime,
 ) -> Usuario:
-    usuario = repositorio.obtener(sesion, usuario_id, bloquear=True)
-    if usuario is None:
-        raise NoEncontrado("El usuario no existe.")
+    usuario = _obtener_bloqueado(sesion, usuario_id, si_es_admin="rol" in datos.model_fields_set)
 
     cambios = {
         campo: valor
@@ -149,12 +165,7 @@ def editar(
     if cambia_rol:
         # Las sesiones abiertas se emitieron con el rol anterior.
         repositorio.cerrar_sesiones(sesion, usuario.id, MotivoCierre.CAMBIO_ROL, ahora)
-
-    try:
-        sesion.flush()
-    except IntegrityError as exc:
-        sesion.rollback()
-        raise _usuario_duplicado(cambios.get("nombre_usuario", "")) from exc
+    _guardar(sesion, cambios.get("nombre_usuario", usuario.nombre_usuario))
 
     auditoria.registrar(
         sesion,
@@ -166,16 +177,13 @@ def editar(
         despues={campo: getattr(usuario, campo) for campo in cambios},
         ip=ip,
     )
-    sesion.commit()
     return usuario
 
 
 def desactivar(
     sesion: Session, usuario_id: int, *, actor_id: int, ip: str | None, ahora: datetime
 ) -> Usuario:
-    usuario = repositorio.obtener(sesion, usuario_id, bloquear=True)
-    if usuario is None:
-        raise NoEncontrado("El usuario no existe.")
+    usuario = _obtener_bloqueado(sesion, usuario_id, si_es_admin=True)
     if not usuario.activo:
         return usuario
     if usuario.id == actor_id:
@@ -197,14 +205,11 @@ def desactivar(
         despues={"activo": False, "sesiones_cerradas": cerradas},
         ip=ip,
     )
-    sesion.commit()
     return usuario
 
 
 def activar(sesion: Session, usuario_id: int, *, actor_id: int, ip: str | None) -> Usuario:
-    usuario = repositorio.obtener(sesion, usuario_id, bloquear=True)
-    if usuario is None:
-        raise NoEncontrado("El usuario no existe.")
+    usuario = _obtener_bloqueado(sesion, usuario_id, si_es_admin=False)
     if usuario.activo:
         return usuario
 
@@ -221,7 +226,6 @@ def activar(sesion: Session, usuario_id: int, *, actor_id: int, ip: str | None) 
         despues={"activo": True},
         ip=ip,
     )
-    sesion.commit()
     return usuario
 
 
@@ -235,9 +239,7 @@ def restablecer_contrasena(
     ahora: datetime,
 ) -> Usuario:
     """RU-09: contraseña temporal asignada por el administrador; se cambia al entrar."""
-    usuario = repositorio.obtener(sesion, usuario_id, bloquear=True)
-    if usuario is None:
-        raise NoEncontrado("El usuario no existe.")
+    usuario = _obtener_bloqueado(sesion, usuario_id, si_es_admin=False)
     validar_contrasena(contrasena_temporal, usuario.nombre_usuario)
 
     usuario.hash_contrasena = hashear_contrasena(contrasena_temporal)
@@ -254,5 +256,4 @@ def restablecer_contrasena(
         despues={"debe_cambiar_contrasena": True, "sesiones_cerradas": cerradas},
         ip=ip,
     )
-    sesion.commit()
     return usuario

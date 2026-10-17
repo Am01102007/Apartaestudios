@@ -33,7 +33,6 @@ Las reglas de negocio vienen de la propuesta aprobada (RN-01 a RN-31) y no se re
 | Datos del servidor | TanStack Query | 5 | **Añadido** (caché y reintentos de las consultas a la API) |
 | Pruebas frontend | Vitest + Testing Library | Vitest 5 | Stack de referencia |
 | Aceptación | Playwright | — | Se instala en la fase 9 |
-| Integración continua | GitHub Actions | — | **Añadido**; se activa cuando exista repositorio en GitHub |
 
 **Por qué SQLAlchemy síncrono y no asíncrono.** La carga esperada es pequeña (uso interno de
 pocos usuarios). El modo síncrono hace más simples y legibles las transacciones financieras
@@ -65,11 +64,20 @@ se ejecutaría varias veces. Igualmente, cada paso es idempotente.
 
   | Archivo | Responsabilidad | Puede depender de |
   |---|---|---|
-  | `router.py` | HTTP: rutas, permisos, códigos de estado | esquemas, servicio |
-  | `esquemas.py` | Entrada y salida (Pydantic) | — |
-  | `servicio.py` | Casos de uso y reglas de negocio; abre y cierra la transacción | repositorio, otros servicios |
-  | `repositorio.py` | Consultas SQLAlchemy | modelos |
+  | `router.py` | HTTP: rutas, permisos, códigos de estado; **confirma la transacción** (`bd.commit()`) | esquemas, servicio |
+  | `esquemas.py` | Entrada y salida (Pydantic) | modelos (enumeraciones) |
+  | `servicio.py` | Casos de uso y reglas de negocio; **nunca confirma**, solo `flush()` | esquemas, repositorio, otros servicios |
+  | `repositorio.py` | Consultas SQLAlchemy y bloqueos de filas | modelos |
   | `modelos.py` | Tablas (SQLAlchemy) | `app.db` |
+
+  **Unidad de trabajo** (corrección de la revisión): como los servicios no confirman, un caso
+  de uso puede pasar por servicios de varios dominios y se guarda todo o nada. Los comandos de
+  consola confirman igual que los endpoints.
+
+  **Bloqueos de filas**: cuando una regla depende de varias filas (por ejemplo "siempre queda
+  un administrador"), se bloquean primero las filas del conjunto en orden de id y después la
+  fila objetivo. Un bloqueo mutuo o fallo de serialización de PostgreSQL responde 409
+  `conflicto_concurrente` ("intenta de nuevo"). Este será el patrón de cobros y pagos.
 
   Las reglas de cálculo puras (fechas de corte, saldos, incrementos) van en funciones sin
   base de datos dentro del servicio o en un `reglas.py`, para probarlas con pruebas unitarias.
@@ -120,6 +128,9 @@ Las convenciones generales son:
 | Cabeceras | `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy` y `X-Frame-Options` en las respuestas |
 | Evidencias | Solo JPG, PNG y PDF, máximo 5 MB, verificados por contenido; guardadas fuera de la base de datos con nombre aleatorio |
 | Secretos | Solo por variables de entorno; nunca en el repositorio |
+| Configuración | Si falta `APP_ENTORNO`, se asume producción: exige clave JWT propia, cookie segura y cierra `/api/docs` |
+| Roles de PostgreSQL | La API usa `apartaestudios_app` (leer, insertar, actualizar; borrar solo sesiones; auditoría solo lectura e inserción). Las migraciones usan el rol dueño |
+| HSTS | `Strict-Transport-Security` en producción |
 | Auditoría | Usuario, fecha y hora, acción, entidad, valor anterior y nuevo, dirección IP |
 
 **Pendiente de definir antes de producción (no bloquea el desarrollo):** política de

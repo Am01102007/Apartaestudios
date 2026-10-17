@@ -60,15 +60,20 @@ def iniciar_sesion(
     ahora = reloj()
     if not request.app.state.limite_ingreso.permitir(ip or "desconocida", ahora):
         raise DemasiadasSolicitudes("Demasiados intentos de ingreso. Espera un minuto.")
-    ingreso = autenticacion.iniciar_sesion(
-        bd,
-        credenciales.nombre_usuario,
-        credenciales.contrasena,
-        config=config,
-        ahora=ahora,
-        ip=ip,
-        agente_usuario=request.headers.get("user-agent"),
-    )
+    try:
+        ingreso = autenticacion.iniciar_sesion(
+            bd,
+            credenciales.nombre_usuario,
+            credenciales.contrasena,
+            config=config,
+            ahora=ahora,
+            ip=ip,
+            agente_usuario=request.headers.get("user-agent"),
+        )
+    except autenticacion.IngresoRechazado:
+        bd.commit()  # se guardan el intento fallido, el bloqueo y su auditoría
+        raise
+    bd.commit()
     _poner_cookies(respuesta, ingreso, config)
     return ingreso.usuario
 
@@ -78,6 +83,7 @@ def cerrar_sesion(
     sesion: SesionConCambioPendiente, bd: BD, config: Config, reloj: Reloj, ip: IP
 ) -> Response:
     autenticacion.cerrar_sesion(bd, sesion, ahora=reloj(), ip=ip)
+    bd.commit()
     respuesta = Response(status_code=status.HTTP_204_NO_CONTENT)
     _borrar_cookies(respuesta, config)
     return respuesta
@@ -99,3 +105,4 @@ def cambiar_contrasena(
     autenticacion.cambiar_contrasena(
         bd, sesion, datos.contrasena_actual, datos.contrasena_nueva, ahora=reloj(), ip=ip
     )
+    bd.commit()

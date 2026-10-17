@@ -13,6 +13,7 @@ from app.core.config import Configuracion, obtener_configuracion
 from app.core.errores import registrar_manejadores
 from app.core.limite import LimiteVentana
 from app.core.seguridad_http import CabecerasSeguridad
+from app.db.sesion import crear_fabrica, crear_motor
 
 
 def crear_app(configuracion: Configuracion | None = None) -> FastAPI:
@@ -31,10 +32,12 @@ def crear_app(configuracion: Configuracion | None = None) -> FastAPI:
         openapi_url="/api/openapi.json" if docs else None,
     )
     app.state.configuracion = configuracion
+    # El motor no abre conexiones hasta la primera consulta.
+    app.state.fabrica_sesiones = crear_fabrica(crear_motor(configuracion.database_url))
     app.state.limite_ingreso = LimiteVentana(
         configuracion.ingresos_por_minuto_por_ip, timedelta(minutes=1)
     )
-    app.add_middleware(CabecerasSeguridad)
+    app.add_middleware(CabecerasSeguridad, hsts=configuracion.es_produccion)
     registrar_manejadores(app)
     app.include_router(api_v1)
     return app

@@ -23,9 +23,11 @@ def crear_usuario(
         rol=rol,
         contrasena_temporal=contrasena,
     )
-    return servicio.crear(
+    usuario = servicio.crear(
         sesion, datos, actor_id=None, ip=None, debe_cambiar_contrasena=debe_cambiar
     )
+    sesion.commit()
+    return usuario
 
 
 def ingresar(cliente: TestClient, nombre_usuario: str, contrasena: str = CONTRASENA):

@@ -10,7 +10,7 @@ pytestmark = pytest.mark.integracion
 
 @pytest.fixture(autouse=True)
 def usar_base_de_pruebas(monkeypatch, sesion_bd):
-    monkeypatch.setattr(crear_admin, "FabricaSesiones", lambda: sesion_bd)
+    monkeypatch.setattr(crear_admin, "abrir_sesion", lambda: sesion_bd)
     monkeypatch.setenv("APP_CONTRASENA_ADMIN", "clave-inicial-123")
 
 
