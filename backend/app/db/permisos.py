@@ -31,6 +31,12 @@ BEGIN
         EXECUTE 'GRANT USAGE ON SCHEMA public TO {rol}';
         EXECUTE 'GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO {rol}';
         EXECUTE 'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {rol}';
+        -- Respaldo: las tablas que cree más adelante el rol que migra quedan con los
+        -- mismos permisos aunque una migración olvide llamar a sql_permisos.
+        EXECUTE 'ALTER DEFAULT PRIVILEGES IN SCHEMA public
+                 GRANT SELECT, INSERT, UPDATE ON TABLES TO {rol}';
+        EXECUTE 'ALTER DEFAULT PRIVILEGES IN SCHEMA public
+                 GRANT USAGE, SELECT ON SEQUENCES TO {rol}';
         EXECUTE 'REVOKE ALL ON alembic_version FROM {rol}';
         {borrado}
         {solo_insercion}
