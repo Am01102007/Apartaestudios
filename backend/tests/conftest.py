@@ -5,17 +5,19 @@ desde cero en cada ejecución. Nunca apuntes esa variable a la base de desarroll
 producción.
 """
 
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
+from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from alembic import command
+from app.api.dependencias import obtener_reloj
 from app.core.config import Configuracion, obtener_configuracion
 from app.db.sesion import crear_motor, obtener_sesion
 from app.main import crear_app
@@ -29,9 +31,35 @@ def config_alembic(url: str) -> Config:
     return config
 
 
+class RelojPrueba:
+    """Reloj controlable para simular el paso del tiempo (bloqueos, expiración)."""
+
+    def __init__(self) -> None:
+        self.momento = datetime(2026, 10, 17, 15, 0, tzinfo=UTC)
+
+    def __call__(self) -> datetime:
+        return self.momento
+
+    def avanzar(self, **kwargs) -> None:
+        self.momento += timedelta(**kwargs)
+
+
 @pytest.fixture
-def app():
-    return crear_app(Configuracion(entorno="pruebas"))
+def reloj() -> RelojPrueba:
+    return RelojPrueba()
+
+
+@pytest.fixture
+def config() -> Configuracion:
+    # Las pruebas usan http://testserver, por eso la cookie no se marca Secure aquí.
+    return Configuracion(entorno="pruebas", cookie_segura=False)
+
+
+@pytest.fixture
+def app(config, reloj):
+    aplicacion = crear_app(config)
+    aplicacion.dependency_overrides[obtener_reloj] = lambda: reloj
+    return aplicacion
 
 
 @pytest.fixture
@@ -73,8 +101,21 @@ def sesion_bd(motor_pruebas) -> Iterator[Session]:
 
 
 @pytest.fixture
-def cliente_bd(app, sesion_bd) -> Iterator[TestClient]:
+def nuevo_cliente(app, sesion_bd) -> Iterator[Callable[[], TestClient]]:
+    """Fabrica clientes independientes (cada uno con sus cookies) sobre la base de pruebas."""
     app.dependency_overrides[obtener_sesion] = lambda: sesion_bd
-    with TestClient(app, raise_server_exceptions=False) as c:
-        yield c
-    app.dependency_overrides.clear()
+    clientes: list[TestClient] = []
+
+    def fabricar() -> TestClient:
+        cliente = TestClient(app, raise_server_exceptions=False)
+        clientes.append(cliente)
+        return cliente
+
+    yield fabricar
+    for cliente in clientes:
+        cliente.close()
+
+
+@pytest.fixture
+def cliente_bd(nuevo_cliente) -> TestClient:
+    return nuevo_cliente()

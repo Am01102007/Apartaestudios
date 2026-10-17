@@ -8,6 +8,7 @@ horaria de Bogotá.
   (archivos del proyecto).
 - Decisiones técnicas: [docs/decisiones-fases-3-a-6.md](docs/decisiones-fases-3-a-6.md).
 - Estado de la estructura base: [docs/fase-7-estructura-base.md](docs/fase-7-estructura-base.md).
+- Módulos: [docs/modulos/](docs/modulos/). Trazabilidad: [docs/trazabilidad.md](docs/trazabilidad.md).
 
 ## Estructura
 
@@ -59,12 +60,21 @@ cd backend
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
-Copy-Item .env.example .env
+Copy-Item .env.example .env      # luego edita .env con los datos de tu base de datos
 alembic upgrade head
+python -m app.comandos.crear_admin --usuario TU_USUARIO --nombre "Tu nombre"
 uvicorn app.main:app --reload
 ```
 
+`crear_admin` pide la contraseña sin mostrarla (mínimo 10 caracteres). Solo se usa para el
+primer administrador o para recuperar el acceso; los demás usuarios los crea un administrador
+desde la API.
+
 La API queda en http://localhost:8000 y su documentación en http://localhost:8000/api/docs.
+
+**Probar la API desde /api/docs.** Ejecuta `POST /auth/login`; el navegador guarda la sesión.
+En las operaciones `POST`, `PATCH` y `DELETE` escribe en el campo `X-CSRF-Token` el valor de
+la cookie `csrf_token` (en el navegador: F12 → Aplicación → Cookies).
 
 ### 3. Frontend
 

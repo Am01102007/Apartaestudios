@@ -4,12 +4,14 @@ Ejecutar en desarrollo:  uvicorn app.main:app --reload
 """
 
 import logging
+from datetime import timedelta
 
 from fastapi import FastAPI
 
 from app.api.router import api_v1
 from app.core.config import Configuracion, obtener_configuracion
 from app.core.errores import registrar_manejadores
+from app.core.limite import LimiteVentana
 from app.core.seguridad_http import CabecerasSeguridad
 
 
@@ -27,6 +29,10 @@ def crear_app(configuracion: Configuracion | None = None) -> FastAPI:
         docs_url="/api/docs" if docs else None,
         redoc_url=None,
         openapi_url="/api/openapi.json" if docs else None,
+    )
+    app.state.configuracion = configuracion
+    app.state.limite_ingreso = LimiteVentana(
+        configuracion.ingresos_por_minuto_por_ip, timedelta(minutes=1)
     )
     app.add_middleware(CabecerasSeguridad)
     registrar_manejadores(app)

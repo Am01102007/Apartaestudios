@@ -12,6 +12,8 @@ dependencies = [
     "psycopg[binary]>=3.3,<3.4",
     "alembic>=1.20,<2",
     "tzdata>=2026.5",
+    "argon2-cffi>=25.1,<26",
+    "pyjwt>=2.15,<3",
 ]
 
 [project.optional-dependencies]
@@ -41,7 +43,10 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM"]
-ignore = []
+
+[tool.ruff.lint.isort]
+# La carpeta alembic/ del proyecto no es el paquete alembic.
+known-third-party = ["alembic"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]

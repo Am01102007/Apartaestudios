@@ -47,6 +47,18 @@ class NoEncontrado(ErrorAplicacion):
     codigo = "no_encontrado"
 
 
+class DatosInvalidos(ErrorAplicacion):
+    """Datos con formato correcto que no cumplen una validación del servidor."""
+
+    estado_http = status.HTTP_422_UNPROCESSABLE_CONTENT
+    codigo = "datos_invalidos"
+
+
+class DemasiadasSolicitudes(ErrorAplicacion):
+    estado_http = status.HTTP_429_TOO_MANY_REQUESTS
+    codigo = "demasiadas_solicitudes"
+
+
 class ReglaDeNegocio(ErrorAplicacion):
     """Una regla de negocio impide la operación (por ejemplo, contrato superpuesto)."""
 

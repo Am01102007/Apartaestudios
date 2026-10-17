@@ -1,7 +1,8 @@
 import pytest
+from alembic import command
+from alembic.script import ScriptDirectory
 from sqlalchemy import text
 
-from alembic import command
 from tests.conftest import config_alembic
 
 pytestmark = pytest.mark.integracion
@@ -26,7 +27,7 @@ def test_migraciones_se_revierten_y_reaplican(motor_pruebas, url_pruebas):
     command.upgrade(config, "head")
     with motor_pruebas.connect() as conexion:
         version = conexion.execute(text("SELECT version_num FROM alembic_version")).scalar()
-    assert version == "0001"
+    assert version == ScriptDirectory.from_config(config).get_current_head()
 
 
 def test_conexion_trabaja_en_utc(sesion_bd):

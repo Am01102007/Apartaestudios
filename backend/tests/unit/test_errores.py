@@ -97,7 +97,7 @@ def test_respuestas_incluyen_cabeceras_de_seguridad(cliente_errores):
 
 
 def test_documentacion_desactivada_en_produccion():
-    with TestClient(crear_app(Configuracion(entorno="produccion"))) as c:
+    with TestClient(crear_app(Configuracion(entorno="produccion", clave_jwt="k" * 40))) as c:
         assert c.get("/api/docs").status_code == 404
         assert c.get("/api/openapi.json").status_code == 404
 
