@@ -1,9 +1,9 @@
-# Decisiones técnicas de las fases 3 a 6 (para aprobación)
+# Decisiones técnicas de las fases 3 a 6
 
-Estado: **propuesta, pendiente de aprobación de Maryam.**
+Estado: **aprobado por Maryam el 2026-10-17.**
 Fecha: 2026-10-17.
 
-Este documento resume cómo se aplicarán el stack, la arquitectura, el modelo de datos y la
+Este documento resume cómo se aplican el stack, la arquitectura, el modelo de datos y la
 seguridad. No cambia el stack de referencia; solo fija versiones y añade herramientas
 auxiliares que el stack necesita para funcionar (marcadas como **Añadido**). La estructura
 base de la fase 7 se construyó sobre estas decisiones; si alguna se rechaza, se indica qué
@@ -128,7 +128,7 @@ respaldos (RNF-15).
 
 ---
 
-## Qué necesito que apruebes
+## Decisiones aprobadas
 
 1. Las herramientas marcadas como **Añadido** (ninguna sustituye al stack de referencia).
 2. SQLAlchemy síncrono.

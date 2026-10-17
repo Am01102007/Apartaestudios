@@ -1,8 +1,8 @@
 # Fase 7. Estructura base
 
-Estado: **terminada, pendiente de aprobación.**
+Estado: **terminada y aprobada por Maryam el 2026-10-17.**
 Se construyó sobre las decisiones de [decisiones-fases-3-a-6.md](decisiones-fases-3-a-6.md),
-también pendientes de aprobación.
+también aprobadas.
 
 ## 1. Objetivo y alcance
 
@@ -60,7 +60,7 @@ La integración continua de GitHub está **propuesta, no ejecutada**: no hay rep
 - [x] Frontend compila con TypeScript estricto y se comunica con el backend por el proxy
 - [x] Cliente sin token en el almacenamiento del navegador
 - [ ] Puesta en marcha verificada en el computador de Maryam
-- [ ] Aprobación de las decisiones de las fases 3 a 6 y de esta fase
+- [x] Aprobación de las decisiones de las fases 3 a 6 y de esta fase
 
 ## Siguiente paso propuesto (fase 8)
 
