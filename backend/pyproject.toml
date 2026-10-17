@@ -1,0 +1,47 @@
+[project]
+name = "apartaestudios-backend"
+version = "0.1.0"
+description = "API del sistema de administración de apartaestudios"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.143,<0.144",
+    "uvicorn[standard]>=0.54,<0.55",
+    "pydantic>=2.14,<3",
+    "pydantic-settings>=2.16,<3",
+    "sqlalchemy>=2.1,<2.2",
+    "psycopg[binary]>=3.3,<3.4",
+    "alembic>=1.20,<2",
+    "tzdata>=2026.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1,<10",
+    "httpx>=0.28,<0.29",
+    "ruff>=0.17,<0.18",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "integracion: pruebas que necesitan PostgreSQL",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]

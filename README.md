@@ -1,0 +1,100 @@
+# Sistema de administración de apartaestudios
+
+Aplicación web interna para administrar apartaestudios, residentes, contratos, cobros,
+pagos, cartera, mantenimiento y servicios públicos. Opera en pesos colombianos y en la zona
+horaria de Bogotá.
+
+- Propuesta aprobada y reglas de negocio: `Propuesta-sistema-apartaestudios.pdf`
+  (archivos del proyecto).
+- Decisiones técnicas: [docs/decisiones-fases-3-a-6.md](docs/decisiones-fases-3-a-6.md).
+- Estado de la estructura base: [docs/fase-7-estructura-base.md](docs/fase-7-estructura-base.md).
+
+## Estructura
+
+```
+backend/            API REST (Python, FastAPI, SQLAlchemy, PostgreSQL)
+  app/
+    core/           Configuración, errores, fechas en hora de Bogotá, cabeceras de seguridad
+    db/             Base del modelo, convenciones y sesión de base de datos
+    api/            Router /api/v1 y verificación de salud
+    modulos/        Un paquete por dominio (se llena en la fase 8)
+  alembic/          Migraciones de la base de datos
+  tests/            unit/ (sin base de datos) e integration/ (PostgreSQL real)
+frontend/           Interfaz web (React, TypeScript, Vite)
+  src/api/          Cliente HTTP (cookie de sesión, token CSRF, errores)
+  src/componentes/  Componentes comunes
+  src/paginas/      Páginas
+docs/               Decisiones y documentación por fase
+.github/workflows/  Integración continua
+```
+
+## Requisitos
+
+- Python 3.12 o superior
+- Node.js 22 o superior
+- PostgreSQL 16 (instalado, o con Docker Desktop usando `docker compose up -d`)
+
+## Puesta en marcha en Windows (PowerShell)
+
+### 1. Base de datos
+
+Con Docker Desktop:
+
+```powershell
+docker compose up -d
+```
+
+Con PostgreSQL instalado, desde `psql` como superusuario:
+
+```sql
+CREATE ROLE apartaestudios LOGIN PASSWORD 'apartaestudios';
+CREATE DATABASE apartaestudios OWNER apartaestudios;
+CREATE DATABASE apartaestudios_test OWNER apartaestudios;
+```
+
+### 2. Backend
+
+```powershell
+cd backend
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+Copy-Item .env.example .env
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+La API queda en http://localhost:8000 y su documentación en http://localhost:8000/api/docs.
+
+### 3. Frontend
+
+En otra terminal:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+La aplicación queda en http://localhost:5173. Vite reenvía `/api` al backend.
+
+En macOS o Linux los comandos son los mismos, salvo `python3 -m venv .venv`,
+`source .venv/bin/activate` y `cp .env.example .env`.
+
+## Pruebas y calidad
+
+```powershell
+# Backend (desde backend/, con el entorno virtual activo)
+pytest                 # unitarias e integración (necesita la base apartaestudios_test)
+pytest -m "not integracion"   # solo unitarias, sin base de datos
+ruff check .
+ruff format --check .
+
+# Frontend (desde frontend/)
+npm test
+npm run lint
+npm run build
+```
+
+Las pruebas de integración borran y recrean el esquema de la base indicada en
+`APP_DATABASE_URL_PRUEBAS`, y se niegan a ejecutarse si su nombre no termina en `_test`.

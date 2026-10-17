@@ -1,0 +1,17 @@
+# PostgreSQL para desarrollo local (opcional si ya tienes PostgreSQL instalado).
+# Uso: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: apartaestudios
+      POSTGRES_PASSWORD: apartaestudios
+      POSTGRES_DB: apartaestudios
+    ports:
+      - "5432:5432"
+    volumes:
+      - datos_postgres:/var/lib/postgresql/data
+      - ./backend/scripts/crear_bd_pruebas.sql:/docker-entrypoint-initdb.d/crear_bd_pruebas.sql:ro
+
+volumes:
+  datos_postgres:
