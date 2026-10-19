@@ -4,6 +4,8 @@ La tabla PERMISOS es la especificaci√≥n: cada endpoint nuevo debe agregarse aqu√
 prueba `test_todos_los_endpoints_estan_clasificados` falla.
 """
 
+import re
+
 import pytest
 
 from app.modulos.usuarios.modelos import Rol
@@ -27,6 +29,19 @@ PERMISOS = {
     ("POST", "/api/v1/usuarios/{usuario_id}/activar"): ADMIN,
     ("POST", "/api/v1/usuarios/{usuario_id}/restablecer-contrasena"): ADMIN,
     ("GET", "/api/v1/auditoria"): ADMIN,
+    ("GET", "/api/v1/propietarios"): AMBOS,
+    ("POST", "/api/v1/propietarios"): ADMIN,
+    ("GET", "/api/v1/propietarios/{propietario_id}"): AMBOS,
+    ("PATCH", "/api/v1/propietarios/{propietario_id}"): ADMIN,
+    ("POST", "/api/v1/propietarios/{propietario_id}/desactivar"): ADMIN,
+    ("POST", "/api/v1/propietarios/{propietario_id}/activar"): ADMIN,
+    ("GET", "/api/v1/apartaestudios"): AMBOS,
+    ("POST", "/api/v1/apartaestudios"): ADMIN,
+    ("GET", "/api/v1/apartaestudios/{apartaestudio_id}"): AMBOS,
+    ("PATCH", "/api/v1/apartaestudios/{apartaestudio_id}"): ADMIN,
+    ("POST", "/api/v1/apartaestudios/{apartaestudio_id}/mantenimiento"): ADMIN,
+    ("POST", "/api/v1/apartaestudios/{apartaestudio_id}/desactivar"): ADMIN,
+    ("POST", "/api/v1/apartaestudios/{apartaestudio_id}/activar"): ADMIN,
 }
 
 
@@ -41,7 +56,7 @@ def test_todos_los_endpoints_estan_clasificados(app):
 
 
 def _llamar(cliente, metodo, ruta):
-    return cliente.request(metodo, ruta.replace("{usuario_id}", "999999"), json={})
+    return cliente.request(metodo, re.sub(r"\{\w+_id\}", "999999", ruta), json={})
 
 
 def test_sin_sesion_solo_responden_los_publicos(app, cliente_bd):

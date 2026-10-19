@@ -17,7 +17,7 @@ backend/            API REST (Python, FastAPI, SQLAlchemy, PostgreSQL)
     core/           Configuración, errores, fechas en hora de Bogotá, cabeceras de seguridad
     db/             Base del modelo, convenciones y sesión de base de datos
     api/            Router /api/v1 y verificación de salud
-    modulos/        Un paquete por dominio (se llena en la fase 8)
+    modulos/        Un paquete por dominio: usuarios, auditoria, inmuebles
   alembic/          Migraciones de la base de datos
   tests/            unit/ (sin base de datos) e integration/ (PostgreSQL real)
 frontend/           Interfaz web (React, TypeScript, Vite)

@@ -58,6 +58,8 @@ def _sesion_actual(sesion: SesionConCambioPendiente) -> Sesion:
 
 
 SesionActual = Annotated[Sesion, Depends(_sesion_actual)]
+# Para `dependencies=[Depends(requiere_sesion)]` en routers que consultan ambos roles.
+requiere_sesion = _sesion_actual
 
 
 def requiere_rol(*roles: Rol):

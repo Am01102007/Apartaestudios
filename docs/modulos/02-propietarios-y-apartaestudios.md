@@ -1,8 +1,8 @@
 # Módulo 2. Propietarios y apartaestudios
 
-Estado: **diseño; pendiente de tu aprobación antes de escribir código.** Solo backend, como
-en el módulo 1.
-Fecha: 2026-10-19.
+Estado: **backend implementado y probado; pendiente de tu verificación y aprobación.** Solo
+backend, como en el módulo 1.
+Fecha: 2026-10-19. Diseño aprobado por Maryam el mismo día (ver "Decisiones tomadas").
 
 Cubre: RF-03, RF-04, RF-05, RN-01, RN-02, RN-03 y la parte de CA-04 que no depende de los
 contratos. Se apoya en [decisiones-fases-3-a-6.md](../decisiones-fases-3-a-6.md) y en el
@@ -130,7 +130,7 @@ Todos bajo `/api/v1`; los que modifican exigen `X-CSRF-Token`. "Ambos" = adminis
 | POST | /propietarios/{id}/activar | Admin | Sí | **Nuevo** (D-3) |
 | GET | /apartaestudios | Ambos | No | Lista con filtros por propietario, ocupación, mantenimiento, activo y texto |
 | POST | /apartaestudios | Admin | Sí | Crea un apartaestudio |
-| GET | /apartaestudios/{id} | Ambos | No | Detalle con ocupación calculada y contrato activo (nulo hasta el módulo de contratos) |
+| GET | /apartaestudios/{id} | Ambos | No | Detalle con ocupación calculada (el contrato activo se añade con el módulo de contratos) |
 | PATCH | /apartaestudios/{id} | Admin | Sí | Edita código, dirección, área, descripción o propietario |
 | POST | /apartaestudios/{id}/mantenimiento | Admin | Sí | Activa (`{"activo": true, "motivo": "..."}`) o retira (`{"activo": false, "motivo": "..."}`) la marca |
 | POST | /apartaestudios/{id}/desactivar | Admin | Sí | **Nuevo** (D-3) |
@@ -138,51 +138,79 @@ Todos bajo `/api/v1`; los que modifican exigen `X-CSRF-Token`. "Ambos" = adminis
 
 Las rutas que no dicen "Nuevo" son las del anexo A.2 de la propuesta.
 
-**Concurrencia.** Cambios sobre el mismo apartaestudio bloquean su fila. Desactivar un
-propietario bloquea su fila y luego, en orden de id, las de sus apartaestudios, para que nadie
-active ni cree un apartaestudio suyo al mismo tiempo. Un código o documento duplicado que llega
+**Concurrencia.** El orden de bloqueo es siempre el mismo: primero el apartaestudio y después
+sus propietarios, en orden de id. Crear, activar o pasar un apartaestudio a un propietario
+bloquea a ese propietario, y desactivar un propietario también: así nunca queda un
+apartaestudio activo de un propietario inactivo. Un código o documento duplicado que llega
 en paralelo lo detiene la restricción única y responde 409, igual que en el módulo 1.
 
 ---
 
-## 6. Archivos que se crearán o modificarán
+## 6. Archivos creados o modificados
 
-**Nuevos**
-- `app/modulos/propietarios/{modelos,esquemas,repositorio,servicio,router}.py`
-- `app/modulos/apartaestudios/{modelos,esquemas,repositorio,servicio,router}.py`
-  (`servicio.ocupacion(...)` es el punto que completará el módulo de contratos)
-- `alembic/versions/0004_propietarios_apartaestudios.py`
-- `tests/integration/test_propietarios.py`, `test_apartaestudios.py`, `test_concurrencia_inmuebles.py`
-- `tests/unit/test_normalizacion_inmuebles.py` (documentos y códigos)
+Propietarios y apartaestudios quedaron en un solo dominio, `inmuebles` (el nombre del módulo en
+la propuesta): un apartaestudio exige un propietario activo y un propietario no se desactiva
+con apartaestudios activos, así que dos dominios separados dependerían uno del otro.
 
-**Modificados**: `app/api/router.py`, `app/db/modelos.py`, `tests/integration/test_permisos.py`
-(los endpoints nuevos con cada rol), `docs/trazabilidad.md`, este documento.
+**Nuevos (backend)**
+
+| Archivo | Propósito |
+|---|---|
+| `app/modulos/inmuebles/modelos.py` | Tablas `propietarios` y `apartaestudios` |
+| `app/modulos/inmuebles/esquemas.py` | Entradas (rechazan campos desconocidos, como la ocupación) y salidas |
+| `app/modulos/inmuebles/reglas.py` | Normalización de documentos y códigos; búsqueda sin comodines |
+| `app/modulos/inmuebles/repositorio.py` | Consultas y bloqueos; `ocupado(hoy)` es el punto que completará el módulo de contratos |
+| `app/modulos/inmuebles/propietarios.py` | Casos de uso de propietarios |
+| `app/modulos/inmuebles/apartaestudios.py` | Casos de uso de apartaestudios y mantenimiento |
+| `app/modulos/inmuebles/comun.py` | Guardado con detección de duplicados y ayudas de auditoría |
+| `app/modulos/inmuebles/router_propietarios.py`, `router_apartaestudios.py` | Endpoints |
+| `alembic/versions/0004_propietarios_apartaestudios.py` | Tablas, restricciones y permisos del rol de la aplicación |
+| `tests/unit/test_normalizacion_inmuebles.py` | Normalización y validación de entradas |
+| `tests/integration/test_{propietarios,apartaestudios,concurrencia_inmuebles}.py`, `ayudas_inmuebles.py` | Pruebas de integración |
+
+**Modificados**: `app/api/router.py`, `app/db/modelos.py`, `app/modulos/__init__.py` (regla de
+capas actualizada), `app/modulos/usuarios/dependencias.py` (`requiere_sesion` para routers que
+consultan ambos roles), `tests/integration/test_permisos.py` (endpoints nuevos y rutas con
+cualquier identificador), README, `docs/trazabilidad.md`.
 
 ---
 
 ## 7. Implementación por etapas
 
-| Etapa | Contenido |
+| Etapa | Estado |
 |---|---|
-| 1 | Migración 0004 y modelos |
-| 2 | Propietarios: servicio, endpoints y auditoría |
-| 3 | Apartaestudios: servicio, endpoints, mantenimiento y ocupación |
-| 4 | Desactivar y reactivar, con sus bloqueos de filas |
-| 5 | Pruebas de permisos, concurrencia y documentación |
+| 1. Migración 0004 y modelos | Hecha |
+| 2. Propietarios: servicio, endpoints y auditoría | Hecha |
+| 3. Apartaestudios: servicio, endpoints, mantenimiento y ocupación | Hecha |
+| 4. Desactivar y reactivar, con sus bloqueos de filas | Hecha |
+| 5. Pruebas de permisos, concurrencia y documentación | Hecha |
+| 6. Pantallas | Aplazada a la etapa de frontend |
 
 ---
 
-## 8. Pruebas previstas
+## 8. Pruebas y resultados
 
-| Archivo | Qué prueba |
-|---|---|
-| `unit/test_normalizacion_inmuebles.py` | RP-02 y RP-03: `1.234.567` = `1234567`, `a-302 ` = `A-302`, caracteres no válidos |
-| `integration/test_propietarios.py` | P-01 a P-03, P-10, P-12 |
-| `integration/test_apartaestudios.py` | P-04 a P-09, P-11, P-12 |
-| `integration/test_concurrencia_inmuebles.py` | Dos creaciones con el mismo código en paralelo; desactivar un propietario mientras se le crea un apartaestudio |
-| `integration/test_permisos.py` | P-13: el empleado recibe 403 en todo lo que es solo de administrador |
+Ejecutadas el 2026-10-19 en el entorno de desarrollo de Claude (Linux, Python 3.13,
+PostgreSQL 16). **Todavía no se han ejecutado en tu computador.**
 
-Se reporta el resultado real de cada archivo, como en el módulo 1.
+| Archivo | Pruebas | Criterios | Resultado |
+|---|---|---|---|
+| `unit/test_normalizacion_inmuebles.py` | 29 | RP-02, RP-03, P-06 (formatos, longitudes, campos desconocidos) | 29 aprobadas |
+| `integration/test_propietarios.py` | 15 | P-01 a P-03, P-10, P-12 | 15 aprobadas |
+| `integration/test_apartaestudios.py` | 19 | P-04 a P-09, P-11, P-12 | 19 aprobadas |
+| `integration/test_concurrencia_inmuebles.py` | 3 | Código duplicado en paralelo; desactivar un propietario mientras se le crea un apartaestudio; dos cambios de propietario cruzados sin bloqueo mutuo | 3 aprobadas |
+| `integration/test_permisos.py` | 4 | P-13 (los 13 endpoints nuevos con cada rol y sin sesión) | 4 aprobadas |
+| Módulo 1 y estructura base | 98 | Sin cambios | 98 aprobadas |
+| **Total** | **168** | | **168 aprobadas, 0 fallidas** |
+
+`ruff check` y `ruff format --check`: sin hallazgos. La migración 0004 se aplicó, se revirtió
+y se volvió a aplicar en una base aparte, y `alembic check` no encontró diferencias con los
+modelos.
+
+Para confirmar que las pruebas de concurrencia detectan errores reales, se quitaron a
+propósito el bloqueo del propietario al crear y el orden de los bloqueos al cambiar de
+propietario: con el primero falla la prueba de P-10 y con el segundo PostgreSQL reporta un
+bloqueo mutuo. Ambos cambios se revirtieron.
 
 ---
 
@@ -200,19 +228,21 @@ Sin dependencias nuevas.
 
 ## 10. Lista de verificación de finalización
 
-- [ ] Migración 0004 aplicada y reversible
-- [ ] Criterios P-01 a P-13 cubiertos por pruebas ejecutadas y aprobadas
-- [ ] Prueba de permisos ampliada con los endpoints nuevos
-- [ ] Ruff sin hallazgos
-- [ ] Matriz de trazabilidad actualizada
+- [x] Migración 0004 aplicada y reversible
+- [x] Criterios P-01 a P-13 cubiertos por pruebas ejecutadas y aprobadas
+- [x] Prueba de permisos ampliada con los endpoints nuevos
+- [x] Ruff sin hallazgos
+- [x] Matriz de trazabilidad actualizada
 - [ ] Pruebas ejecutadas en el computador de Maryam
 - [ ] Aprobación de Maryam
 
 ---
 
-## Decisiones pendientes
+## Decisiones tomadas (2026-10-19)
 
-| ID | Pregunta | Recomendación |
+Maryam aceptó las cuatro recomendaciones ("continuemos con todo").
+
+| ID | Pregunta | Decisión |
 |---|---|---|
 | D-1 | ¿Datos del propietario: nombre y documento obligatorios; teléfono, correo, dirección y notas opcionales, sin datos bancarios? | Sí |
 | D-2 | ¿Los apartaestudios están en un solo edificio o en varios? Con uno solo, el código basta (`201`); con varios, conviene una tabla de edificios | Sin tabla de edificios: código único y dirección en cada apartaestudio, lo que sirve para ambos casos |
