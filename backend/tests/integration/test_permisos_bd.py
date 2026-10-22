@@ -38,6 +38,12 @@ def privilegio(sesion_bd):
         ("usuarios", "UPDATE", True),
         ("usuarios", "DELETE", False),
         ("sesiones", "DELETE", True),
+        ("bloqueos", "UPDATE", True),
+        ("bloqueos", "DELETE", False),
+        ("bloqueos", "TRUNCATE", False),
+        ("residentes", "DELETE", False),
+        ("propietarios", "DELETE", False),
+        ("apartaestudios", "DELETE", False),
         ("alembic_version", "SELECT", False),
     ],
 )

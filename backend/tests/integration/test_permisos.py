@@ -42,6 +42,14 @@ PERMISOS = {
     ("POST", "/api/v1/apartaestudios/{apartaestudio_id}/mantenimiento"): ADMIN,
     ("POST", "/api/v1/apartaestudios/{apartaestudio_id}/desactivar"): ADMIN,
     ("POST", "/api/v1/apartaestudios/{apartaestudio_id}/activar"): ADMIN,
+    ("GET", "/api/v1/residentes"): AMBOS,
+    ("POST", "/api/v1/residentes"): ADMIN,
+    ("GET", "/api/v1/residentes/{residente_id}"): AMBOS,
+    ("PATCH", "/api/v1/residentes/{residente_id}"): ADMIN,
+    ("GET", "/api/v1/bloqueos"): AMBOS,
+    ("GET", "/api/v1/bloqueos/verificar"): AMBOS,
+    ("POST", "/api/v1/bloqueos"): ADMIN,
+    ("POST", "/api/v1/bloqueos/{bloqueo_id}/levantar"): ADMIN,
 }
 
 

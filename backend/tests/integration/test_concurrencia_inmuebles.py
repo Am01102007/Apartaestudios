@@ -21,6 +21,7 @@ from app.modulos.inmuebles.esquemas import (
     PropietarioCrear,
 )
 from app.modulos.inmuebles.modelos import Apartaestudio, Propietario
+from tests.integration.ayudas import en_paralelo
 
 pytestmark = pytest.mark.integracion
 PREFIJO = "CONC-"
@@ -69,26 +70,6 @@ def _datos(codigo: str, propietario_id: int) -> ApartaestudioCrear:
     return ApartaestudioCrear(
         codigo=codigo, propietario_id=propietario_id, direccion="Calle de prueba 1"
     )
-
-
-def en_paralelo(*tareas) -> list[object]:
-    """Ejecuta cada tarea en su hilo y devuelve "ok" o la excepción de cada una."""
-    resultados: list[object] = [None] * len(tareas)
-
-    def correr(i, tarea):
-        try:
-            tarea()
-            resultados[i] = "ok"
-        except Exception as error:  # noqa: BLE001 - se examina en cada prueba
-            resultados[i] = error
-
-    hilos = [threading.Thread(target=correr, args=(i, t)) for i, t in enumerate(tareas)]
-    for hilo in hilos:
-        hilo.start()
-    for hilo in hilos:
-        hilo.join(timeout=20)
-    assert not any(h.is_alive() for h in hilos), "una petición quedó esperando (bloqueo mutuo)"
-    return resultados
 
 
 def test_p05_dos_creaciones_simultaneas_con_el_mismo_codigo(fabrica, monkeypatch):

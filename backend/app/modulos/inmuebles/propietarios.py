@@ -9,12 +9,13 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.core.documentos import TipoDocumento, error_documento
 from app.core.errores import DatosInvalidos, NoEncontrado, ReglaDeNegocio
 from app.modulos.auditoria import servicio as auditoria
 from app.modulos.inmuebles import repositorio
 from app.modulos.inmuebles.comun import cambios_de, guardar, instantanea
 from app.modulos.inmuebles.esquemas import PropietarioCrear, PropietarioEditar
-from app.modulos.inmuebles.modelos import Ocupacion, Propietario, TipoDocumento
+from app.modulos.inmuebles.modelos import Ocupacion, Propietario
 
 ENTIDAD = "propietario"
 CAMPOS_AUDITADOS = (
@@ -102,10 +103,9 @@ def editar(
 
     tipo = cambios.get("tipo_documento", propietario.tipo_documento)
     numero = cambios.get("numero_documento", propietario.numero_documento)
-    if tipo in (TipoDocumento.CC, TipoDocumento.NIT) and not numero.isdigit():
+    if mensaje := error_documento(tipo, numero):
         raise DatosInvalidos(
-            f"El número de {tipo} solo puede tener dígitos.",
-            [{"campo": "numero_documento", "mensaje": "Solo dígitos"}],
+            f"{mensaje}.", [{"campo": "numero_documento", "mensaje": "Solo dígitos"}]
         )
     if ("tipo_documento" in cambios or "numero_documento" in cambios) and (
         repositorio.existe_documento(sesion, tipo, numero, excepto_id=propietario.id)

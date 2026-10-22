@@ -1,4 +1,6 @@
-"""Ayudas para las pruebas de integración del módulo de usuarios."""
+"""Ayudas comunes de las pruebas de integración."""
+
+import threading
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -38,3 +40,23 @@ def ingresar(cliente: TestClient, nombre_usuario: str, contrasena: str = CONTRAS
     if respuesta.status_code == 200:
         cliente.headers["X-CSRF-Token"] = respuesta.cookies["csrf_token"]
     return respuesta
+
+
+def en_paralelo(*tareas) -> list[object]:
+    """Ejecuta cada tarea en su hilo y devuelve "ok" o la excepción de cada una."""
+    resultados: list[object] = [None] * len(tareas)
+
+    def correr(i, tarea):
+        try:
+            tarea()
+            resultados[i] = "ok"
+        except Exception as error:  # noqa: BLE001 - se examina en cada prueba
+            resultados[i] = error
+
+    hilos = [threading.Thread(target=correr, args=(i, t)) for i, t in enumerate(tareas)]
+    for hilo in hilos:
+        hilo.start()
+    for hilo in hilos:
+        hilo.join(timeout=20)
+    assert not any(h.is_alive() for h in hilos), "una petición quedó esperando (bloqueo mutuo)"
+    return resultados

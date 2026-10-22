@@ -3,12 +3,14 @@
 import pytest
 from pydantic import ValidationError
 
+from app.core.documentos import normalizar_documento
+from app.db.consultas import patron_busqueda
 from app.modulos.inmuebles.esquemas import (
     ApartaestudioCrear,
     ApartaestudioEditar,
     PropietarioCrear,
 )
-from app.modulos.inmuebles.reglas import normalizar_codigo, normalizar_documento, patron_busqueda
+from app.modulos.inmuebles.reglas import normalizar_codigo
 
 
 @pytest.mark.parametrize(

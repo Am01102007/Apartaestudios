@@ -3,8 +3,9 @@ from datetime import date
 from sqlalchemy import ColumnElement, false, func, or_, select
 from sqlalchemy.orm import Session
 
-from app.modulos.inmuebles.modelos import Apartaestudio, Propietario, TipoDocumento
-from app.modulos.inmuebles.reglas import patron_busqueda
+from app.core.documentos import TipoDocumento
+from app.db.consultas import patron_busqueda
+from app.modulos.inmuebles.modelos import Apartaestudio, Propietario
 
 
 def _bloqueando(consulta, bloquear: bool):

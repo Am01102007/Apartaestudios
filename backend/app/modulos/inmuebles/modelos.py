@@ -7,7 +7,6 @@ from sqlalchemy import (
     Boolean,
     CheckConstraint,
     DateTime,
-    Enum,
     ForeignKey,
     Numeric,
     String,
@@ -17,15 +16,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.documentos import (
+    SQL_NUMERO_NORMALIZADO,
+    SQL_TIPO_VALIDO,
+    TipoDocumento,
+    columna_tipo,
+)
 from app.db.base import Base, ConId, ConMarcasDeTiempo
-
-
-class TipoDocumento(StrEnum):
-    CC = "CC"
-    CE = "CE"
-    NIT = "NIT"
-    PA = "PA"
-    PPT = "PPT"
 
 
 class Ocupacion(StrEnum):
@@ -37,18 +34,12 @@ class Propietario(ConId, ConMarcasDeTiempo, Base):
     __tablename__ = "propietarios"
     __table_args__ = (
         UniqueConstraint("tipo_documento", "numero_documento"),
-        CheckConstraint(
-            "tipo_documento IN ('CC', 'CE', 'NIT', 'PA', 'PPT')", name="tipo_documento_valido"
-        ),
-        CheckConstraint(
-            "numero_documento ~ '^[A-Z0-9]{3,20}$'", name="numero_documento_normalizado"
-        ),
+        CheckConstraint(SQL_TIPO_VALIDO, name="tipo_documento_valido"),
+        CheckConstraint(SQL_NUMERO_NORMALIZADO, name="numero_documento_normalizado"),
     )
 
     nombre: Mapped[str] = mapped_column(String(150))
-    tipo_documento: Mapped[TipoDocumento] = mapped_column(
-        Enum(TipoDocumento, native_enum=False, create_constraint=False, length=5)
-    )
+    tipo_documento: Mapped[TipoDocumento] = mapped_column(columna_tipo())
     numero_documento: Mapped[str] = mapped_column(String(20))
     telefono: Mapped[str | None] = mapped_column(String(20))
     correo: Mapped[str | None] = mapped_column(String(254))
