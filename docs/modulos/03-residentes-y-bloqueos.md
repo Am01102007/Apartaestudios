@@ -1,7 +1,6 @@
 # Módulo 3. Residentes y bloqueos
 
-Estado: **backend implementado y probado; pendiente de tu verificación y aprobación.** Solo
-backend.
+Estado: **backend aprobado por Maryam el 2026-10-23.** Solo backend.
 Fecha: diseño 2026-10-19; implementación 2026-10-22, tras las decisiones de Maryam (al final).
 
 Cubre: RF-06, RF-07 y la parte de RN-07 que no depende de los contratos ("todo bloqueo y

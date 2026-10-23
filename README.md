@@ -1,8 +1,8 @@
 # Sistema de administración de apartaestudios
 
 Aplicación web interna para administrar apartaestudios, residentes, contratos, cobros,
-pagos, cartera, mantenimiento y servicios públicos. Opera en pesos colombianos y en la zona
-horaria de Bogotá.
+pagos, cartera y mantenimiento. Opera en pesos colombianos y en la zona horaria de
+Bogotá.
 
 - Propuesta aprobada y reglas de negocio: `Propuesta-sistema-apartaestudios.pdf`
   (archivos del proyecto).

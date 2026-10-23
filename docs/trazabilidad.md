@@ -19,10 +19,18 @@ Verificado (en el computador de Maryam) · Aprobado.
 | RNF-10 Fechas en hora de Bogotá | — | Estructura base | — | `test_tiempo.py`, `test_auditoria.py` | Probado |
 | RNF-11 Separación y capas | — | Estructura base | — | Revisión de estructura | Implementado |
 | RNF-12 OpenAPI | — | Estructura base | — | `test_errores.py` (documentación disponible) | Probado |
-| RF-03 Propietarios y asociación de apartaestudios | RN-01, RP-01, RP-02, RP-06, RP-08 | 2 Propietarios y apartaestudios | P-01 a P-04, P-10, P-11 | `test_propietarios.py`, `test_apartaestudios.py`, `test_concurrencia_inmuebles.py` | Probado (backend) |
-| RF-04 Registrar, editar y consultar apartaestudios | RP-03, RP-06, RP-07 | 2 Propietarios y apartaestudios | P-04, P-05, P-09 | `test_apartaestudios.py`, `test_normalizacion_inmuebles.py` | Probado (backend) |
-| RF-05 Ocupación calculada y mantenimiento | RN-02, RN-03, RP-04, RP-05 | 2 Propietarios y apartaestudios | P-06 a P-08; CA-04 | `test_apartaestudios.py` | Probado sin contratos; CA-04 completo con el módulo de contratos |
-| RF-06 Directorio de residentes | RR-01, RR-02 | 3 Residentes y bloqueos | R-01 a R-04 | `test_residentes.py` | Probado (backend) |
-| RF-07 Bloqueos con historial | RN-07, RR-03 a RR-06 | 3 Residentes y bloqueos | R-05 a R-11 | `test_bloqueos.py`, `test_concurrencia_bloqueos.py`, `test_permisos_bd.py` | Probado (backend); CA-03 con contratos |
+| RF-03 Propietarios y asociación de apartaestudios | RN-01, RP-01, RP-02, RP-06, RP-08 | 2 Propietarios y apartaestudios | P-01 a P-04, P-10, P-11 | `test_propietarios.py`, `test_apartaestudios.py`, `test_concurrencia_inmuebles.py` | Aprobado (backend) |
+| RF-04 Registrar, editar y consultar apartaestudios | RP-03, RP-06, RP-07 | 2 Propietarios y apartaestudios | P-04, P-05, P-09 | `test_apartaestudios.py`, `test_normalizacion_inmuebles.py` | Aprobado (backend) |
+| RF-05 Ocupación calculada y mantenimiento | RN-02, RN-03, RP-04, RP-05 | 2 Propietarios y apartaestudios | P-06 a P-08; CA-04 | `test_apartaestudios.py` | Aprobado sin contratos; CA-04 completo con el módulo 4 |
+| RF-06 Directorio de residentes | RR-01, RR-02 | 3 Residentes y bloqueos | R-01 a R-04 | `test_residentes.py` | Aprobado (backend) |
+| RF-07 Bloqueos con historial | RN-07, RR-03 a RR-06 | 3 Residentes y bloqueos | R-05 a R-11 | `test_bloqueos.py`, `test_concurrencia_bloqueos.py`, `test_permisos_bd.py` | Aprobado (backend); CA-03 con el módulo 4 |
 | RNF-16 Datos personales | — | 3 Residentes y bloqueos (D-3) | R-11 | `test_bloqueos.py`, `test_residentes.py` | Motivos ocultos al empleado; política formal pendiente |
-| RF-08 a RF-22 | RN-04 a RN-06, RN-08 a RN-31 | Módulos 4 en adelante | CA-01 a CA-15, CA-17, CA-18 | — | Pendiente |
+| RF-08 a RF-10 Contratos | RN-04 a RN-12 | 4 Contratos | C-01 a C-18; CA-01 a CA-04 | — | Diseñado |
+| RF-11 a RF-18, RF-20 a RF-22 | RN-13 a RN-30 | Módulos 5 a 9 | CA-05 a CA-15, CA-17, CA-18 | — | Pendiente |
+| ~~RF-19 Servicios públicos~~ | ~~RN-31~~ | — | — | — | Fuera del alcance |
+
+## Cambios de alcance
+
+| Fecha | Cambio | Decidido por |
+|---|---|---|
+| 2026-10-23 | Se retira el módulo de servicios públicos (RF-19, RN-31 y los 6 endpoints de medidores, lecturas y consumos): las lecturas de agua y energía se manejarán fuera del sistema. La API queda en 75 endpoints y la fase 8 en 9 módulos: usuarios, inmuebles, residentes, contratos, cobros, pagos, incrementos, mantenimiento y tablero | Maryam |

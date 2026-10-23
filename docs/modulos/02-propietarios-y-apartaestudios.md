@@ -1,7 +1,6 @@
 # Módulo 2. Propietarios y apartaestudios
 
-Estado: **backend implementado y probado; pendiente de tu verificación y aprobación.** Solo
-backend, como en el módulo 1.
+Estado: **backend aprobado por Maryam el 2026-10-23.** Solo backend, como en el módulo 1.
 Fecha: 2026-10-19. Diseño aprobado por Maryam el mismo día (ver "Decisiones tomadas").
 
 Cubre: RF-03, RF-04, RF-05, RN-01, RN-02, RN-03 y la parte de CA-04 que no depende de los
@@ -25,7 +24,7 @@ cobros e informes. Todo lo que venga después se filtra por propietario (RN-01).
 
 **No incluye**
 - `GET /apartaestudios/{id}/contratos` (historial de contratos): llega con el módulo de contratos.
-- Medidores de agua y energía: van con el módulo de servicios.
+- Medidores de agua y energía: fuera del alcance desde el 2026-10-23 (se manejan fuera del sistema).
 - Datos bancarios de los propietarios (no los pide la propuesta y son datos sensibles).
 - Pantallas: etapa de frontend.
 
