@@ -25,8 +25,9 @@ Verificado (en el computador de Maryam) · Aprobado.
 | RF-06 Directorio de residentes | RR-01, RR-02 | 3 Residentes y bloqueos | R-01 a R-04 | `test_residentes.py` | Aprobado (backend) |
 | RF-07 Bloqueos con historial | RN-07, RR-03 a RR-06 | 3 Residentes y bloqueos | R-05 a R-11 | `test_bloqueos.py`, `test_concurrencia_bloqueos.py`, `test_permisos_bd.py` | Aprobado (backend); con el módulo 4, CA-03 probado (`test_contratos.py`, `test_ciclo_contrato.py`, `test_concurrencia_contratos.py`) |
 | RNF-16 Datos personales | — | 3 Residentes y bloqueos (D-3) | R-11 | `test_bloqueos.py`, `test_residentes.py` | Motivos ocultos al empleado; política formal pendiente |
-| RF-08 a RF-10 Contratos | RN-04 a RN-12, RC-01 a RC-12 | 4 Contratos | C-01 a C-18; CA-01 a CA-04 | `test_contratos.py`, `test_ciclo_contrato.py`, `test_concurrencia_contratos.py`, `test_estados_contrato.py` | Probado (backend); C-15 con cobros simulados hasta el módulo 5 |
-| RF-11 a RF-18, RF-20 a RF-22 | RN-13 a RN-30 | Módulos 5 a 9 | CA-05 a CA-15, CA-17, CA-18 | — | Pendiente |
+| RF-08 a RF-10 Contratos | RN-04 a RN-12, RC-01 a RC-12 | 4 Contratos | C-01 a C-18; CA-01 a CA-04 | `test_contratos.py`, `test_ciclo_contrato.py`, `test_concurrencia_contratos.py`, `test_estados_contrato.py` | Aprobado (backend); C-15 con cobros simulados hasta el módulo 5 |
+| RF-13 Cobros (y parte de RF-16, RF-17) | RN-13 a RN-19, RN-23, RN-24 | 5 Cobros | K-01 a K-13; CA-05 a CA-07, CA-15 | — | Diseñado |
+| RF-11, RF-12, RF-14 a RF-18, RF-20 a RF-22 | RN-20 a RN-30 | Módulos 6 a 9 | CA-08 a CA-14, CA-17, CA-18 | — | Pendiente |
 | ~~RF-19 Servicios públicos~~ | ~~RN-31~~ | — | — | — | Fuera del alcance |
 
 ## Cambios de alcance

@@ -1,7 +1,6 @@
 # Módulo 4. Contratos
 
-Estado: **backend implementado y probado; pendiente de tu verificación y aprobación.** Solo
-backend.
+Estado: **backend aprobado por Maryam el 2026-10-23.** Solo backend.
 Fecha: diseño e implementación 2026-10-23, tras las decisiones de Maryam (al final).
 
 Cubre: RF-08, RF-09, RF-10, RN-02, RN-04 a RN-12, y los criterios CA-01 a CA-04. Completa
