@@ -73,8 +73,7 @@ def bloquear(
     sesion.add(bloqueo)
     try:
         # Respaldo del bloqueo del documento: el índice único parcial (RR-04).
-        with sesion.begin_nested():
-            sesion.flush()
+        sesion.flush()
     except IntegrityError as exc:
         raise _ya_bloqueado(tipo, numero) from exc
     sesion.refresh(bloqueo, ["bloqueado_por"])

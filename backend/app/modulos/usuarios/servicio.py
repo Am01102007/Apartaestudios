@@ -49,11 +49,10 @@ def _usuario_duplicado(nombre_usuario: str) -> ReglaDeNegocio:
 
 
 def _guardar(sesion: Session, nombre_usuario: str) -> None:
-    """flush dentro de un punto de guardado: si otra petición registró el mismo nombre de
-    usuario al mismo tiempo, se revierte solo este cambio y se informa como regla de negocio."""
+    """Si otra petición registró el mismo nombre de usuario al mismo tiempo, la restricción
+    única lo detiene y se informa como regla de negocio; la petición termina sin confirmar."""
     try:
-        with sesion.begin_nested():
-            sesion.flush()
+        sesion.flush()
     except IntegrityError as exc:
         raise _usuario_duplicado(nombre_usuario) from exc
 

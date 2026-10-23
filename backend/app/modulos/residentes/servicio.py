@@ -35,11 +35,10 @@ def _duplicado(tipo: TipoDocumento, numero: str) -> ReglaDeNegocio:
 
 
 def _guardar(sesion: Session, tipo: TipoDocumento, numero: str) -> None:
-    """flush en un punto de guardado: un documento duplicado que llegó al mismo tiempo lo
-    detiene la restricción única y se informa como regla de negocio."""
+    """Un documento duplicado que llegó al mismo tiempo lo detiene la restricción única y se
+    informa como regla de negocio; la petición termina sin confirmar."""
     try:
-        with sesion.begin_nested():
-            sesion.flush()
+        sesion.flush()
     except IntegrityError as exc:
         raise _duplicado(tipo, numero) from exc
 

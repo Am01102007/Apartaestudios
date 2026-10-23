@@ -3,9 +3,10 @@ from typing import Any
 
 from sqlalchemy import BigInteger, DateTime, ForeignKey, Index, String, func
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, ConId
+from app.modulos.usuarios.modelos import Usuario
 
 
 class RegistroAuditoria(ConId, Base):
@@ -26,3 +27,5 @@ class RegistroAuditoria(ConId, Base):
     valor_anterior: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     valor_nuevo: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     ip: Mapped[str | None] = mapped_column(String(45))
+
+    usuario: Mapped[Usuario | None] = relationship(lazy="joined")

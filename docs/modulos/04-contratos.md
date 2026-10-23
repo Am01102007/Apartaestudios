@@ -1,7 +1,8 @@
 # Módulo 4. Contratos
 
-Estado: **diseño; pendiente de tu aprobación antes de escribir código.** Solo backend.
-Fecha: 2026-10-23.
+Estado: **backend implementado y probado; pendiente de tu verificación y aprobación.** Solo
+backend.
+Fecha: diseño e implementación 2026-10-23, tras las decisiones de Maryam (al final).
 
 Cubre: RF-08, RF-09, RF-10, RN-02, RN-04 a RN-12, y los criterios CA-01 a CA-04. Completa
 la ocupación del módulo 2 (RF-05) y el rechazo por bloqueo del módulo 3 (RF-07). Se apoya
@@ -44,7 +45,7 @@ impiden contratos incompatibles. Con esto la ocupación de cada apartaestudio pa
 | ID | Criterio | Cubre |
 |---|---|---|
 | C-01 | Ambos roles crean un contrato con apartaestudio, residente, fechas de inicio y terminación, canon y porcentaje de incremento pactado | RF-08 |
-| C-02 | La terminación debe ser posterior al inicio; el canon es un entero en pesos mayor que cero; el porcentaje está entre 0 y 100 con hasta dos decimales (422) | RN-08 |
+| C-02 | La terminación debe ser posterior al inicio; el inicio no puede ser anterior a hoy (D-1); el canon es un entero en pesos mayor que cero; el porcentaje está entre 0 y 100 con hasta dos decimales (422) | RN-08 |
 | C-03 | **CA-01**: un contrato sobre un apartaestudio con otro por iniciar, vigente, vencido o en terminación se rechaza (409) y no guarda nada | RF-09, RN-04 |
 | C-04 | **CA-02**: un contrato que inicia el mismo día de la entrega del anterior se rechaza; el que inicia al día siguiente se acepta | RN-05 |
 | C-05 | **CA-03**: un contrato o una renovación para una persona con bloqueo activo se rechaza (409), también si el bloqueo llega al mismo tiempo | RF-07, RN-07 |
@@ -79,7 +80,7 @@ impiden contratos incompatibles. Con esto la ocupación de cada apartaestudio pa
 | RC-09 | **Renovar**: contratos vigentes o vencidos, sin bloqueo activo de la persona y una sola vez por contrato (salvo que la renovación se anule). El nuevo contrato toma el mismo apartaestudio y residente, con nueva terminación, canon (por defecto, el vigente) y porcentaje. Su inicio lo calcula el sistema según D-2 |
 | RC-10 | **Terminar**: contratos vigentes o vencidos sin renovación registrada, o en terminación, con fecha de aviso (no futura), fecha de entrega (no anterior al inicio) y motivo. Según D-3, mientras la entrega no haya pasado se puede registrar de nuevo para corregir la fecha |
 | RC-11 | **Anular**: solo el administrador, solo contratos por iniciar, con motivo. El contrato sigue visible como anulado. Si era una renovación, el contrato anterior vuelve a quedar sin fin de reserva y se puede renovar de nuevo |
-| RC-12 | Nada se borra. Las prórrogas se guardan como filas propias (fecha anterior, fecha nueva, autor, momento); los demás cambios quedan en la auditoría. El historial combina ambos |
+| RC-12 | Nada se borra. Las prórrogas se guardan además como filas propias (fecha anterior, fecha nueva, autor, momento) y salen en el detalle. El historial es la auditoría del contrato, que registra cada operación, prórrogas incluidas |
 
 ---
 
@@ -94,13 +95,15 @@ Migración `0006_contratos` (nueva). El rol de la aplicación no puede borrar en
 | id | BIGINT identidad | PK |
 | apartaestudio_id, residente_id | BIGINT FK | índices |
 | fecha_inicio, fecha_terminacion | DATE | `CHECK` terminación > inicio |
-| canon_inicial | NUMERIC(12,0) | tipo `Dinero`; `CHECK` > 0 |
+| canon_inicial | NUMERIC(14,0) | tipo `Dinero`; `CHECK` > 0 |
 | porcentaje_incremento | NUMERIC(5,2) | `CHECK` entre 0 y 100 |
 | notas | TEXT | opcional |
 | contrato_anterior_id | BIGINT FK `contratos` | enlace de renovación; índice único parcial sin los anulados: un contrato tiene a lo sumo una renovación válida |
 | fecha_aviso, fecha_entrega, motivo_terminacion, terminacion_registrada_por_id | DATE, DATE, VARCHAR(500), BIGINT FK | `CHECK` los cuatro juntos o ninguno |
 | anulado_en, anulado_por_id, motivo_anulacion | TIMESTAMPTZ, BIGINT FK, VARCHAR(500) | `CHECK` los tres juntos o ninguno |
 | fin_reserva | DATE | nulo = sin fin. La mantiene el servicio (entrega o día anterior a la renovación) |
+
+`CHECK` adicionales: la entrega y el fin de reserva no son anteriores al inicio.
 | creado_por_id, creado_en, actualizado_en | | |
 
 Restricción de exclusión:
@@ -147,23 +150,35 @@ y anular bloquean la fila del contrato.
 
 ---
 
-## 6. Archivos que se crearán o modificarán
+## 6. Archivos creados o modificados
 
 **Nuevos**
-- `app/modulos/contratos/{modelos,esquemas,estados,repositorio,servicio,router}.py`.
-  `estados.py` contiene las reglas de fechas sin base de datos: el estado, el próximo corte, el
-  próximo aniversario y el inicio de la renovación, para probarlas como pruebas unitarias.
+- `app/modulos/contratos/`:
+  - `estados.py`: reglas de fechas sin base de datos (estado, cortes, aniversarios, inicio de la
+    renovación);
+  - `consultas.py`: las mismas reglas de estado y ocupación como expresiones SQL, que usa también
+    el módulo de inmuebles;
+  - `modelos.py`, `esquemas.py`, `repositorio.py`, `servicio.py`, `router.py`.
 - `alembic/versions/0006_contratos.py`
 - `tests/unit/test_estados_contrato.py`
 - `tests/integration/test_contratos.py`, `test_ciclo_contrato.py`,
   `test_concurrencia_contratos.py`, `ayudas_contratos.py`
 
 **Modificados**
-- `app/modulos/inmuebles/{repositorio,apartaestudios,router_apartaestudios}.py`
-- `app/modulos/residentes/{esquemas,servicio,router}.py`
-- `app/db/permisos.py`, `app/db/modelos.py`, `app/api/router.py`
-- `tests/integration/test_permisos.py`, `test_permisos_bd.py`, `test_apartaestudios.py`
-- `docs/trazabilidad.md`
+- `app/modulos/inmuebles/repositorio.py` y `apartaestudios.py`: ocupación real y desactivación
+  protegida (C-16).
+- `app/modulos/residentes/esquemas.py` y `router.py`: contratos actuales en el detalle.
+- `app/modulos/auditoria/`: consulta del historial de una entidad, con su autor.
+- `app/db/modelos.py`, `app/db/permisos.py`, `app/api/router.py`.
+- `tests/integration/test_permisos.py` y `test_permisos_bd.py`; `tests/conftest.py` (ver nota).
+- `docs/trazabilidad.md`.
+
+**Nota: corrección en módulos anteriores.** Al probar el cruce de contratos se encontró que el
+"punto de guardado" que usaban los módulos 1 a 3 para detectar duplicados no hacía nada:
+SQLAlchemy escribe los cambios pendientes antes de abrirlo. Para el usuario no cambiaba nada,
+porque la petición respondía el mismo 409 y terminaba sin confirmar. Se quitó, se corrigieron los
+comentarios que lo describían, y la sesión compartida de las pruebas ahora se revierte también
+cuando una petición termina en error.
 
 ---
 
@@ -180,18 +195,37 @@ y anular bloquean la fila del contrato.
 
 ---
 
-## 8. Pruebas previstas
+## 8. Pruebas y resultados
 
-| Archivo | Qué prueba |
+Ejecutadas el 2026-10-23 en el entorno de desarrollo de Claude (Linux, Python 3.13,
+PostgreSQL 16), dos corridas completas seguidas. **Todavía no se han ejecutado en tu
+computador.**
+
+| Archivo | Pruebas | Criterios | Resultado |
+|---|---|---|---|
+| `unit/test_estados_contrato.py` | 33 | Cada estado en sus días límite; cortes en días 29, 30, 31 y en 29 de febrero (incluye el ejemplo de CA-05); aniversarios; inicio de la renovación (D-2) | 33 aprobadas |
+| `integration/test_contratos.py` | 25 | C-01 a C-04 (CA-01 a CA-04), C-07, C-08, C-14 a C-16, C-18; D-1 | 25 aprobadas |
+| `integration/test_ciclo_contrato.py` | 16 | C-09, C-11 a C-13, C-17; CA-03 en la renovación; D-2 a D-4; estado en SQL igual al de Python durante 47 días seguidos | 16 aprobadas |
+| `integration/test_concurrencia_contratos.py` | 5 | C-06 en paralelo; la restricción de exclusión como respaldo; contrato y bloqueo simultáneos (C-05); renovación y contrato nuevo simultáneos | 5 aprobadas |
+| `integration/test_permisos.py` | 4 | C-18: los 11 endpoints nuevos con cada rol y sin sesión | 4 aprobadas |
+| `integration/test_permisos_bd.py` | 21 | El rol de la aplicación no puede borrar contratos ni prórrogas | 21 aprobadas |
+| Módulos 1 a 3 y estructura base | 187 | Sin cambios de comportamiento | 187 aprobadas |
+| **Total** | **291** | | **291 aprobadas, 0 fallidas** |
+
+`ruff check` y `ruff format --check`: sin hallazgos. La migración 0006 se aplicó, se revirtió y se
+volvió a aplicar, y `alembic check` no encontró diferencias con los modelos.
+
+Para confirmar que las pruebas de concurrencia detectan errores reales, se cambió el código a
+propósito y se revirtió después:
+
+| Cambio a propósito | Resultado |
 |---|---|
-| `unit/test_estados_contrato.py` | Cada estado de RC-02 en sus días límite; cortes y aniversarios en días 29, 30 y 31 y en 29 de febrero; inicio de la renovación (D-2) |
-| `integration/test_contratos.py` | C-01 a C-04, C-07, C-08, C-10, C-14, C-16, C-18 |
-| `integration/test_ciclo_contrato.py` | C-09, C-11 a C-13, C-17, y el caso de C-05 en la renovación |
-| `integration/test_concurrencia_contratos.py` | C-06; contrato y bloqueo simultáneos de la misma persona (C-05); renovación y contrato nuevo simultáneos sobre el mismo apartaestudio |
-| `integration/test_permisos.py`, `test_permisos_bd.py` | C-18 y que el rol de la aplicación no puede borrar contratos ni prórrogas |
+| Quitar la restricción de exclusión | Falla la prueba de respaldo; la de C-06 sigue pasando gracias al bloqueo del apartaestudio |
+| Quitar además el bloqueo del apartaestudio | Falla la prueba de C-06 |
+| Quitar el bloqueo del documento en `exigir_sin_bloqueo` | Falla la prueba de contrato y bloqueo simultáneos |
 
-Como en los módulos anteriores, cada prueba de concurrencia se comprobará quitando el bloqueo
-que protege el caso y viendo que la prueba falla.
+C-15 (un contrato con cobros no se edita) se probó simulando que el contrato tiene cobros; la
+prueba real llega con el módulo 5.
 
 ---
 
@@ -210,22 +244,25 @@ Sin dependencias nuevas.
 
 ## 10. Lista de verificación de finalización
 
-- [ ] Migración 0006 aplicada y reversible
-- [ ] Criterios C-01 a C-18 cubiertos por pruebas ejecutadas y aprobadas (C-15 en el módulo 5)
-- [ ] Pruebas de concurrencia comprobadas quitando su bloqueo
-- [ ] Prueba de permisos ampliada con los endpoints nuevos
-- [ ] Ruff sin hallazgos
-- [ ] Matriz de trazabilidad actualizada
+- [x] Migración 0006 aplicada y reversible
+- [x] Criterios C-01 a C-18 cubiertos por pruebas ejecutadas y aprobadas (C-15 con cobros
+  simulados; la prueba real llega con el módulo 5)
+- [x] Pruebas de concurrencia comprobadas quitando su bloqueo
+- [x] Prueba de permisos ampliada con los endpoints nuevos
+- [x] Ruff sin hallazgos
+- [x] Matriz de trazabilidad actualizada
 - [ ] Pruebas ejecutadas en el computador de Maryam
 - [ ] Aprobación de Maryam
 
 ---
 
-## Decisiones pendientes
+## Decisiones tomadas (2026-10-23)
 
-| ID | Pregunta | Recomendación |
+Maryam eligió la recomendación en 2, 3 y 4, y no en 1.
+
+| ID | Pregunta | Decisión |
 |---|---|---|
-| D-1 | ¿Se pueden registrar contratos con fecha de inicio pasada, para cargar los arriendos que ya tienes? | Sí. Con el módulo de cobros, el sistema cobrará desde el primer corte posterior al registro, no los meses anteriores |
-| D-2 | ¿Cuándo empieza el contrato renovado? | El día en que empezaría el siguiente período del contrato anterior después de su terminación (o después de hoy, si ya está vencido). Ejemplo: contrato del 14 de enero al 13 de enero; la renovación empieza el 14 de enero. Así no se cobra dos veces ni queda un hueco |
-| D-3 | Si el residente avisa una fecha de entrega y luego la cambia, ¿se puede corregir? | Sí, registrando la terminación de nuevo mientras la entrega no haya pasado. Ambas quedan en el historial |
-| D-4 | En un contrato renovado, ¿los aniversarios para el incremento se cuentan desde el inicio del contrato nuevo? | Sí: la renovación pacta un canon nuevo. RN-29 solo habla de prórrogas, que siguen contando desde el inicio original |
+| D-1 | ¿Se pueden registrar contratos con fecha de inicio pasada, para cargar los arriendos que ya existen? | **No.** El inicio no puede ser anterior a hoy, al crear ni al editar |
+| D-2 | ¿Cuándo empieza el contrato renovado? | Lo calcula el sistema: el día en que empezaría el siguiente período del contrato anterior después de su terminación, o después de hoy si ya está vencido |
+| D-3 | Si el residente cambia la fecha de entrega, ¿se puede corregir? | Sí, registrando la terminación de nuevo mientras la entrega no haya pasado; ambas quedan en el historial |
+| D-4 | En un contrato renovado, ¿los aniversarios se cuentan desde el inicio del contrato nuevo? | Sí. Las prórrogas siguen contando desde el inicio original |

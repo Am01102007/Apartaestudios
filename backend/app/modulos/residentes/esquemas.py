@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, model_validator
 from app.core.documentos import TipoDocumento, error_documento
 from app.core.entradas import Correo, Entrada, NumeroDocumento, Telefono, texto
 from app.modulos.bloqueos.esquemas import BloqueoSalida
+from app.modulos.contratos.esquemas import ContratoSalida
 
 
 class ResidenteCrear(Entrada):
@@ -56,11 +57,18 @@ class ResidenteSalida(BaseModel):
 
 
 class ResidenteDetalle(ResidenteSalida):
-    # R-04. Los contratos se añaden con su módulo.
-    bloqueo_activo: BloqueoSalida | None
+    bloqueo_activo: BloqueoSalida | None  # R-04
+    # Por iniciar, vigentes, vencidos o en terminación (módulo 4).
+    contratos_actuales: list[ContratoSalida]
 
     @classmethod
-    def construir(cls, residente: Any, bloqueo: BloqueoSalida | None) -> "ResidenteDetalle":
+    def construir(
+        cls, residente: Any, bloqueo: BloqueoSalida | None, contratos: list[Any]
+    ) -> "ResidenteDetalle":
         return cls.model_validate(
-            {**ResidenteSalida.model_validate(residente).model_dump(), "bloqueo_activo": bloqueo}
+            {
+                **ResidenteSalida.model_validate(residente).model_dump(),
+                "bloqueo_activo": bloqueo,
+                "contratos_actuales": [ContratoSalida.model_validate(c) for c in contratos],
+            }
         )

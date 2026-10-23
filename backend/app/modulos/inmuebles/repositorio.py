@@ -1,10 +1,11 @@
 from datetime import date
 
-from sqlalchemy import ColumnElement, false, func, or_, select
+from sqlalchemy import ColumnElement, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.documentos import TipoDocumento
 from app.db.consultas import patron_busqueda
+from app.modulos.contratos import consultas as contratos
 from app.modulos.inmuebles.modelos import Apartaestudio, Propietario
 
 
@@ -72,13 +73,14 @@ def contar_apartaestudios_activos(sesion: Session, propietario_id: int) -> int:
 
 
 def ocupado(hoy: date) -> ColumnElement[bool]:
-    """RP-04: expresión SQL "el apartaestudio está ocupado hoy".
+    """RP-04: expresión SQL "el apartaestudio está ocupado hoy": tiene un contrato vigente,
+    vencido o en terminación (RC-03)."""
+    return contratos.apartaestudio_ocupado(Apartaestudio.id, hoy)
 
-    El módulo de contratos la reemplazará por un EXISTS sobre los contratos vigentes,
-    vencidos o en terminación. Mientras no haya contratos, ningún apartaestudio está ocupado.
-    """
-    del hoy  # se usará con los contratos
-    return false()
+
+def tiene_contrato_reservado(sesion: Session, apartaestudio_id: int, hoy: date) -> bool:
+    """Tiene un contrato por iniciar, vigente, vencido o en terminación (RP-07)."""
+    return bool(sesion.scalar(select(contratos.apartaestudio_reservado(apartaestudio_id, hoy))))
 
 
 def obtener_apartaestudio(

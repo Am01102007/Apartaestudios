@@ -212,9 +212,15 @@ def cambiar_mantenimiento(
 def desactivar(
     sesion: Session, apartaestudio_id: int, *, actor_id: int, ip: str | None, hoy: date
 ) -> Apartaestudio:
-    # RP-07: cuando existan los contratos, aquí se rechazará si tiene uno activo.
     apartaestudio = _obtener(sesion, apartaestudio_id, bloquear=True)
     if apartaestudio.activo:
+        # RP-07 y C-16. Crear un contrato bloquea el mismo apartaestudio: no se cruzan.
+        if repositorio.tiene_contrato_reservado(sesion, apartaestudio.id, hoy):
+            raise ReglaDeNegocio(
+                "El apartaestudio tiene un contrato por iniciar, vigente, vencido o en "
+                "terminación.",
+                codigo="tiene_contrato",
+            )
         apartaestudio.activo = False
         auditoria.registrar(
             sesion,

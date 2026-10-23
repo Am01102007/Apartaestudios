@@ -110,9 +110,12 @@ def nuevo_cliente(app, sesion_bd) -> Iterator[Callable[[], TestClient]]:
     """Fabrica clientes independientes (cada uno con sus cookies) sobre la base de pruebas."""
 
     def _sesion_compartida():
-        # Como en producción: lo que la petición no confirmó se descarta al terminar.
-        yield sesion_bd
-        sesion_bd.rollback()
+        # Como en producción: lo que la petición no confirmó se descarta al terminar, también
+        # cuando termina con un error.
+        try:
+            yield sesion_bd
+        finally:
+            sesion_bd.rollback()
 
     app.dependency_overrides[obtener_sesion] = _sesion_compartida
     clientes: list[TestClient] = []

@@ -44,6 +44,11 @@ def privilegio(sesion_bd):
         ("residentes", "DELETE", False),
         ("propietarios", "DELETE", False),
         ("apartaestudios", "DELETE", False),
+        ("contratos", "UPDATE", True),
+        ("contratos", "DELETE", False),
+        ("contratos", "TRUNCATE", False),
+        ("prorrogas", "INSERT", True),
+        ("prorrogas", "DELETE", False),
         ("alembic_version", "SELECT", False),
     ],
 )

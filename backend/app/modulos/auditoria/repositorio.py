@@ -41,3 +41,14 @@ def buscar(
         .offset(desplazamiento)
     ).all()
     return list(registros), total or 0
+
+
+def de_entidad(sesion: Session, entidad: str, entidad_id: str) -> list[RegistroAuditoria]:
+    """Todos los registros de una entidad, del más antiguo al más reciente."""
+    return list(
+        sesion.scalars(
+            select(RegistroAuditoria)
+            .where(RegistroAuditoria.entidad == entidad, RegistroAuditoria.entidad_id == entidad_id)
+            .order_by(RegistroAuditoria.momento, RegistroAuditoria.id)
+        )
+    )

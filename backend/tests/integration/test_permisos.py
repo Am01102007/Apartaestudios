@@ -50,6 +50,17 @@ PERMISOS = {
     ("GET", "/api/v1/bloqueos/verificar"): AMBOS,
     ("POST", "/api/v1/bloqueos"): ADMIN,
     ("POST", "/api/v1/bloqueos/{bloqueo_id}/levantar"): ADMIN,
+    ("GET", "/api/v1/contratos"): AMBOS,
+    ("POST", "/api/v1/contratos"): AMBOS,
+    ("GET", "/api/v1/contratos/{contrato_id}"): AMBOS,
+    ("PATCH", "/api/v1/contratos/{contrato_id}"): AMBOS,
+    ("POST", "/api/v1/contratos/{contrato_id}/prorrogar"): AMBOS,
+    ("POST", "/api/v1/contratos/{contrato_id}/renovar"): AMBOS,
+    ("POST", "/api/v1/contratos/{contrato_id}/terminar"): AMBOS,
+    ("POST", "/api/v1/contratos/{contrato_id}/anular"): ADMIN,
+    ("GET", "/api/v1/contratos/{contrato_id}/historial"): AMBOS,
+    ("GET", "/api/v1/apartaestudios/{apartaestudio_id}/contratos"): AMBOS,
+    ("GET", "/api/v1/residentes/{residente_id}/contratos"): AMBOS,
 }
 
 

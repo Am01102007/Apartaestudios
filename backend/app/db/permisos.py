@@ -11,6 +11,8 @@ import re
 TABLAS_CON_BORRADO = ("sesiones",)
 # Tablas de solo inserción.
 TABLAS_SOLO_INSERCION = ("auditoria",)
+# El resto (bloqueos, contratos, prórrogas...) no admite borrado: solo inserción y
+# actualización controlada por los servicios.
 
 
 def sql_permisos(rol: str) -> str:

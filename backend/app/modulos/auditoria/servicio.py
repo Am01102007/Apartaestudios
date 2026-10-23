@@ -91,3 +91,8 @@ def consultar(
         limite=limite,
         desplazamiento=desplazamiento,
     )
+
+
+def de_entidad(sesion: Session, entidad: str, entidad_id: Any) -> list[RegistroAuditoria]:
+    """Historial de una entidad con el autor de cada cambio (por ejemplo, RF-10)."""
+    return repositorio.de_entidad(sesion, entidad, str(entidad_id))

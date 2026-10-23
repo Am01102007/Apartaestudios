@@ -10,7 +10,7 @@ Verificado (en el computador de Maryam) · Aprobado.
 |---|---|---|---|---|---|
 | RF-01 Autenticar y cerrar sesión | RU-01, RU-07, RU-08 | 1 Usuarios y sesión | U-01 a U-07, U-14, U-16 | `test_autenticacion.py` | Probado (backend) |
 | RF-02 Gestión de usuarios | RU-02 a RU-06, RU-09 | 1 Usuarios y sesión | U-10, U-12, U-13, U-15 | `test_usuarios.py`, `test_comando_crear_admin.py` | Probado (backend) |
-| RF-23 Auditoría inmodificable | — | 1 Usuarios y sesión (base) | U-17, U-18, P-12, R-12 | `test_auditoria.py`, `test_usuarios.py`, `test_propietarios.py`, `test_apartaestudios.py`, `test_residentes.py`, `test_bloqueos.py` | Probado para los módulos 1 a 3; se amplía en cada módulo |
+| RF-23 Auditoría inmodificable | — | 1 Usuarios y sesión (base) | U-17, U-18, P-12, R-12 | `test_auditoria.py`, `test_usuarios.py`, `test_propietarios.py`, `test_apartaestudios.py`, `test_residentes.py`, `test_bloqueos.py`, `test_contratos.py` | Probado para los módulos 1 a 4; se amplía en cada módulo |
 | RNF-01 Hash seguro | RU-06 | 1 Usuarios y sesión | U-09 | `test_seguridad.py`, `test_autenticacion.py` | Probado |
 | RNF-02 JWT en cookie y CSRF | RU-08 | 1 Usuarios y sesión | U-01, U-07, U-08 | `test_autenticacion.py`; U-08 en `frontend/src/api/cliente.test.ts` | Probado (backend); pantallas pendientes |
 | RNF-03 Autorización en el servidor | — | 1 Usuarios y sesión | U-11, CA-16 | `test_permisos.py` | Probado; la tabla crece con cada módulo |
@@ -21,11 +21,11 @@ Verificado (en el computador de Maryam) · Aprobado.
 | RNF-12 OpenAPI | — | Estructura base | — | `test_errores.py` (documentación disponible) | Probado |
 | RF-03 Propietarios y asociación de apartaestudios | RN-01, RP-01, RP-02, RP-06, RP-08 | 2 Propietarios y apartaestudios | P-01 a P-04, P-10, P-11 | `test_propietarios.py`, `test_apartaestudios.py`, `test_concurrencia_inmuebles.py` | Aprobado (backend) |
 | RF-04 Registrar, editar y consultar apartaestudios | RP-03, RP-06, RP-07 | 2 Propietarios y apartaestudios | P-04, P-05, P-09 | `test_apartaestudios.py`, `test_normalizacion_inmuebles.py` | Aprobado (backend) |
-| RF-05 Ocupación calculada y mantenimiento | RN-02, RN-03, RP-04, RP-05 | 2 Propietarios y apartaestudios | P-06 a P-08; CA-04 | `test_apartaestudios.py` | Aprobado sin contratos; CA-04 completo con el módulo 4 |
+| RF-05 Ocupación calculada y mantenimiento | RN-02, RN-03, RP-04, RP-05 | 2 Propietarios y apartaestudios | P-06 a P-08; CA-04 | `test_apartaestudios.py` | Aprobado sin contratos; con el módulo 4, CA-04 probado (`test_contratos.py`) |
 | RF-06 Directorio de residentes | RR-01, RR-02 | 3 Residentes y bloqueos | R-01 a R-04 | `test_residentes.py` | Aprobado (backend) |
-| RF-07 Bloqueos con historial | RN-07, RR-03 a RR-06 | 3 Residentes y bloqueos | R-05 a R-11 | `test_bloqueos.py`, `test_concurrencia_bloqueos.py`, `test_permisos_bd.py` | Aprobado (backend); CA-03 con el módulo 4 |
+| RF-07 Bloqueos con historial | RN-07, RR-03 a RR-06 | 3 Residentes y bloqueos | R-05 a R-11 | `test_bloqueos.py`, `test_concurrencia_bloqueos.py`, `test_permisos_bd.py` | Aprobado (backend); con el módulo 4, CA-03 probado (`test_contratos.py`, `test_ciclo_contrato.py`, `test_concurrencia_contratos.py`) |
 | RNF-16 Datos personales | — | 3 Residentes y bloqueos (D-3) | R-11 | `test_bloqueos.py`, `test_residentes.py` | Motivos ocultos al empleado; política formal pendiente |
-| RF-08 a RF-10 Contratos | RN-04 a RN-12 | 4 Contratos | C-01 a C-18; CA-01 a CA-04 | — | Diseñado |
+| RF-08 a RF-10 Contratos | RN-04 a RN-12, RC-01 a RC-12 | 4 Contratos | C-01 a C-18; CA-01 a CA-04 | `test_contratos.py`, `test_ciclo_contrato.py`, `test_concurrencia_contratos.py`, `test_estados_contrato.py` | Probado (backend); C-15 con cobros simulados hasta el módulo 5 |
 | RF-11 a RF-18, RF-20 a RF-22 | RN-13 a RN-30 | Módulos 5 a 9 | CA-05 a CA-15, CA-17, CA-18 | — | Pendiente |
 | ~~RF-19 Servicios públicos~~ | ~~RN-31~~ | — | — | — | Fuera del alcance |
 

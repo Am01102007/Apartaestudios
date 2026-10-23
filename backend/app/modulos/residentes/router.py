@@ -4,8 +4,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 
-from app.api.dependencias import BD, IP
+from app.api.dependencias import BD, IP, Reloj
+from app.core.tiempo import hoy
 from app.modulos.bloqueos import servicio as bloqueos
+from app.modulos.contratos import servicio as contratos
 from app.modulos.residentes import servicio
 from app.modulos.residentes.esquemas import (
     ResidenteCrear,
@@ -40,16 +42,17 @@ def crear(datos: ResidenteCrear, actual: SesionAdministrador, bd: BD, ip: IP):
 @router.get(
     "/{residente_id}",
     response_model=ResidenteDetalle,
-    summary="Detalle de un residente con su bloqueo activo",
+    summary="Detalle de un residente con su bloqueo activo y sus contratos actuales",
 )
-def detalle(residente_id: int, actual: SesionActual, bd: BD):
+def detalle(residente_id: int, actual: SesionActual, bd: BD, reloj: Reloj):
     residente, bloqueo = servicio.detalle(bd, residente_id)
     salida_bloqueo = (
         None
         if bloqueo is None
         else bloqueos.salida(bloqueo, ve_motivos=actual.usuario.es_administrador)
     )
-    return ResidenteDetalle.construir(residente, salida_bloqueo)
+    actuales = contratos.actuales_de_residente(bd, residente_id, hoy=hoy(reloj()))
+    return ResidenteDetalle.construir(residente, salida_bloqueo, actuales)
 
 
 @router.patch("/{residente_id}", response_model=ResidenteSalida, summary="Editar residente")
