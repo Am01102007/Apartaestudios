@@ -1,0 +1,105 @@
+:root {
+  --negro: #0B0B0C;
+  --grafito: #1A1A1D;
+  --carbon: #2A2A2E;
+  --plata: #C0C0C0;
+  --plata-clara: #E3E4E6;
+  --plata-oscura: #8A8D91;
+  --blanco: #FAFAF9;
+  --blanco-puro: #FFFFFF;
+
+  /* Estados y acentos sobrios */
+  --estado-libre-bg: #F4F5F6;
+  --estado-libre-texto: #1A1A1D;
+  --estado-libre-borde: #C0C0C0;
+
+  --estado-ocupado-bg: #0B0B0C;
+  --estado-ocupado-texto: #FAFAF9;
+  --estado-ocupado-borde: #2A2A2E;
+
+  --estado-mantenimiento-bg: #EAEBED;
+  --estado-mantenimiento-texto: #4A4D52;
+  --estado-mantenimiento-borde: #8A8D91;
+
+  --alerta-error: #7A1F2B;
+  --alerta-error-bg: #FCF4F5;
+  --alerta-exito: #2F4F4A;
+  --alerta-exito-bg: #F2F7F6;
+
+  --fuente-serif: 'Cormorant Garamond', Georgia, serif;
+  --fuente-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --borde-suave: 1px solid var(--plata-clara);
+  --radio-suave: 4px;
+  --sombra-sutil: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --sombra-elevada: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  --fondo-app: var(--blanco);
+  --texto-principal: var(--negro);
+  --texto-secundario: #5A5D62;
+  --superficie-panel: var(--blanco-puro);
+}
+
+.dark {
+  --negro: #FAFAF9;
+  --grafito: #EAEBED;
+  --carbon: #D1D3D6;
+  --plata: #66696D;
+  --plata-clara: #2A2A2E;
+  --plata-oscura: #9CA0A5;
+  --blanco: #0B0B0C;
+  --blanco-puro: #141416;
+
+  --fondo-app: #0B0B0C;
+  --texto-principal: #FAFAF9;
+  --texto-secundario: #A0A3A8;
+  --superficie-panel: #141416;
+
+  --estado-libre-bg: #1A1A1D;
+  --estado-libre-texto: #FAFAF9;
+  --estado-libre-borde: #3A3A3E;
+
+  --estado-ocupado-bg: #FAFAF9;
+  --estado-ocupado-texto: #0B0B0C;
+  --estado-ocupado-borde: #E3E4E6;
+
+  --estado-mantenimiento-bg: #222326;
+  --estado-mantenimiento-texto: #C0C0C0;
+  --estado-mantenimiento-borde: #4A4D52;
+
+  --alerta-error: #E5828D;
+  --alerta-error-bg: #2E1015;
+  --alerta-exito: #79BAAF;
+  --alerta-exito-bg: #122926;
+
+  --borde-suave: 1px solid #28282C;
+  --sombra-sutil: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  font-family: var(--fuente-sans);
+  background-color: var(--fondo-app);
+  color: var(--texto-principal);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif-luxury {
+  font-family: var(--fuente-serif);
+}
+
+.font-sans-clean {
+  font-family: var(--fuente-sans);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--plata);
+  border-radius: 3px;
+}

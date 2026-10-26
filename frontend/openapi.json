@@ -1,0 +1,5668 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "API de administración de apartaestudios",
+  "description": "API REST del MVP. Montos en pesos colombianos; fechas en hora de Bogotá.",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/api/v1/salud": {
+   "get": {
+    "tags": [
+     "salud"
+    ],
+    "summary": "Estado de la API",
+    "operationId": "salud_api_v1_salud_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EstadoSalud"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/login": {
+   "post": {
+    "tags": [
+     "sesión"
+    ],
+    "summary": "Iniciar sesión",
+    "operationId": "iniciar_sesion_api_v1_auth_login_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CredencialesIngreso"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioActual"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/logout": {
+   "post": {
+    "tags": [
+     "sesión"
+    ],
+    "summary": "Cerrar sesión",
+    "operationId": "cerrar_sesion_api_v1_auth_logout_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/yo": {
+   "get": {
+    "tags": [
+     "sesión"
+    ],
+    "summary": "Usuario de la sesión actual",
+    "operationId": "yo_api_v1_auth_yo_get",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioActual"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/cambiar-contrasena": {
+   "post": {
+    "tags": [
+     "sesión"
+    ],
+    "summary": "Cambiar la propia contraseña",
+    "operationId": "cambiar_contrasena_api_v1_auth_cambiar_contrasena_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CambioContrasena"
+       }
+      }
+     }
+    },
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/usuarios": {
+   "get": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Listar usuarios",
+    "operationId": "listar_api_v1_usuarios_get",
+    "parameters": [
+     {
+      "name": "rol",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Rol"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Rol"
+      }
+     },
+     {
+      "name": "activo",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Activo"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/UsuarioSalida"
+         },
+         "title": "Response Listar Api V1 Usuarios Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Crear usuario",
+    "operationId": "crear_api_v1_usuarios_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UsuarioCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/usuarios/{usuario_id}": {
+   "get": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Detalle de un usuario",
+    "operationId": "detalle_api_v1_usuarios__usuario_id__get",
+    "parameters": [
+     {
+      "name": "usuario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Usuario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Editar usuario",
+    "operationId": "editar_api_v1_usuarios__usuario_id__patch",
+    "parameters": [
+     {
+      "name": "usuario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Usuario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UsuarioEditar"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/usuarios/{usuario_id}/desactivar": {
+   "post": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Desactivar usuario",
+    "operationId": "desactivar_api_v1_usuarios__usuario_id__desactivar_post",
+    "parameters": [
+     {
+      "name": "usuario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Usuario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/usuarios/{usuario_id}/activar": {
+   "post": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Reactivar usuario",
+    "operationId": "activar_api_v1_usuarios__usuario_id__activar_post",
+    "parameters": [
+     {
+      "name": "usuario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Usuario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/usuarios/{usuario_id}/restablecer-contrasena": {
+   "post": {
+    "tags": [
+     "usuarios"
+    ],
+    "summary": "Asignar una contraseña temporal",
+    "operationId": "restablecer_contrasena_api_v1_usuarios__usuario_id__restablecer_contrasena_post",
+    "parameters": [
+     {
+      "name": "usuario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Usuario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RestablecerContrasena"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UsuarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/propietarios": {
+   "get": {
+    "tags": [
+     "propietarios"
+    ],
+    "summary": "Listar propietarios",
+    "operationId": "listar_api_v1_propietarios_get",
+    "parameters": [
+     {
+      "name": "activo",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Activo"
+      }
+     },
+     {
+      "name": "texto",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 100
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Busca en el nombre y el documento",
+       "title": "Texto"
+      },
+      "description": "Busca en el nombre y el documento"
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/PropietarioSalida"
+         },
+         "title": "Response Listar Api V1 Propietarios Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "propietarios"
+    ],
+    "summary": "Crear propietario",
+    "operationId": "crear_api_v1_propietarios_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PropietarioCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PropietarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/propietarios/{propietario_id}": {
+   "get": {
+    "tags": [
+     "propietarios"
+    ],
+    "summary": "Detalle de un propietario con sus apartaestudios",
+    "operationId": "detalle_api_v1_propietarios__propietario_id__get",
+    "parameters": [
+     {
+      "name": "propietario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Propietario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PropietarioDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "propietarios"
+    ],
+    "summary": "Editar propietario",
+    "operationId": "editar_api_v1_propietarios__propietario_id__patch",
+    "parameters": [
+     {
+      "name": "propietario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Propietario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PropietarioEditar"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PropietarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/propietarios/{propietario_id}/desactivar": {
+   "post": {
+    "tags": [
+     "propietarios"
+    ],
+    "summary": "Desactivar propietario (sin apartaestudios activos)",
+    "operationId": "desactivar_api_v1_propietarios__propietario_id__desactivar_post",
+    "parameters": [
+     {
+      "name": "propietario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Propietario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PropietarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/propietarios/{propietario_id}/activar": {
+   "post": {
+    "tags": [
+     "propietarios"
+    ],
+    "summary": "Activar propietario",
+    "operationId": "activar_api_v1_propietarios__propietario_id__activar_post",
+    "parameters": [
+     {
+      "name": "propietario_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Propietario Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PropietarioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/apartaestudios": {
+   "get": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Listar apartaestudios",
+    "operationId": "listar_api_v1_apartaestudios_get",
+    "parameters": [
+     {
+      "name": "propietario_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Propietario Id"
+      }
+     },
+     {
+      "name": "ocupacion",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Ocupacion"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Ocupacion"
+      }
+     },
+     {
+      "name": "en_mantenimiento",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "En Mantenimiento"
+      }
+     },
+     {
+      "name": "activo",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Activo"
+      }
+     },
+     {
+      "name": "texto",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 100
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Busca en el código y la dirección",
+       "title": "Texto"
+      },
+      "description": "Busca en el código y la dirección"
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ApartaestudioSalida"
+         },
+         "title": "Response Listar Api V1 Apartaestudios Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Crear apartaestudio",
+    "operationId": "crear_api_v1_apartaestudios_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ApartaestudioCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApartaestudioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/apartaestudios/{apartaestudio_id}": {
+   "get": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Detalle de un apartaestudio con su ocupación",
+    "operationId": "detalle_api_v1_apartaestudios__apartaestudio_id__get",
+    "parameters": [
+     {
+      "name": "apartaestudio_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApartaestudioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Editar apartaestudio",
+    "operationId": "editar_api_v1_apartaestudios__apartaestudio_id__patch",
+    "parameters": [
+     {
+      "name": "apartaestudio_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ApartaestudioEditar"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApartaestudioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/apartaestudios/{apartaestudio_id}/mantenimiento": {
+   "post": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Activar o retirar la marca de mantenimiento",
+    "operationId": "mantenimiento_api_v1_apartaestudios__apartaestudio_id__mantenimiento_post",
+    "parameters": [
+     {
+      "name": "apartaestudio_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CambioMantenimiento"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApartaestudioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/apartaestudios/{apartaestudio_id}/desactivar": {
+   "post": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Desactivar apartaestudio",
+    "operationId": "desactivar_api_v1_apartaestudios__apartaestudio_id__desactivar_post",
+    "parameters": [
+     {
+      "name": "apartaestudio_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApartaestudioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/apartaestudios/{apartaestudio_id}/activar": {
+   "post": {
+    "tags": [
+     "apartaestudios"
+    ],
+    "summary": "Activar apartaestudio (su propietario debe estar activo)",
+    "operationId": "activar_api_v1_apartaestudios__apartaestudio_id__activar_post",
+    "parameters": [
+     {
+      "name": "apartaestudio_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApartaestudioSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/residentes": {
+   "get": {
+    "tags": [
+     "residentes"
+    ],
+    "summary": "Directorio de residentes",
+    "operationId": "listar_api_v1_residentes_get",
+    "parameters": [
+     {
+      "name": "texto",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 100
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Busca en el nombre y el documento",
+       "title": "Texto"
+      },
+      "description": "Busca en el nombre y el documento"
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ResidenteSalida"
+         },
+         "title": "Response Listar Api V1 Residentes Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "residentes"
+    ],
+    "summary": "Registrar residente",
+    "operationId": "crear_api_v1_residentes_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResidenteCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ResidenteSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/residentes/{residente_id}": {
+   "get": {
+    "tags": [
+     "residentes"
+    ],
+    "summary": "Detalle de un residente con su bloqueo activo y sus contratos actuales",
+    "operationId": "detalle_api_v1_residentes__residente_id__get",
+    "parameters": [
+     {
+      "name": "residente_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Residente Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ResidenteDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "residentes"
+    ],
+    "summary": "Editar residente",
+    "operationId": "editar_api_v1_residentes__residente_id__patch",
+    "parameters": [
+     {
+      "name": "residente_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Residente Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResidenteEditar"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ResidenteSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/bloqueos": {
+   "get": {
+    "tags": [
+     "bloqueos"
+    ],
+    "summary": "Listar bloqueos",
+    "operationId": "listar_api_v1_bloqueos_get",
+    "parameters": [
+     {
+      "name": "estado",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/EstadoBloqueo",
+       "default": "activos"
+      }
+     },
+     {
+      "name": "texto",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 100
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Busca en el nombre y el documento",
+       "title": "Texto"
+      },
+      "description": "Busca en el nombre y el documento"
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/BloqueoSalida"
+         },
+         "title": "Response Listar Api V1 Bloqueos Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "bloqueos"
+    ],
+    "summary": "Bloquear una persona",
+    "operationId": "bloquear_api_v1_bloqueos_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BloqueoCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BloqueoSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/bloqueos/verificar": {
+   "get": {
+    "tags": [
+     "bloqueos"
+    ],
+    "summary": "Indica si un documento tiene bloqueo activo",
+    "operationId": "verificar_api_v1_bloqueos_verificar_get",
+    "parameters": [
+     {
+      "name": "tipo_documento",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "$ref": "#/components/schemas/TipoDocumento"
+      }
+     },
+     {
+      "name": "numero_documento",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Numero Documento"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Verificacion"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/bloqueos/{bloqueo_id}/levantar": {
+   "post": {
+    "tags": [
+     "bloqueos"
+    ],
+    "summary": "Levantar un bloqueo",
+    "operationId": "levantar_api_v1_bloqueos__bloqueo_id__levantar_post",
+    "parameters": [
+     {
+      "name": "bloqueo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Bloqueo Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Levantamiento"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BloqueoSalida"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos": {
+   "get": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Listar contratos",
+    "operationId": "listar_api_v1_contratos_get",
+    "parameters": [
+     {
+      "name": "estado",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/EstadoContrato"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Estado"
+      }
+     },
+     {
+      "name": "propietario_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Propietario Id"
+      }
+     },
+     {
+      "name": "apartaestudio_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "residente_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Residente Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ContratoSalida"
+         },
+         "title": "Response Listar Api V1 Contratos Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Crear contrato",
+    "operationId": "crear_api_v1_contratos_post",
+    "parameters": [
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ContratoCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos/{contrato_id}": {
+   "get": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Detalle de un contrato",
+    "operationId": "detalle_api_v1_contratos__contrato_id__get",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Editar contrato sin cobros",
+    "operationId": "editar_api_v1_contratos__contrato_id__patch",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ContratoEditar"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos/{contrato_id}/prorrogar": {
+   "post": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Prorrogar contrato",
+    "operationId": "prorrogar_api_v1_contratos__contrato_id__prorrogar_post",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProrrogaCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos/{contrato_id}/renovar": {
+   "post": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Renovar: cierra el contrato y crea uno nuevo enlazado",
+    "operationId": "renovar_api_v1_contratos__contrato_id__renovar_post",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RenovacionCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos/{contrato_id}/terminar": {
+   "post": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Registrar o corregir aviso, entrega y motivo de terminación",
+    "operationId": "terminar_api_v1_contratos__contrato_id__terminar_post",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TerminacionCrear"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos/{contrato_id}/anular": {
+   "post": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Anular un contrato por iniciar",
+    "operationId": "anular_api_v1_contratos__contrato_id__anular_post",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Anulacion"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ContratoDetalle"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/contratos/{contrato_id}/historial": {
+   "get": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Cambios del contrato con autor y fecha",
+    "operationId": "historial_api_v1_contratos__contrato_id__historial_get",
+    "parameters": [
+     {
+      "name": "contrato_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Contrato Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/Cambio"
+         },
+         "title": "Response Historial Api V1 Contratos  Contrato Id  Historial Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/apartaestudios/{apartaestudio_id}/contratos": {
+   "get": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Contratos de un apartaestudio",
+    "operationId": "de_apartaestudio_api_v1_apartaestudios__apartaestudio_id__contratos_get",
+    "parameters": [
+     {
+      "name": "apartaestudio_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Apartaestudio Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ContratoSalida"
+         },
+         "title": "Response De Apartaestudio Api V1 Apartaestudios  Apartaestudio Id  Contratos Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/residentes/{residente_id}/contratos": {
+   "get": {
+    "tags": [
+     "contratos"
+    ],
+    "summary": "Contratos de un residente",
+    "operationId": "de_residente_api_v1_residentes__residente_id__contratos_get",
+    "parameters": [
+     {
+      "name": "residente_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Residente Id"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ContratoSalida"
+         },
+         "title": "Response De Residente Api V1 Residentes  Residente Id  Contratos Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auditoria": {
+   "get": {
+    "tags": [
+     "auditoría"
+    ],
+    "summary": "Consultar el registro de auditoría",
+    "operationId": "consultar_api_v1_auditoria_get",
+    "parameters": [
+     {
+      "name": "usuario_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Usuario Id"
+      }
+     },
+     {
+      "name": "accion",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Accion"
+      }
+     },
+     {
+      "name": "entidad",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Entidad"
+      }
+     },
+     {
+      "name": "entidad_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Entidad Id"
+      }
+     },
+     {
+      "name": "desde",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Día inicial, hora de Bogotá",
+       "title": "Desde"
+      },
+      "description": "Día inicial, hora de Bogotá"
+     },
+     {
+      "name": "hasta",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Día final incluido, hora de Bogotá",
+       "title": "Hasta"
+      },
+      "description": "Día final incluido, hora de Bogotá"
+     },
+     {
+      "name": "limite",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "minimum": 1,
+       "default": 50,
+       "title": "Limite"
+      }
+     },
+     {
+      "name": "desplazamiento",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "default": 0,
+       "title": "Desplazamiento"
+      }
+     },
+     {
+      "name": "X-CSRF-Token",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE.",
+       "title": "X-Csrf-Token"
+      },
+      "description": "Valor de la cookie csrf_token. Obligatorio en POST, PATCH y DELETE."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaginaAuditoria"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/health/live": {
+   "get": {
+    "tags": [
+     "salud"
+    ],
+    "summary": "El proceso de la API responde",
+    "operationId": "vivo_health_live_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "string"
+         },
+         "type": "object",
+         "title": "Response Vivo Health Live Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/health/ready": {
+   "get": {
+    "tags": [
+     "salud"
+    ],
+    "summary": "La API llega a PostgreSQL",
+    "operationId": "listo_health_ready_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "Anulacion": {
+    "properties": {
+     "motivo": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 3,
+      "title": "Motivo"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "motivo"
+    ],
+    "title": "Anulacion"
+   },
+   "ApartaestudioCrear": {
+    "properties": {
+     "codigo": {
+      "type": "string",
+      "title": "Codigo"
+     },
+     "propietario_id": {
+      "type": "integer",
+      "title": "Propietario Id"
+     },
+     "direccion": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Direccion"
+     },
+     "area_m2": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Area M2"
+     },
+     "descripcion": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Descripcion"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "codigo",
+     "propietario_id",
+     "direccion"
+    ],
+    "title": "ApartaestudioCrear"
+   },
+   "ApartaestudioEditar": {
+    "properties": {
+     "codigo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Codigo"
+     },
+     "propietario_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Propietario Id"
+     },
+     "direccion": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Direccion"
+     },
+     "area_m2": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Area M2"
+     },
+     "descripcion": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Descripcion"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "ApartaestudioEditar"
+   },
+   "ApartaestudioReferencia": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "codigo": {
+      "type": "string",
+      "title": "Codigo"
+     },
+     "propietario_id": {
+      "type": "integer",
+      "title": "Propietario Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "codigo",
+     "propietario_id"
+    ],
+    "title": "ApartaestudioReferencia"
+   },
+   "ApartaestudioResumen": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "codigo": {
+      "type": "string",
+      "title": "Codigo"
+     },
+     "direccion": {
+      "type": "string",
+      "title": "Direccion"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "en_mantenimiento": {
+      "type": "boolean",
+      "title": "En Mantenimiento"
+     },
+     "ocupacion": {
+      "$ref": "#/components/schemas/Ocupacion"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "codigo",
+     "direccion",
+     "activo",
+     "en_mantenimiento",
+     "ocupacion"
+    ],
+    "title": "ApartaestudioResumen"
+   },
+   "ApartaestudioSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "codigo": {
+      "type": "string",
+      "title": "Codigo"
+     },
+     "propietario": {
+      "$ref": "#/components/schemas/PropietarioReferencia"
+     },
+     "direccion": {
+      "type": "string",
+      "title": "Direccion"
+     },
+     "area_m2": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Area M2"
+     },
+     "descripcion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Descripcion"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "ocupacion": {
+      "$ref": "#/components/schemas/Ocupacion"
+     },
+     "en_mantenimiento": {
+      "type": "boolean",
+      "title": "En Mantenimiento"
+     },
+     "mantenimiento_desde": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mantenimiento Desde"
+     },
+     "mantenimiento_motivo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mantenimiento Motivo"
+     },
+     "mantenimiento_por_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mantenimiento Por Id"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "codigo",
+     "propietario",
+     "direccion",
+     "area_m2",
+     "descripcion",
+     "activo",
+     "ocupacion",
+     "en_mantenimiento",
+     "mantenimiento_desde",
+     "mantenimiento_motivo",
+     "mantenimiento_por_id",
+     "creado_en"
+    ],
+    "title": "ApartaestudioSalida"
+   },
+   "BloqueoCrear": {
+    "properties": {
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "nombre": {
+      "type": "string",
+      "maxLength": 150,
+      "minLength": 1,
+      "title": "Nombre"
+     },
+     "motivo": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 3,
+      "title": "Motivo"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "tipo_documento",
+     "numero_documento",
+     "nombre",
+     "motivo"
+    ],
+    "title": "BloqueoCrear"
+   },
+   "BloqueoSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "motivo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo"
+     },
+     "bloqueado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Bloqueado En"
+     },
+     "bloqueado_por": {
+      "$ref": "#/components/schemas/UsuarioReferencia"
+     },
+     "levantado_en": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Levantado En"
+     },
+     "levantado_por": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/UsuarioReferencia"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "motivo_levantamiento": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo Levantamiento"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "tipo_documento",
+     "numero_documento",
+     "nombre",
+     "activo",
+     "motivo",
+     "bloqueado_en",
+     "bloqueado_por",
+     "levantado_en",
+     "levantado_por",
+     "motivo_levantamiento"
+    ],
+    "title": "BloqueoSalida",
+    "description": "`motivo` y `motivo_levantamiento` solo los ve el administrador (D-3); al empleado le\nllegan nulos."
+   },
+   "Cambio": {
+    "properties": {
+     "momento": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Momento"
+     },
+     "accion": {
+      "type": "string",
+      "title": "Accion"
+     },
+     "usuario": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Referencia"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "valor_anterior": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Valor Anterior"
+     },
+     "valor_nuevo": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Valor Nuevo"
+     }
+    },
+    "type": "object",
+    "required": [
+     "momento",
+     "accion",
+     "usuario",
+     "valor_anterior",
+     "valor_nuevo"
+    ],
+    "title": "Cambio",
+    "description": "Un registro del historial (RF-10): sale de la auditoría."
+   },
+   "CambioContrasena": {
+    "properties": {
+     "contrasena_actual": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Contrasena Actual"
+     },
+     "contrasena_nueva": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 10,
+      "title": "Contrasena Nueva"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "contrasena_actual",
+     "contrasena_nueva"
+    ],
+    "title": "CambioContrasena"
+   },
+   "CambioMantenimiento": {
+    "properties": {
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "motivo": {
+      "type": "string",
+      "maxLength": 300,
+      "minLength": 3,
+      "title": "Motivo"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "activo",
+     "motivo"
+    ],
+    "title": "CambioMantenimiento"
+   },
+   "ContratoCrear": {
+    "properties": {
+     "apartaestudio_id": {
+      "type": "integer",
+      "title": "Apartaestudio Id"
+     },
+     "residente_id": {
+      "type": "integer",
+      "title": "Residente Id"
+     },
+     "fecha_inicio": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Inicio"
+     },
+     "fecha_terminacion": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Terminacion"
+     },
+     "canon_inicial": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       }
+      ],
+      "title": "Canon Inicial"
+     },
+     "porcentaje_incremento": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 100.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string"
+       }
+      ],
+      "title": "Porcentaje Incremento"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "apartaestudio_id",
+     "residente_id",
+     "fecha_inicio",
+     "fecha_terminacion",
+     "canon_inicial",
+     "porcentaje_incremento"
+    ],
+    "title": "ContratoCrear"
+   },
+   "ContratoDetalle": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "estado": {
+      "$ref": "#/components/schemas/EstadoContrato"
+     },
+     "apartaestudio": {
+      "$ref": "#/components/schemas/ApartaestudioReferencia"
+     },
+     "residente": {
+      "$ref": "#/components/schemas/ResidenteReferencia"
+     },
+     "fecha_inicio": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Inicio"
+     },
+     "fecha_terminacion": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Terminacion"
+     },
+     "canon_inicial": {
+      "type": "string",
+      "title": "Canon Inicial"
+     },
+     "canon_vigente": {
+      "type": "string",
+      "title": "Canon Vigente"
+     },
+     "porcentaje_incremento": {
+      "type": "string",
+      "title": "Porcentaje Incremento"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     },
+     "contrato_anterior_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contrato Anterior Id"
+     },
+     "contrato_siguiente_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contrato Siguiente Id"
+     },
+     "fecha_aviso": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fecha Aviso"
+     },
+     "fecha_entrega": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fecha Entrega"
+     },
+     "motivo_terminacion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo Terminacion"
+     },
+     "anulado_en": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Anulado En"
+     },
+     "motivo_anulacion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo Anulacion"
+     },
+     "creado_por": {
+      "$ref": "#/components/schemas/Referencia"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     },
+     "dia_corte": {
+      "type": "integer",
+      "title": "Dia Corte"
+     },
+     "proximo_corte": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Proximo Corte"
+     },
+     "proximo_aniversario": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Proximo Aniversario"
+     },
+     "prorrogas": {
+      "items": {
+       "$ref": "#/components/schemas/ProrrogaSalida"
+      },
+      "type": "array",
+      "title": "Prorrogas"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "estado",
+     "apartaestudio",
+     "residente",
+     "fecha_inicio",
+     "fecha_terminacion",
+     "canon_inicial",
+     "canon_vigente",
+     "porcentaje_incremento",
+     "notas",
+     "contrato_anterior_id",
+     "contrato_siguiente_id",
+     "fecha_aviso",
+     "fecha_entrega",
+     "motivo_terminacion",
+     "anulado_en",
+     "motivo_anulacion",
+     "creado_por",
+     "creado_en",
+     "dia_corte",
+     "proximo_corte",
+     "proximo_aniversario",
+     "prorrogas"
+    ],
+    "title": "ContratoDetalle"
+   },
+   "ContratoEditar": {
+    "properties": {
+     "fecha_inicio": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fecha Inicio"
+     },
+     "fecha_terminacion": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fecha Terminacion"
+     },
+     "canon_inicial": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Canon Inicial"
+     },
+     "porcentaje_incremento": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 100.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Porcentaje Incremento"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "ContratoEditar"
+   },
+   "ContratoSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "estado": {
+      "$ref": "#/components/schemas/EstadoContrato"
+     },
+     "apartaestudio": {
+      "$ref": "#/components/schemas/ApartaestudioReferencia"
+     },
+     "residente": {
+      "$ref": "#/components/schemas/ResidenteReferencia"
+     },
+     "fecha_inicio": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Inicio"
+     },
+     "fecha_terminacion": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Terminacion"
+     },
+     "canon_inicial": {
+      "type": "string",
+      "title": "Canon Inicial"
+     },
+     "canon_vigente": {
+      "type": "string",
+      "title": "Canon Vigente"
+     },
+     "porcentaje_incremento": {
+      "type": "string",
+      "title": "Porcentaje Incremento"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     },
+     "contrato_anterior_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contrato Anterior Id"
+     },
+     "contrato_siguiente_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contrato Siguiente Id"
+     },
+     "fecha_aviso": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fecha Aviso"
+     },
+     "fecha_entrega": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fecha Entrega"
+     },
+     "motivo_terminacion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo Terminacion"
+     },
+     "anulado_en": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Anulado En"
+     },
+     "motivo_anulacion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo Anulacion"
+     },
+     "creado_por": {
+      "$ref": "#/components/schemas/Referencia"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "estado",
+     "apartaestudio",
+     "residente",
+     "fecha_inicio",
+     "fecha_terminacion",
+     "canon_inicial",
+     "canon_vigente",
+     "porcentaje_incremento",
+     "notas",
+     "contrato_anterior_id",
+     "contrato_siguiente_id",
+     "fecha_aviso",
+     "fecha_entrega",
+     "motivo_terminacion",
+     "anulado_en",
+     "motivo_anulacion",
+     "creado_por",
+     "creado_en"
+    ],
+    "title": "ContratoSalida"
+   },
+   "CredencialesIngreso": {
+    "properties": {
+     "nombre_usuario": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Nombre Usuario"
+     },
+     "contrasena": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Contrasena"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "nombre_usuario",
+     "contrasena"
+    ],
+    "title": "CredencialesIngreso"
+   },
+   "EstadoBloqueo": {
+    "type": "string",
+    "enum": [
+     "activos",
+     "levantados",
+     "todos"
+    ],
+    "title": "EstadoBloqueo"
+   },
+   "EstadoContrato": {
+    "type": "string",
+    "enum": [
+     "por_iniciar",
+     "vigente",
+     "vencido",
+     "en_terminacion",
+     "terminado",
+     "renovado",
+     "anulado"
+    ],
+    "title": "EstadoContrato"
+   },
+   "EstadoSalud": {
+    "properties": {
+     "estado": {
+      "type": "string",
+      "title": "Estado"
+     },
+     "base_de_datos": {
+      "type": "string",
+      "title": "Base De Datos"
+     }
+    },
+    "type": "object",
+    "required": [
+     "estado",
+     "base_de_datos"
+    ],
+    "title": "EstadoSalud"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "Levantamiento": {
+    "properties": {
+     "motivo": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 3,
+      "title": "Motivo"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "motivo"
+    ],
+    "title": "Levantamiento"
+   },
+   "Ocupacion": {
+    "type": "string",
+    "enum": [
+     "libre",
+     "ocupado"
+    ],
+    "title": "Ocupacion"
+   },
+   "PaginaAuditoria": {
+    "properties": {
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "registros": {
+      "items": {
+       "$ref": "#/components/schemas/RegistroAuditoriaSalida"
+      },
+      "type": "array",
+      "title": "Registros"
+     }
+    },
+    "type": "object",
+    "required": [
+     "total",
+     "registros"
+    ],
+    "title": "PaginaAuditoria"
+   },
+   "PropietarioCrear": {
+    "properties": {
+     "nombre": {
+      "type": "string",
+      "maxLength": 150,
+      "minLength": 1,
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^\\+?[0-9 ()-]{7,20}$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 254,
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "direccion": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Direccion"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "nombre",
+     "tipo_documento",
+     "numero_documento"
+    ],
+    "title": "PropietarioCrear"
+   },
+   "PropietarioDetalle": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "direccion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Direccion"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     },
+     "apartaestudios": {
+      "items": {
+       "$ref": "#/components/schemas/ApartaestudioResumen"
+      },
+      "type": "array",
+      "title": "Apartaestudios"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre",
+     "tipo_documento",
+     "numero_documento",
+     "telefono",
+     "correo",
+     "direccion",
+     "notas",
+     "activo",
+     "creado_en",
+     "apartaestudios"
+    ],
+    "title": "PropietarioDetalle"
+   },
+   "PropietarioEditar": {
+    "properties": {
+     "nombre": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 150,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/TipoDocumento"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "numero_documento": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^\\+?[0-9 ()-]{7,20}$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 254,
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "direccion": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Direccion"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "PropietarioEditar"
+   },
+   "PropietarioReferencia": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre",
+     "activo"
+    ],
+    "title": "PropietarioReferencia"
+   },
+   "PropietarioSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "direccion": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Direccion"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre",
+     "tipo_documento",
+     "numero_documento",
+     "telefono",
+     "correo",
+     "direccion",
+     "notas",
+     "activo",
+     "creado_en"
+    ],
+    "title": "PropietarioSalida"
+   },
+   "ProrrogaCrear": {
+    "properties": {
+     "fecha_terminacion": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Terminacion"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "fecha_terminacion"
+    ],
+    "title": "ProrrogaCrear"
+   },
+   "ProrrogaSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "terminacion_anterior": {
+      "type": "string",
+      "format": "date",
+      "title": "Terminacion Anterior"
+     },
+     "terminacion_nueva": {
+      "type": "string",
+      "format": "date",
+      "title": "Terminacion Nueva"
+     },
+     "registrada_por": {
+      "$ref": "#/components/schemas/Referencia"
+     },
+     "registrada_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Registrada En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "terminacion_anterior",
+     "terminacion_nueva",
+     "registrada_por",
+     "registrada_en"
+    ],
+    "title": "ProrrogaSalida"
+   },
+   "Referencia": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre"
+    ],
+    "title": "Referencia"
+   },
+   "RegistroAuditoriaSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "momento": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Momento"
+     },
+     "usuario_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Usuario Id"
+     },
+     "accion": {
+      "type": "string",
+      "title": "Accion"
+     },
+     "entidad": {
+      "type": "string",
+      "title": "Entidad"
+     },
+     "entidad_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Entidad Id"
+     },
+     "valor_anterior": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Valor Anterior"
+     },
+     "valor_nuevo": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Valor Nuevo"
+     },
+     "ip": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ip"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "momento",
+     "usuario_id",
+     "accion",
+     "entidad",
+     "entidad_id",
+     "valor_anterior",
+     "valor_nuevo",
+     "ip"
+    ],
+    "title": "RegistroAuditoriaSalida"
+   },
+   "RenovacionCrear": {
+    "properties": {
+     "fecha_terminacion": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Terminacion"
+     },
+     "canon_inicial": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Canon Inicial"
+     },
+     "porcentaje_incremento": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 100.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string"
+       }
+      ],
+      "title": "Porcentaje Incremento"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "fecha_terminacion",
+     "porcentaje_incremento"
+    ],
+    "title": "RenovacionCrear",
+    "description": "El inicio lo calcula el sistema (D-2). El canon por defecto es el vigente."
+   },
+   "ResidenteCrear": {
+    "properties": {
+     "nombre": {
+      "type": "string",
+      "maxLength": 150,
+      "minLength": 1,
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "type": "string",
+      "pattern": "^\\+?[0-9 ()-]{7,20}$",
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 254,
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "contacto_emergencia_nombre": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 150,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Nombre"
+     },
+     "contacto_emergencia_telefono": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^\\+?[0-9 ()-]{7,20}$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Telefono"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "nombre",
+     "tipo_documento",
+     "numero_documento",
+     "telefono"
+    ],
+    "title": "ResidenteCrear"
+   },
+   "ResidenteDetalle": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "type": "string",
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "contacto_emergencia_nombre": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Nombre"
+     },
+     "contacto_emergencia_telefono": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Telefono"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     },
+     "bloqueo_activo": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/BloqueoSalida"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "contratos_actuales": {
+      "items": {
+       "$ref": "#/components/schemas/ContratoSalida"
+      },
+      "type": "array",
+      "title": "Contratos Actuales"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre",
+     "tipo_documento",
+     "numero_documento",
+     "telefono",
+     "correo",
+     "contacto_emergencia_nombre",
+     "contacto_emergencia_telefono",
+     "notas",
+     "creado_en",
+     "bloqueo_activo",
+     "contratos_actuales"
+    ],
+    "title": "ResidenteDetalle"
+   },
+   "ResidenteEditar": {
+    "properties": {
+     "nombre": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 150,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/TipoDocumento"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "numero_documento": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^\\+?[0-9 ()-]{7,20}$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 254,
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "contacto_emergencia_nombre": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 150,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Nombre"
+     },
+     "contacto_emergencia_telefono": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^\\+?[0-9 ()-]{7,20}$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Telefono"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "ResidenteEditar"
+   },
+   "ResidenteReferencia": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "type": "string",
+      "title": "Tipo Documento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre",
+     "tipo_documento",
+     "numero_documento"
+    ],
+    "title": "ResidenteReferencia"
+   },
+   "ResidenteSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "tipo_documento": {
+      "$ref": "#/components/schemas/TipoDocumento"
+     },
+     "numero_documento": {
+      "type": "string",
+      "title": "Numero Documento"
+     },
+     "telefono": {
+      "type": "string",
+      "title": "Telefono"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "contacto_emergencia_nombre": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Nombre"
+     },
+     "contacto_emergencia_telefono": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contacto Emergencia Telefono"
+     },
+     "notas": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notas"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre",
+     "tipo_documento",
+     "numero_documento",
+     "telefono",
+     "correo",
+     "contacto_emergencia_nombre",
+     "contacto_emergencia_telefono",
+     "notas",
+     "creado_en"
+    ],
+    "title": "ResidenteSalida"
+   },
+   "RestablecerContrasena": {
+    "properties": {
+     "contrasena_temporal": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 10,
+      "title": "Contrasena Temporal"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "contrasena_temporal"
+    ],
+    "title": "RestablecerContrasena"
+   },
+   "Rol": {
+    "type": "string",
+    "enum": [
+     "administrador",
+     "empleado"
+    ],
+    "title": "Rol"
+   },
+   "TerminacionCrear": {
+    "properties": {
+     "fecha_aviso": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Aviso"
+     },
+     "fecha_entrega": {
+      "type": "string",
+      "format": "date",
+      "title": "Fecha Entrega"
+     },
+     "motivo": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 3,
+      "title": "Motivo"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "fecha_aviso",
+     "fecha_entrega",
+     "motivo"
+    ],
+    "title": "TerminacionCrear"
+   },
+   "TipoDocumento": {
+    "type": "string",
+    "enum": [
+     "CC",
+     "CE",
+     "NIT",
+     "PA",
+     "PPT"
+    ],
+    "title": "TipoDocumento"
+   },
+   "UsuarioActual": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre_usuario": {
+      "type": "string",
+      "title": "Nombre Usuario"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "rol": {
+      "$ref": "#/components/schemas/Rol"
+     },
+     "debe_cambiar_contrasena": {
+      "type": "boolean",
+      "title": "Debe Cambiar Contrasena"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre_usuario",
+     "nombre",
+     "rol",
+     "debe_cambiar_contrasena"
+    ],
+    "title": "UsuarioActual"
+   },
+   "UsuarioCrear": {
+    "properties": {
+     "nombre_usuario": {
+      "type": "string",
+      "maxLength": 30,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9._-]+$",
+      "title": "Nombre Usuario"
+     },
+     "nombre": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Nombre"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 254,
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "rol": {
+      "$ref": "#/components/schemas/Rol"
+     },
+     "contrasena_temporal": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 10,
+      "title": "Contrasena Temporal"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "nombre_usuario",
+     "nombre",
+     "rol",
+     "contrasena_temporal"
+    ],
+    "title": "UsuarioCrear"
+   },
+   "UsuarioEditar": {
+    "properties": {
+     "nombre_usuario": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 30,
+        "minLength": 3,
+        "pattern": "^[A-Za-z0-9._-]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Nombre Usuario"
+     },
+     "nombre": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 120,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Nombre"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 254,
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "rol": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Rol"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "UsuarioEditar"
+   },
+   "UsuarioReferencia": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre"
+    ],
+    "title": "UsuarioReferencia"
+   },
+   "UsuarioSalida": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "nombre_usuario": {
+      "type": "string",
+      "title": "Nombre Usuario"
+     },
+     "nombre": {
+      "type": "string",
+      "title": "Nombre"
+     },
+     "correo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correo"
+     },
+     "rol": {
+      "$ref": "#/components/schemas/Rol"
+     },
+     "activo": {
+      "type": "boolean",
+      "title": "Activo"
+     },
+     "debe_cambiar_contrasena": {
+      "type": "boolean",
+      "title": "Debe Cambiar Contrasena"
+     },
+     "bloqueado_hasta": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Bloqueado Hasta"
+     },
+     "ultimo_ingreso": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ultimo Ingreso"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "nombre_usuario",
+     "nombre",
+     "correo",
+     "rol",
+     "activo",
+     "debe_cambiar_contrasena",
+     "bloqueado_hasta",
+     "ultimo_ingreso",
+     "creado_en"
+    ],
+    "title": "UsuarioSalida"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "Verificacion": {
+    "properties": {
+     "bloqueado": {
+      "type": "boolean",
+      "title": "Bloqueado"
+     },
+     "bloqueo_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Bloqueo Id"
+     },
+     "desde": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Desde"
+     }
+    },
+    "type": "object",
+    "required": [
+     "bloqueado"
+    ],
+    "title": "Verificacion"
+   }
+  }
+ }
+}

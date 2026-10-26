@@ -152,3 +152,8 @@ smoke` al hacer push a `main`. En el servicio de Railway:
 - Healthcheck Path: `/health/ready`.
 - En GitHub: secreto `RAILWAY_TOKEN` y variables `RAILWAY_PROJECT_ID`, `RAILWAY_SERVICE_ID`,
   `RAILWAY_API_URL`.
+
+Frontend en Railway: `.github/workflows/frontend-cicd.yml` despliega `frontend/` (nginx) en un
+segundo servicio, que reenvía `/api/` al backend para que la web y la API compartan origen.
+Variable del servicio: `API_URL` (URL pública del backend). En GitHub: `RAILWAY_WEB_SERVICE_ID`
+y `RAILWAY_WEB_URL`.
