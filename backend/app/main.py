@@ -1,6 +1,7 @@
 """Punto de entrada de la API.
 
 Ejecutar en desarrollo:  uvicorn app.main:app --reload
+En contenedor:           python -m app.run
 """
 
 import logging
@@ -9,6 +10,7 @@ from datetime import timedelta
 from fastapi import FastAPI
 
 from app.api.router import api_v1
+from app.api.salud import router_despliegue
 from app.core.config import Configuracion, obtener_configuracion
 from app.core.errores import registrar_manejadores
 from app.core.limite import LimiteVentana
@@ -21,7 +23,9 @@ def crear_app(configuracion: Configuracion | None = None) -> FastAPI:
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
     )
-    docs = configuracion.docs_habilitadas and not configuracion.es_produccion
+    docs = configuracion.docs_habilitadas and (
+        not configuracion.es_produccion or configuracion.docs_en_produccion
+    )
 
     app = FastAPI(
         title="API de administración de apartaestudios",
@@ -40,6 +44,7 @@ def crear_app(configuracion: Configuracion | None = None) -> FastAPI:
     app.add_middleware(CabecerasSeguridad, hsts=configuracion.es_produccion)
     registrar_manejadores(app)
     app.include_router(api_v1)
+    app.include_router(router_despliegue)
     return app
 
 

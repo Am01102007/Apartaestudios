@@ -17,6 +17,8 @@ PUBLICO, AMBOS, ADMIN = "publico", "ambos", "admin"
 
 PERMISOS = {
     ("GET", "/api/v1/salud"): PUBLICO,
+    ("GET", "/health/live"): PUBLICO,
+    ("GET", "/health/ready"): PUBLICO,
     ("POST", "/api/v1/auth/login"): PUBLICO,
     ("POST", "/api/v1/auth/logout"): AMBOS,
     ("GET", "/api/v1/auth/yo"): AMBOS,

@@ -129,3 +129,26 @@ npm run build
 
 Las pruebas de integración borran y recrean el esquema de la base indicada en
 `APP_DATABASE_URL_PRUEBAS`, y se niegan a ejecutarse si su nombre no termina en `_test`.
+
+## Contenedores y despliegue
+
+Local con Docker Desktop (PostgreSQL 18 + migración + API), desde `backend/`, con `DB_NAME`,
+`DB_USER`, `DB_PASSWORD` y `APP_CLAVE_JWT` definidos en `.env`:
+
+```powershell
+docker compose up --build -d
+docker compose ps
+Invoke-RestMethod http://127.0.0.1:8000/health/ready   # {"database":"ready"}
+```
+
+Producción en Railway: `.github/workflows/backend-cicd.yml` ejecuta `test → build → deploy →
+smoke` al hacer push a `main`. En el servicio de Railway:
+
+- Variables: `APP_ENTORNO=produccion`, `APP_CLAVE_JWT`, `APP_ADMIN_USUARIO`,
+  `APP_ADMIN_NOMBRE`, `APP_CONTRASENA_ADMIN` y
+  `APP_DATABASE_URL=postgresql+psycopg://${{Postgres.PGUSER}}:${{Postgres.PGPASSWORD}}@${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}`.
+  Opcional: `APP_DOCS_EN_PRODUCCION=true` para mostrar Swagger.
+- Pre-deploy Command: `sh -c 'alembic upgrade head && python -m app.bootstrap'`.
+- Healthcheck Path: `/health/ready`.
+- En GitHub: secreto `RAILWAY_TOKEN` y variables `RAILWAY_PROJECT_ID`, `RAILWAY_SERVICE_ID`,
+  `RAILWAY_API_URL`.

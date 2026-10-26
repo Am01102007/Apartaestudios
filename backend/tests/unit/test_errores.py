@@ -102,5 +102,11 @@ def test_documentacion_desactivada_en_produccion():
         assert c.get("/api/openapi.json").status_code == 404
 
 
+def test_documentacion_en_produccion_solo_si_se_pide():
+    config = Configuracion(entorno="produccion", clave_jwt="k" * 40, docs_en_produccion=True)
+    with TestClient(crear_app(config)) as c:
+        assert c.get("/api/openapi.json").status_code == 200
+
+
 def test_documentacion_disponible_fuera_de_produccion(cliente):
     assert cliente.get("/api/openapi.json").status_code == 200

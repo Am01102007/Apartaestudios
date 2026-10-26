@@ -32,6 +32,11 @@ class Configuracion(BaseSettings):
     # Rol de PostgreSQL de la API, al que las migraciones otorgan permisos.
     rol_aplicacion: str = "apartaestudios_app"
     docs_habilitadas: bool = True
+    # En producción Swagger queda apagado salvo que se pida expresamente (p. ej. para una demo).
+    docs_en_produccion: bool = False
+    # Primer administrador que crea `python -m app.bootstrap` si aún no existe.
+    admin_usuario: str | None = None
+    admin_nombre: str = "Administrador"
 
     # Sesión (decisiones D-3 y fase 6)
     clave_jwt: str = CLAVE_JWT_DESARROLLO
