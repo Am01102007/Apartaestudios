@@ -1,0 +1,102 @@
+name: Backend CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-cicd.yml"
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-cicd.yml"
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Desplegar tras superar pruebas y build"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    # PostgreSQL desechable para las pruebas de integración.
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: apartaestudios
+          POSTGRES_PASSWORD: apartaestudios
+          POSTGRES_DB: apartaestudios_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U apartaestudios -d apartaestudios_test"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+    env:
+      APP_ENTORNO: pruebas
+      APP_DATABASE_URL_PRUEBAS: postgresql+psycopg://apartaestudios:apartaestudios@localhost:5432/apartaestudios_test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.5"
+          python-version: "3.13"
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - name: Instalar dependencias de desarrollo
+        run: uv sync --locked
+      - name: Revisar estilo
+        run: uv run ruff check .
+      - name: Ejecutar pruebas
+        run: uv run pytest -q
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Construir imagen sin secretos
+        run: docker build -t apartaestudios-api:ci ./backend
+
+  deploy:
+    needs: [test, build]
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy)
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_SERVICE_ID: ${{ vars.RAILWAY_SERVICE_ID }}
+      RAILWAY_API_URL: ${{ vars.RAILWAY_API_URL }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verificar configuración del destino
+        run: |
+          test -n "$RAILWAY_TOKEN" || { echo 'Falta RAILWAY_TOKEN'; exit 1; }
+          test -n "$RAILWAY_PROJECT_ID" || { echo 'Falta RAILWAY_PROJECT_ID'; exit 1; }
+          test -n "$RAILWAY_SERVICE_ID" || { echo 'Falta RAILWAY_SERVICE_ID'; exit 1; }
+          test -n "$RAILWAY_API_URL" || { echo 'Falta RAILWAY_API_URL'; exit 1; }
+      - name: Desplegar el backend en Railway
+        run: >-
+          npx --yes @railway/cli@5.62.1 up ./backend --path-as-root
+          --project "$RAILWAY_PROJECT_ID" --environment production
+          --service "$RAILWAY_SERVICE_ID"
+      - name: Verificar API y PostgreSQL remotos
+        run: python backend/scripts/check_deployment.py "$RAILWAY_API_URL"
