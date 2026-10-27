@@ -19,5 +19,7 @@ npx openapi-typescript@7 openapi.json -o src/api/esquema.d.ts
 npm run build    # los campos que ya no existan aparecen como errores de tipos
 ```
 
-Producción (Railway): `Dockerfile` compila y sirve con nginx, que reenvía `/api/` al backend.
-Variable obligatoria del servicio: `API_URL` = URL pública del backend, sin `/` final.
+Producción (Vercel): proyecto con Root Directory `frontend`. `vercel.json` compila con Vite,
+reenvía `/api/` al backend en Railway (la web y la API comparten origen, así la cookie funciona
+sin CORS) y sirve `index.html` para las rutas de la SPA. Si cambia la URL del backend, cámbiala
+en `vercel.json`.

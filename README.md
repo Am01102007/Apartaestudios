@@ -153,7 +153,6 @@ smoke` al hacer push a `main`. En el servicio de Railway:
 - En GitHub: secreto `RAILWAY_TOKEN` y variables `RAILWAY_PROJECT_ID`, `RAILWAY_SERVICE_ID`,
   `RAILWAY_API_URL`.
 
-Frontend en Railway: `.github/workflows/frontend-cicd.yml` despliega `frontend/` (nginx) en un
-segundo servicio, que reenvía `/api/` al backend para que la web y la API compartan origen.
-Variable del servicio: `API_URL` (URL pública del backend). En GitHub: `RAILWAY_WEB_SERVICE_ID`
-y `RAILWAY_WEB_URL`.
+Frontend en Vercel: proyecto importado desde GitHub con Root Directory `frontend`; despliega
+en cada push a `main`. `frontend/vercel.json` reenvía `/api/` al backend para que la web y la API
+compartan origen. `.github/workflows/frontend-cicd.yml` solo corre pruebas y compilación.

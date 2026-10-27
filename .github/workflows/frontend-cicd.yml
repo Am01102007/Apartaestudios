@@ -1,4 +1,5 @@
-name: Frontend CI/CD
+# Vercel despliega solo al hacer push a main; aquí se valida que compile y pase las pruebas.
+name: Frontend CI
 
 on:
   pull_request:
@@ -12,12 +13,6 @@ on:
       - "frontend/**"
       - ".github/workflows/frontend-cicd.yml"
   workflow_dispatch:
-    inputs:
-      deploy:
-        description: "Desplegar tras superar pruebas y build"
-        type: boolean
-        required: true
-        default: false
 
 permissions:
   contents: read
@@ -44,48 +39,3 @@ jobs:
         run: npm test
       - name: Tipos y compilación
         run: npm run build
-
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Construir imagen sin secretos
-        run: docker build -t apartaestudios-web:ci ./frontend
-
-  deploy:
-    needs: [test, build]
-    if: >-
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy)
-    runs-on: ubuntu-latest
-    env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
-      RAILWAY_WEB_SERVICE_ID: ${{ vars.RAILWAY_WEB_SERVICE_ID }}
-      RAILWAY_WEB_URL: ${{ vars.RAILWAY_WEB_URL }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Verificar configuración del destino
-        run: |
-          test -n "$RAILWAY_TOKEN" || { echo 'Falta RAILWAY_TOKEN'; exit 1; }
-          test -n "$RAILWAY_PROJECT_ID" || { echo 'Falta RAILWAY_PROJECT_ID'; exit 1; }
-          test -n "$RAILWAY_WEB_SERVICE_ID" || { echo 'Falta RAILWAY_WEB_SERVICE_ID'; exit 1; }
-          test -n "$RAILWAY_WEB_URL" || { echo 'Falta RAILWAY_WEB_URL'; exit 1; }
-      - name: Desplegar el frontend en Railway
-        run: >-
-          npx --yes @railway/cli@5.62.1 up ./frontend --path-as-root --ci
-          --service "$RAILWAY_WEB_SERVICE_ID"
-      - name: Verificar que la web llega a la API
-        # /api/v1/salud pasa por el nginx del frontend hasta el backend y PostgreSQL.
-        run: |
-          for i in $(seq 1 60); do
-            if curl -fsS "$RAILWAY_WEB_URL/api/v1/salud" | grep -q '"base_de_datos":"ok"'; then
-              echo "Frontend, API y PostgreSQL listos"; exit 0
-            fi
-            echo "Esperando frontend..."; sleep 5
-          done
-          exit 1
