@@ -95,8 +95,7 @@ jobs:
           test -n "$RAILWAY_API_URL" || { echo 'Falta RAILWAY_API_URL'; exit 1; }
       - name: Desplegar el backend en Railway
         run: >-
-          npx --yes @railway/cli@5.62.1 up ./backend --path-as-root
-          --project "$RAILWAY_PROJECT_ID" --environment production
+          npx --yes @railway/cli@5.62.1 up ./backend --path-as-root --ci
           --service "$RAILWAY_SERVICE_ID"
       - name: Verificar API y PostgreSQL remotos
         run: python backend/scripts/check_deployment.py "$RAILWAY_API_URL"

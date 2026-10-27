@@ -77,8 +77,7 @@ jobs:
           test -n "$RAILWAY_WEB_URL" || { echo 'Falta RAILWAY_WEB_URL'; exit 1; }
       - name: Desplegar el frontend en Railway
         run: >-
-          npx --yes @railway/cli@5.62.1 up ./frontend --path-as-root
-          --project "$RAILWAY_PROJECT_ID" --environment production
+          npx --yes @railway/cli@5.62.1 up ./frontend --path-as-root --ci
           --service "$RAILWAY_WEB_SERVICE_ID"
       - name: Verificar que la web llega a la API
         # /api/v1/salud pasa por el nginx del frontend hasta el backend y PostgreSQL.
