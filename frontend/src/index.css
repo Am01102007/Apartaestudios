@@ -1,4 +1,7 @@
 @import "tailwindcss";
+
+/* El tema lo elige el usuario con la clase .dark en <html>, no el sistema operativo. */
+@custom-variant dark (&:where(.dark, .dark *));
 @import "./estilos/variables.css";
 
 /* Luxury subtle styles */
