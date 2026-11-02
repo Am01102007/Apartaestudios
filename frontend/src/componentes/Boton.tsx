@@ -26,11 +26,11 @@ export const Boton: React.FC<BotonProps> = ({
 
   const varianteClases = {
     primario:
-      'bg-acento-fuerte text-sobre-acento border border-transparent shadow-[0_6px_18px_-8px_var(--c-acento)] hover:brightness-110 hover:shadow-[0_10px_24px_-8px_var(--c-acento)] active:translate-y-px',
+      'bg-tinta text-sobre-tinta border border-transparent shadow-sm hover:opacity-90 active:translate-y-px',
     plata:
-      'bg-acento-fuerte text-sobre-acento border border-transparent shadow-[0_6px_18px_-8px_var(--c-acento)] hover:brightness-110 hover:shadow-[0_10px_24px_-8px_var(--c-acento)] active:translate-y-px',
+      'bg-tinta text-sobre-tinta border border-transparent shadow-sm hover:opacity-90 active:translate-y-px',
     secundario:
-      'bg-panel text-tinta border border-linea-fuerte hover:border-acento hover:text-acento-fuerte',
+      'bg-panel text-tinta border border-linea-fuerte hover:border-tenue hover:bg-sutil',
     peligro:
       'bg-peligro text-sobre-tinta border border-transparent hover:brightness-110 shadow-sm',
     fantasma:

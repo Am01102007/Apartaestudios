@@ -16,14 +16,14 @@
   --c-linea: #E1E6E2;
   --c-linea-fuerte: #C2CBC5;
 
-  --c-acento: #16A34A;
-  --c-acento-fuerte: #15803D;
+  --c-acento: #3F8A63;
+  --c-acento-fuerte: #2F7350;
   --c-sobre-acento: #FFFFFF;
-  --c-acento-suave: rgba(22, 163, 74, 0.14);
+  --c-acento-suave: rgba(63, 138, 99, 0.12);
 
   --c-peligro: #B42335;
   --c-peligro-bg: #FDF0F2;
-  --c-exito: #15803D;
+  --c-exito: #2F7350;
   --c-exito-bg: #ECF8F0;
   --c-aviso: #8F5E07;
   --c-aviso-bg: #FBF5E4;
@@ -52,14 +52,14 @@
   --c-linea: #222A26;
   --c-linea-fuerte: #36413B;
 
-  --c-acento: #22C55E;
-  --c-acento-fuerte: #4ADE80;
+  --c-acento: #5FA77F;
+  --c-acento-fuerte: #7DBB98;
   --c-sobre-acento: #04170B;
-  --c-acento-suave: rgba(34, 197, 94, 0.16);
+  --c-acento-suave: rgba(95, 167, 127, 0.14);
 
   --c-peligro: #F28B98;
   --c-peligro-bg: #2A1217;
-  --c-exito: #4ADE80;
+  --c-exito: #7DBB98;
   --c-exito-bg: #0E2317;
   --c-aviso: #EBC56E;
   --c-aviso-bg: #2A2110;

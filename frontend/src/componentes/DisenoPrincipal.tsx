@@ -50,7 +50,7 @@ export const DisenoPrincipal: React.FC = () => {
   const Marca = ({ compacta = false }: { compacta?: boolean }) => (
     <div className="flex items-center gap-2.5">
       <div
-        className={`${compacta ? 'w-7 h-7' : 'w-9 h-9'} rounded-xl bg-acento-fuerte text-sobre-acento flex items-center justify-center shadow-[0_6px_18px_-6px_var(--c-acento)]`}
+        className={`${compacta ? 'w-7 h-7' : 'w-9 h-9'} rounded-xl bg-tinta text-sobre-tinta flex items-center justify-center`}
       >
         <Building2 className={compacta ? 'w-4 h-4' : 'w-5 h-5'} />
       </div>
@@ -70,7 +70,7 @@ export const DisenoPrincipal: React.FC = () => {
       onClick={alternarTema}
       title={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
       aria-label={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-      className={`p-2 rounded-lg text-tenue hover:text-acento-fuerte hover:bg-acento/10 transition-colors cursor-pointer ${className}`}
+      className={`p-2 rounded-lg text-tenue hover:text-tinta hover:bg-sutil transition-colors cursor-pointer ${className}`}
     >
       {temaOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
     </button>
@@ -106,7 +106,7 @@ export const DisenoPrincipal: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="linea-acento mx-5 opacity-60" />
+          <div className="h-px bg-linea mx-5" />
 
           <nav className="p-3 space-y-1">
             <div className="px-3 pt-3 pb-2 text-[10px] tracking-[0.2em] uppercase text-tenue font-semibold">
@@ -123,7 +123,7 @@ export const DisenoPrincipal: React.FC = () => {
                   className={({ isActive }) =>
                     `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       isActive
-                        ? 'bg-acento/12 text-acento-fuerte shadow-[inset_3px_0_0_var(--c-acento)]'
+                        ? 'bg-sutil text-tinta shadow-[inset_2px_0_0_var(--c-acento)]'
                         : 'text-tinta-2 hover:text-tinta hover:bg-sutil'
                     }`
                   }
@@ -141,7 +141,7 @@ export const DisenoPrincipal: React.FC = () => {
           {usuario && (
             <div className="mb-2 px-2 py-2 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2.5 overflow-hidden">
-                <div className="w-8 h-8 shrink-0 rounded-full bg-acento/15 text-acento-fuerte flex items-center justify-center text-xs font-semibold uppercase">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-sutil text-tinta-2 border border-linea flex items-center justify-center text-xs font-semibold uppercase">
                   {usuario.nombre.slice(0, 1)}
                 </div>
                 <div className="overflow-hidden">
@@ -162,7 +162,7 @@ export const DisenoPrincipal: React.FC = () => {
               onClick={() => setMenuMovilAbierto(false)}
               className={({ isActive }) =>
                 `flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-colors ${
-                  isActive ? 'text-acento-fuerte bg-acento/10' : 'text-tinta-2 hover:text-tinta hover:bg-sutil'
+                  isActive ? 'text-tinta bg-sutil' : 'text-tinta-2 hover:text-tinta hover:bg-sutil'
                 }`
               }
             >

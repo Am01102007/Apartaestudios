@@ -807,7 +807,7 @@ export const PaginaContratos: React.FC = () => {
               <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-linea">
                 {historial.map((h, i) => (
                   <div key={i} className="relative">
-                    <div className="absolute -left-6 top-1 w-4 h-4 rounded-full bg-acento border-2 border-panel shadow-[0_0_0_3px_var(--c-acento-suave)]" />
+                    <div className="absolute -left-6 top-1 w-4 h-4 rounded-full bg-tinta-2 border-2 border-panel" />
                     <div className="bg-panel p-3.5 rounded-lg border border-linea">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold uppercase tracking-wider text-tinta">

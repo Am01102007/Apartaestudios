@@ -106,7 +106,7 @@ export const PaginaInicio: React.FC = () => {
         </div>
 
         {/* Ocupados */}
-        <div className="tarjeta-acento rounded-lg p-5 relative overflow-hidden">
+        <div className="bg-tinta text-sobre-tinta rounded-lg p-5 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between mb-2 opacity-85">
             <span className="text-[10px] tracking-widest uppercase font-semibold">Ocupados</span>
             <Lock className="w-4 h-4" />
@@ -157,7 +157,7 @@ export const PaginaInicio: React.FC = () => {
       {/* Indicador de Cartera / Renta Mensual */}
       <div className="bg-panel border border-linea rounded-lg p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-acento/15 text-acento-fuerte border border-acento/30 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-lg bg-sutil text-tinta-2 border border-linea flex items-center justify-center">
             <TrendingUp className="w-6 h-6 text-tenue" />
           </div>
           <div>

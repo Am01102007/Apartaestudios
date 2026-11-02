@@ -71,18 +71,11 @@ export const PaginaIngresar: React.FC = () => {
       <FondoParticulas />
       <ContenedorAvisos />
 
-      {/* Brillo verde detrás de la tarjeta */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full opacity-60 blur-3xl"
-        style={{ background: 'radial-gradient(circle, var(--c-acento-suave) 0%, transparent 70%)' }}
-      />
-
       <button
         onClick={alternarTema}
         title={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
         aria-label={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-        className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-panel border border-linea text-tenue hover:text-acento-fuerte hover:border-acento transition-colors cursor-pointer"
+        className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-panel border border-linea text-tenue hover:text-tinta hover:border-linea-fuerte transition-colors cursor-pointer"
       >
         {temaOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
       </button>
@@ -90,7 +83,7 @@ export const PaginaIngresar: React.FC = () => {
       <div className="relative z-10 w-full max-w-md">
         {/* Marca */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 bg-acento-fuerte text-sobre-acento shadow-[0_12px_30px_-8px_var(--c-acento)]">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 bg-tinta text-sobre-tinta shadow-sm">
             <Building2 className="w-7 h-7" />
           </div>
           <h1 className="font-titulo text-4xl font-semibold tracking-tight text-tinta">
@@ -167,7 +160,7 @@ export const PaginaIngresar: React.FC = () => {
           </form>
 
           <div className="mt-6 pt-4 border-t border-linea flex items-center justify-center gap-1.5 text-xs text-tenue">
-            <ShieldCheck className="w-3.5 h-3.5 text-acento-fuerte" />
+            <ShieldCheck className="w-3.5 h-3.5" />
             <span>Sesión protegida con cookie segura y token CSRF</span>
           </div>
         </div>

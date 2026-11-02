@@ -71,7 +71,7 @@ export const FondoParticulas: React.FC<{ className?: string }> = ({ className = 
       // Halo verde suave donde está el puntero.
       if (puntero.activo) {
         const halo = ctx.createRadialGradient(puntero.x, puntero.y, 0, puntero.x, puntero.y, RADIO_PUNTERO);
-        halo.addColorStop(0, acento + '22');
+        halo.addColorStop(0, acento + '14');
         halo.addColorStop(1, acento + '00');
         ctx.fillStyle = halo;
         ctx.fillRect(puntero.x - RADIO_PUNTERO, puntero.y - RADIO_PUNTERO, RADIO_PUNTERO * 2, RADIO_PUNTERO * 2);

@@ -48,7 +48,7 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'ocupado') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-acento/15 text-acento-fuerte border border-acento/40 ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-tinta text-sobre-tinta border border-transparent ${tamanoClase}`}
         >
           <Lock className="w-3.5 h-3.5" />
           Ocupado
