@@ -62,7 +62,12 @@ def detalle(contrato_id: int, bd: BD, reloj: Reloj):
     "/{contrato_id}", response_model=ContratoDetalle, summary="Editar contrato sin cobros"
 )
 def editar(
-    contrato_id: int, datos: ContratoEditar, actual: SesionActual, bd: BD, ip: IP, reloj: Reloj
+    contrato_id: int,
+    datos: ContratoEditar,
+    actual: SesionAdministrador,
+    bd: BD,
+    ip: IP,
+    reloj: Reloj,
 ):
     contrato = servicio.editar(
         bd, contrato_id, datos, actor_id=actual.usuario_id, ip=ip, hoy=hoy(reloj())

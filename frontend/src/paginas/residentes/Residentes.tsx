@@ -79,6 +79,7 @@ export const PaginaResidentes: React.FC = () => {
   const [erroresCampos, setErroresCampos] = useState<Record<string, string>>({});
 
   const { agregarNotificacion, usuario } = useAuth();
+  const puedeCrear = puede(usuario, 'crear_residentes');
   const puedeGestionar = puede(usuario, 'gestionar_residentes');
 
   const cargarResidentes = useCallback(async () => {
@@ -255,7 +256,7 @@ export const PaginaResidentes: React.FC = () => {
             Residentes
           </h1>
         </div>
-        {puedeGestionar && (
+        {puedeCrear && (
           <Boton variante="plata" onClick={abrirCrear} icono={<Plus className="w-4 h-4" />}>
             Registrar Residente
           </Boton>

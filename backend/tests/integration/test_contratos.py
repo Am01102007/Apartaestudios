@@ -228,7 +228,10 @@ def test_editar_por_iniciar_y_validaciones(cliente_admin, cliente_empleado):
     apartaestudio, residente = escenario(cliente_admin)
     contrato = crear_contrato(cliente_admin, apartaestudio["id"], residente["id"])
     url = f"{URL}/{contrato['id']}"
-    r = cliente_empleado.patch(url, json={"canon_inicial": "900000", "fecha_inicio": "2026-10-22"})
+    # Decisión del 2 de noviembre: el empleado crea contratos, pero no los edita.
+    cambios = {"canon_inicial": "900000", "fecha_inicio": "2026-10-22"}
+    assert cliente_empleado.patch(url, json=cambios).status_code == 403
+    r = cliente_admin.patch(url, json=cambios)
     assert r.status_code == 200, r.text
     assert r.json()["canon_inicial"] == "900000" and r.json()["dia_corte"] == 22
     assert cliente_admin.patch(url, json={"fecha_inicio": "2026-10-16"}).status_code == 422

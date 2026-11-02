@@ -155,6 +155,7 @@ export const PaginaContratos: React.FC = () => {
 
   const { agregarNotificacion, usuario } = useAuth();
   const puedeAnular = puede(usuario, 'anular_contratos');
+  const puedeEditar = puede(usuario, 'editar_contratos');
 
   const cargarDatos = useCallback(async () => {
     setCargando(true);
@@ -405,7 +406,7 @@ export const PaginaContratos: React.FC = () => {
             <button onClick={() => abrirDetalle(c)} title="Detalle e historial" className={claseIcono}>
               <History className="w-4 h-4" />
             </button>
-            {PUEDE_EDITAR.includes(c.estado) && !renovado && (
+            {puedeEditar && PUEDE_EDITAR.includes(c.estado) && !renovado && (
               <button onClick={() => abrir('editar', c)} title="Editar contrato" className={claseIcono}>
                 <Edit2 className="w-4 h-4" />
               </button>

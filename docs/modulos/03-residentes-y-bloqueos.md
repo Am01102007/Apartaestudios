@@ -33,7 +33,7 @@ contratos nuevos, con su historial completo. El módulo de contratos usará los 
 
 | ID | Criterio | Cubre |
 |---|---|---|
-| R-01 | El administrador o un empleado registra y edita un residente con nombre, documento y teléfono (cambio del 2 de noviembre; antes el empleado recibía 403) | RF-06 |
+| R-01 | El administrador o un empleado registra un residente con nombre, documento y teléfono; solo el administrador lo edita (cambio del 2 de noviembre) | RF-06 |
 | R-02 | No se pueden registrar dos residentes con el mismo tipo y número de documento, aunque cambie el formato (409) | RF-06 |
 | R-03 | El directorio busca por nombre o documento; ambos roles pueden consultarlo | RF-06 |
 | R-04 | El detalle de un residente indica si tiene un bloqueo activo | RF-06, RF-07 |
@@ -111,7 +111,7 @@ Todos bajo `/api/v1`; los que modifican exigen `X-CSRF-Token`.
 | GET | /residentes | Ambos | No | Directorio con búsqueda por nombre o documento |
 | POST | /residentes | Ambos (decisión del 2 de noviembre) | Sí | Registra un residente |
 | GET | /residentes/{id} | Ambos | No | Detalle con su bloqueo activo, si tiene (los contratos se añaden con su módulo) |
-| PATCH | /residentes/{id} | Ambos (decisión del 2 de noviembre) | Sí | Edita datos de un residente |
+| PATCH | /residentes/{id} | Admin | Sí | Edita datos de un residente |
 | GET | /bloqueos | Ambos | No | Bloqueos activos, levantados o todos; búsqueda por nombre o documento |
 | GET | /bloqueos/verificar | Ambos | No | `?tipo_documento=CC&numero_documento=...` → si tiene bloqueo activo y desde cuándo |
 | POST | /bloqueos | Admin | Sí | Bloquea un documento con motivo |
@@ -223,6 +223,7 @@ Maryam respondió "1 si 2 si 3 no lo ve": las tres recomendaciones.
 
 ## Cambio de permisos (2026-11-02)
 
-Maryam decidió que el empleado también registre y edite residentes, para que pueda firmar contratos
-con personas nuevas sin depender del administrador. Propietarios, apartaestudios, mantenimiento y
-bloqueos siguen siendo solo del administrador, como en la tabla de roles de la propuesta.
+Maryam decidió que el empleado registre residentes, para que pueda firmar contratos con personas
+nuevas sin depender del administrador, y que el empleado no edite ni desactive nada. Editar
+residentes y contratos, y todo lo de propietarios, apartaestudios, mantenimiento y bloqueos, queda
+solo para el administrador.

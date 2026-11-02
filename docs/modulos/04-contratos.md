@@ -128,7 +128,7 @@ Todos bajo `/api/v1`; los que modifican exigen `X-CSRF-Token`.
 | GET | /contratos | Ambos | No | Lista con filtros por estado, propietario, apartaestudio y residente |
 | POST | /contratos | Ambos | Sí | Crea un contrato tras validar bloqueo, ocupación y fechas |
 | GET | /contratos/{id} | Ambos | No | Detalle con estado, canon vigente, próximo corte, próximo aniversario y contratos enlazados |
-| PATCH | /contratos/{id} | Ambos | Sí | Edita mientras no tenga cobros (RC-07) |
+| PATCH | /contratos/{id} | Admin (decisión del 2 de noviembre) | Sí | Edita mientras no tenga cobros (RC-07) |
 | POST | /contratos/{id}/prorrogar | Ambos | Sí | Extiende la terminación |
 | POST | /contratos/{id}/renovar | Ambos | Sí | Cierra el contrato y crea el nuevo enlazado |
 | POST | /contratos/{id}/terminar | Ambos | Sí | Registra aviso, entrega y motivo |
@@ -265,3 +265,8 @@ Maryam eligió la recomendación en 2, 3 y 4, y no en 1.
 | D-2 | ¿Cuándo empieza el contrato renovado? | Lo calcula el sistema: el día en que empezaría el siguiente período del contrato anterior después de su terminación, o después de hoy si ya está vencido |
 | D-3 | Si el residente cambia la fecha de entrega, ¿se puede corregir? | Sí, registrando la terminación de nuevo mientras la entrega no haya pasado; ambas quedan en el historial |
 | D-4 | En un contrato renovado, ¿los aniversarios se cuentan desde el inicio del contrato nuevo? | Sí. Las prórrogas siguen contando desde el inicio original |
+
+## Cambio de permisos (2026-11-02)
+
+Maryam decidió que el empleado no edite contratos: los crea, prorroga, renueva y termina, como dice
+la tabla de roles de la propuesta. Editar (`PATCH /contratos/{id}`) queda solo para el administrador.
