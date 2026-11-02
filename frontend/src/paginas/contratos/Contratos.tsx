@@ -156,6 +156,7 @@ export const PaginaContratos: React.FC = () => {
   const { agregarNotificacion, usuario } = useAuth();
   const puedeAnular = puede(usuario, 'anular_contratos');
   const puedeEditar = puede(usuario, 'editar_contratos');
+  const puedeGestionar = puede(usuario, 'gestionar_contratos');
 
   const cargarDatos = useCallback(async () => {
     setCargando(true);
@@ -411,7 +412,7 @@ export const PaginaContratos: React.FC = () => {
                 <Edit2 className="w-4 h-4" />
               </button>
             )}
-            {EN_CURSO.includes(c.estado) && !renovado && (
+            {puedeGestionar && EN_CURSO.includes(c.estado) && !renovado && (
               <>
                 <button onClick={() => abrir('prorrogar', c)} title="Prorrogar" className={claseIcono}>
                   <CalendarPlus className="w-4 h-4" />
@@ -421,7 +422,7 @@ export const PaginaContratos: React.FC = () => {
                 </button>
               </>
             )}
-            {PUEDE_TERMINAR.includes(c.estado) && !renovado && (
+            {puedeGestionar && PUEDE_TERMINAR.includes(c.estado) && !renovado && (
               <button
                 onClick={() => abrir('terminar', c)}
                 title={c.estado === 'en_terminacion' ? 'Corregir terminación' : 'Registrar terminación'}

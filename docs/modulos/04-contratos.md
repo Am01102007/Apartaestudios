@@ -129,9 +129,9 @@ Todos bajo `/api/v1`; los que modifican exigen `X-CSRF-Token`.
 | POST | /contratos | Ambos | Sí | Crea un contrato tras validar bloqueo, ocupación y fechas |
 | GET | /contratos/{id} | Ambos | No | Detalle con estado, canon vigente, próximo corte, próximo aniversario y contratos enlazados |
 | PATCH | /contratos/{id} | Admin (decisión del 2 de noviembre) | Sí | Edita mientras no tenga cobros (RC-07) |
-| POST | /contratos/{id}/prorrogar | Ambos | Sí | Extiende la terminación |
-| POST | /contratos/{id}/renovar | Ambos | Sí | Cierra el contrato y crea el nuevo enlazado |
-| POST | /contratos/{id}/terminar | Ambos | Sí | Registra aviso, entrega y motivo |
+| POST | /contratos/{id}/prorrogar | Admin | Sí | Extiende la terminación |
+| POST | /contratos/{id}/renovar | Admin | Sí | Cierra el contrato y crea el nuevo enlazado |
+| POST | /contratos/{id}/terminar | Admin | Sí | Registra aviso, entrega y motivo |
 | POST | /contratos/{id}/anular | Admin | Sí | Anula un contrato por iniciar, con motivo |
 | GET | /contratos/{id}/historial | Ambos | No | Cambios del contrato con autor y fecha |
 | GET | /apartaestudios/{id}/contratos | Ambos | No | Contratos del apartaestudio, del más reciente al más antiguo |
@@ -268,5 +268,6 @@ Maryam eligió la recomendación en 2, 3 y 4, y no en 1.
 
 ## Cambio de permisos (2026-11-02)
 
-Maryam decidió que el empleado no edite contratos: los crea, prorroga, renueva y termina, como dice
-la tabla de roles de la propuesta. Editar (`PATCH /contratos/{id}`) queda solo para el administrador.
+Maryam decidió que el empleado solo cree contratos. Editar (`PATCH /contratos/{id}`), prorrogar,
+renovar y terminar quedan solo para el administrador, igual que anular. El empleado recibe 403 en esas
+rutas y la pantalla de contratos no le muestra esos botones.

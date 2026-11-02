@@ -35,18 +35,18 @@ def vigente(cliente_admin):
 # --- Prórroga -------------------------------------------------------------------------------
 
 
-def test_c11_prorroga_extiende_el_mismo_contrato(cliente_empleado, vigente):
+def test_c11_prorroga_extiende_el_mismo_contrato(cliente_admin, vigente):
     url = f"{URL}/{vigente['id']}/prorrogar"
-    r = cliente_empleado.post(url, json={"fecha_terminacion": "2028-10-16"})
+    r = cliente_admin.post(url, json={"fecha_terminacion": "2028-10-16"})
     assert r.status_code == 200, r.text
     assert r.json()["id"] == vigente["id"]
     assert r.json()["fecha_terminacion"] == "2028-10-16"
     [prorroga] = r.json()["prorrogas"]
     assert prorroga["terminacion_anterior"] == "2027-10-16"
     assert prorroga["terminacion_nueva"] == "2028-10-16"
-    assert prorroga["registrada_por"]["nombre"] == "Empleado"
+    assert prorroga["registrada_por"]["nombre"] == "Admin"
     # La nueva terminación debe ser posterior a la actual.
-    assert cliente_empleado.post(url, json={"fecha_terminacion": "2028-10-16"}).status_code == 422
+    assert cliente_admin.post(url, json={"fecha_terminacion": "2028-10-16"}).status_code == 422
 
 
 def test_c11_un_contrato_vencido_que_se_prorroga_vuelve_a_vigente(cliente_admin, reloj):
@@ -89,9 +89,9 @@ def test_un_contrato_por_iniciar_no_se_prorroga(cliente_admin):
 # --- Renovación -----------------------------------------------------------------------------
 
 
-def test_c12_d2_renovacion_enlazada_sin_hueco_ni_traslape(cliente_empleado, vigente, reloj):
+def test_c12_d2_renovacion_enlazada_sin_hueco_ni_traslape(cliente_admin, vigente, reloj):
     url = f"{URL}/{vigente['id']}"
-    r = cliente_empleado.post(
+    r = cliente_admin.post(
         f"{url}/renovar",
         json={"fecha_terminacion": "2028-10-16", "porcentaje_incremento": "4.00"},
     )
@@ -103,18 +103,16 @@ def test_c12_d2_renovacion_enlazada_sin_hueco_ni_traslape(cliente_empleado, vige
     assert nuevo["canon_inicial"] == vigente["canon_vigente"]
     assert nuevo["apartaestudio"]["id"] == vigente["apartaestudio"]["id"]
 
-    anterior = cliente_empleado.get(url).json()
+    anterior = cliente_admin.get(url).json()
     assert anterior["estado"] == "vigente"
     assert anterior["contrato_siguiente_id"] == nuevo["id"]
     # D-4: el contrato nuevo cuenta sus aniversarios desde su propio inicio.
-    assert cliente_empleado.get(f"{URL}/{nuevo['id']}").json()["proximo_aniversario"] == (
-        "2028-10-17"
-    )
+    assert cliente_admin.get(f"{URL}/{nuevo['id']}").json()["proximo_aniversario"] == ("2028-10-17")
 
-    pasar_dias(reloj, (cliente_empleado, "empleado"), dias=365)  # 17 de octubre de 2027
-    assert cliente_empleado.get(url).json()["estado"] == "renovado"
-    assert cliente_empleado.get(f"{URL}/{nuevo['id']}").json()["estado"] == "vigente"
-    ocupacion = cliente_empleado.get(
+    pasar_dias(reloj, (cliente_admin, "admin"), dias=365)  # 17 de octubre de 2027
+    assert cliente_admin.get(url).json()["estado"] == "renovado"
+    assert cliente_admin.get(f"{URL}/{nuevo['id']}").json()["estado"] == "vigente"
+    ocupacion = cliente_admin.get(
         f"/api/v1/apartaestudios/{vigente['apartaestudio']['id']}"
     ).json()["ocupacion"]
     assert ocupacion == "ocupado"
@@ -196,9 +194,9 @@ def test_anular_la_renovacion_permite_renovar_de_nuevo(cliente_admin, vigente):
 # --- Terminación ----------------------------------------------------------------------------
 
 
-def test_c13_terminar_registra_aviso_entrega_y_motivo(cliente_empleado, vigente, reloj):
+def test_c13_terminar_registra_aviso_entrega_y_motivo(cliente_admin, vigente, reloj):
     url = f"{URL}/{vigente['id']}"
-    r = cliente_empleado.post(
+    r = cliente_admin.post(
         f"{url}/terminar",
         json={"fecha_aviso": "2026-10-17", "fecha_entrega": "2026-11-30", "motivo": "Se muda"},
     )
@@ -210,9 +208,9 @@ def test_c13_terminar_registra_aviso_entrega_y_motivo(cliente_empleado, vigente,
     assert contrato["proximo_corte"] == "2026-10-17"  # hoy es día de corte
     assert contrato["proximo_aniversario"] is None  # después de la entrega
 
-    pasar_dias(reloj, (cliente_empleado, "empleado"), dias=45)  # 1 de diciembre
-    assert cliente_empleado.get(url).json()["estado"] == "terminado"
-    assert cliente_empleado.get(url).json()["proximo_corte"] is None
+    pasar_dias(reloj, (cliente_admin, "admin"), dias=45)  # 1 de diciembre
+    assert cliente_admin.get(url).json()["estado"] == "terminado"
+    assert cliente_admin.get(url).json()["proximo_corte"] is None
 
 
 def test_d3_la_fecha_de_entrega_se_corrige_mientras_no_haya_pasado(cliente_admin, vigente, reloj):
@@ -250,7 +248,7 @@ def test_un_contrato_por_iniciar_no_se_termina_se_anula(cliente_admin):
 
 def test_c17_historial_con_autor_y_fecha(cliente_admin, cliente_empleado, vigente):
     url = f"{URL}/{vigente['id']}"
-    cliente_empleado.post(f"{url}/prorrogar", json={"fecha_terminacion": "2028-10-16"})
+    cliente_admin.post(f"{url}/prorrogar", json={"fecha_terminacion": "2028-10-16"})
     cliente_admin.post(
         f"{url}/terminar",
         json={"fecha_aviso": "2026-10-17", "fecha_entrega": "2026-11-30", "motivo": "Se muda"},
@@ -262,7 +260,7 @@ def test_c17_historial_con_autor_y_fecha(cliente_admin, cliente_empleado, vigent
     historial = cliente_empleado.get(f"{url}/historial").json()
     assert [(c["accion"], c["usuario"]["nombre"]) for c in historial] == [
         ("contrato.crear", "Admin"),
-        ("contrato.prorrogar", "Empleado"),
+        ("contrato.prorrogar", "Admin"),
         ("contrato.terminar", "Admin"),
         ("contrato.corregir_terminacion", "Admin"),
     ]
@@ -298,3 +296,29 @@ def test_c09_el_estado_en_sql_coincide_con_las_reglas_en_python(cliente_admin, s
             anulado=False,
         )
         assert en_sql == en_python, dia
+
+
+def test_solo_el_administrador_prorroga_renueva_y_termina(cliente_empleado, vigente):
+    # Decisión del 2 de noviembre: el empleado crea contratos, pero no los prorroga,
+    # renueva ni termina.
+    url = f"{URL}/{vigente['id']}"
+    assert (
+        cliente_empleado.post(
+            f"{url}/prorrogar", json={"fecha_terminacion": "2028-10-16"}
+        ).status_code
+        == 403
+    )
+    assert (
+        cliente_empleado.post(
+            f"{url}/renovar", json={"fecha_terminacion": "2028-10-16"}
+        ).status_code
+        == 403
+    )
+    assert (
+        cliente_empleado.post(
+            f"{url}/terminar",
+            json={"fecha_aviso": "2026-10-17", "fecha_entrega": "2026-11-30", "motivo": "Se muda"},
+        ).status_code
+        == 403
+    )
+    assert cliente_empleado.get(url).json()["estado"] == "vigente"

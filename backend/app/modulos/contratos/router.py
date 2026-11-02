@@ -80,7 +80,12 @@ def editar(
     "/{contrato_id}/prorrogar", response_model=ContratoDetalle, summary="Prorrogar contrato"
 )
 def prorrogar(
-    contrato_id: int, datos: ProrrogaCrear, actual: SesionActual, bd: BD, ip: IP, reloj: Reloj
+    contrato_id: int,
+    datos: ProrrogaCrear,
+    actual: SesionAdministrador,
+    bd: BD,
+    ip: IP,
+    reloj: Reloj,
 ):
     ahora = reloj()
     contrato = servicio.prorrogar(
@@ -103,7 +108,12 @@ def prorrogar(
     summary="Renovar: cierra el contrato y crea uno nuevo enlazado",
 )
 def renovar(
-    contrato_id: int, datos: RenovacionCrear, actual: SesionActual, bd: BD, ip: IP, reloj: Reloj
+    contrato_id: int,
+    datos: RenovacionCrear,
+    actual: SesionAdministrador,
+    bd: BD,
+    ip: IP,
+    reloj: Reloj,
 ):
     contrato = servicio.renovar(
         bd, contrato_id, datos, actor_id=actual.usuario_id, ip=ip, hoy=hoy(reloj())
@@ -118,7 +128,12 @@ def renovar(
     summary="Registrar o corregir aviso, entrega y motivo de terminación",
 )
 def terminar(
-    contrato_id: int, datos: TerminacionCrear, actual: SesionActual, bd: BD, ip: IP, reloj: Reloj
+    contrato_id: int,
+    datos: TerminacionCrear,
+    actual: SesionAdministrador,
+    bd: BD,
+    ip: IP,
+    reloj: Reloj,
 ):
     contrato = servicio.terminar(
         bd, contrato_id, datos, actor_id=actual.usuario_id, ip=ip, hoy=hoy(reloj())
