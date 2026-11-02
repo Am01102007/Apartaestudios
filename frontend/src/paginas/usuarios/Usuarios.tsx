@@ -219,10 +219,10 @@ export const PaginaUsuarios: React.FC = () => {
       encabezado: 'Usuario',
       render: (u) => (
         <div>
-          <span className="font-semibold text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-semibold text-xs text-tinta">
             {u.nombre_usuario}
           </span>
-          <p className="text-[11px] text-[#8A8D91]">{u.nombre}</p>
+          <p className="text-[11px] text-tenue">{u.nombre}</p>
         </div>
       ),
     },
@@ -230,8 +230,8 @@ export const PaginaUsuarios: React.FC = () => {
       clave: 'correo',
       encabezado: 'Correo Corporativo',
       render: (u) => (
-        <span className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] flex items-center gap-1">
-          <Mail className="w-3 h-3 text-[#8A8D91]" /> {u.correo || '—'}
+        <span className="text-xs text-tinta-2 flex items-center gap-1">
+          <Mail className="w-3 h-3 text-tenue" /> {u.correo || '—'}
         </span>
       ),
     },
@@ -254,14 +254,14 @@ export const PaginaUsuarios: React.FC = () => {
           <button
             onClick={() => abrirEditar(u)}
             title="Editar usuario"
-            className="p-1.5 text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-tinta-2 hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             <Edit2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => abrirRestablecer(u)}
             title="Restablecer contraseña"
-            className="p-1.5 text-[#8A8D91] hover:text-[#1A1A1D] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-tenue hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             <KeyRound className="w-4 h-4" />
           </button>
@@ -270,7 +270,7 @@ export const PaginaUsuarios: React.FC = () => {
             disabled={u.id === usuarioActual?.id}
             title={u.activo ? 'Desactivar usuario' : 'Activar usuario'}
             className={`p-1.5 rounded transition-colors cursor-pointer disabled:opacity-30 ${
-              u.activo ? 'text-[#7A1F2B] hover:bg-[#7A1F2B]/10' : 'text-[#2F4F4A] hover:bg-[#2F4F4A]/10'
+              u.activo ? 'text-peligro hover:bg-peligro/10' : 'text-exito hover:bg-exito/10'
             }`}
           >
             <Power className="w-4 h-4" />
@@ -283,12 +283,12 @@ export const PaginaUsuarios: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-linea">
         <div>
-          <span className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91]">
+          <span className="text-[11px] font-semibold tracking-widest uppercase text-tenue">
             Control de Accesos (Solo Administrador)
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-titulo font-medium text-tinta mt-1">
             Usuarios del Sistema
           </h1>
         </div>
@@ -399,13 +399,13 @@ export const PaginaUsuarios: React.FC = () => {
                 />
               </Campo>
 
-              <p className="text-[11px] text-[#8A8D91] pt-1">
+              <p className="text-[11px] text-tenue pt-1">
                 El usuario deberá cambiar esta contraseña en su primer ingreso.
               </p>
             </>
           )}
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"
@@ -431,7 +431,7 @@ export const PaginaUsuarios: React.FC = () => {
       >
         <form onSubmit={ejecutarRestablecer} className="space-y-4">
           {errorRestablecer && (
-            <div className="p-3 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/40 rounded text-xs text-[#7A1F2B] dark:text-[#EFA3AC]">
+            <div className="p-3 bg-peligro-bg border border-peligro/40 rounded text-xs text-peligro">
               {errorRestablecer}
             </div>
           )}
@@ -452,7 +452,7 @@ export const PaginaUsuarios: React.FC = () => {
             />
           </Campo>
 
-          <div className="pt-3 flex items-center justify-end gap-2 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-3 flex items-center justify-end gap-2 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"

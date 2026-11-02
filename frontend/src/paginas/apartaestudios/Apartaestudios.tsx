@@ -264,10 +264,10 @@ export const PaginaApartaestudios: React.FC = () => {
       encabezado: 'Apartaestudio',
       render: (a) => (
         <div>
-          <span className="font-semibold text-sm text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-semibold text-sm text-tinta">
             Apto {a.codigo}
           </span>
-          <p className="text-[11px] text-[#8A8D91]">
+          <p className="text-[11px] text-tenue">
             {a.direccion}
             {a.area_m2 ? ` · ${Number(a.area_m2)} m²` : ''}
           </p>
@@ -278,7 +278,7 @@ export const PaginaApartaestudios: React.FC = () => {
       clave: 'propietario',
       encabezado: 'Propietario',
       render: (a) => (
-        <span className="text-xs text-[#1A1A1D] dark:text-[#FAFAF9] font-medium">
+        <span className="text-xs text-tinta font-medium">
           {a.propietario.nombre}
         </span>
       ),
@@ -290,7 +290,7 @@ export const PaginaApartaestudios: React.FC = () => {
         <div className="flex flex-col gap-1 items-start">
           <InsigniaEstado tipo="apartaestudio" valor={estadoApartaestudio(a)} tamano="sm" />
           {a.en_mantenimiento && a.mantenimiento_motivo && (
-            <span className="text-[10px] text-[#8A8D91] italic max-w-xs truncate" title={a.mantenimiento_motivo}>
+            <span className="text-[10px] text-tenue italic max-w-xs truncate" title={a.mantenimiento_motivo}>
               Motivo: {a.mantenimiento_motivo}
             </span>
           )}
@@ -311,7 +311,7 @@ export const PaginaApartaestudios: React.FC = () => {
           <button
             onClick={() => abrirDetalle(a)}
             title="Ver ocupación y contratos"
-            className="p-1.5 text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-tinta-2 hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -319,7 +319,7 @@ export const PaginaApartaestudios: React.FC = () => {
           <button
             onClick={() => abrirEditar(a)}
             title="Editar inmueble"
-            className="p-1.5 text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-tinta-2 hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             <Edit2 className="w-4 h-4" />
           </button>
@@ -331,8 +331,8 @@ export const PaginaApartaestudios: React.FC = () => {
               title={a.en_mantenimiento ? 'Retirar mantenimiento' : 'Marcar mantenimiento'}
               className={`p-1.5 rounded transition-colors cursor-pointer ${
                 a.en_mantenimiento
-                  ? 'text-[#2F4F4A] hover:bg-[#2F4F4A]/10'
-                  : 'text-[#8A8D91] hover:text-[#1A1A1D] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
+                  ? 'text-exito hover:bg-exito/10'
+                  : 'text-tenue hover:text-tinta hover:bg-black/5 dark:hover:bg-white/5'
               }`}
             >
               {a.en_mantenimiento ? <CheckCircle className="w-4 h-4" /> : <Wrench className="w-4 h-4" />}
@@ -343,7 +343,7 @@ export const PaginaApartaestudios: React.FC = () => {
             onClick={() => manejarAlternarEstado(a)}
             title={a.activo ? 'Desactivar apartaestudio' : 'Activar apartaestudio'}
             className={`p-1.5 rounded transition-colors cursor-pointer ${
-              a.activo ? 'text-[#7A1F2B] hover:bg-[#7A1F2B]/10' : 'text-[#2F4F4A] hover:bg-[#2F4F4A]/10'
+              a.activo ? 'text-peligro hover:bg-peligro/10' : 'text-exito hover:bg-exito/10'
             }`}
           >
             <Power className="w-4 h-4" />
@@ -357,12 +357,12 @@ export const PaginaApartaestudios: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-linea">
         <div>
-          <span className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91]">
+          <span className="text-[11px] font-semibold tracking-widest uppercase text-tenue">
             Inventario Inmobiliario
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-titulo font-medium text-tinta mt-1">
             Apartaestudios
           </h1>
         </div>
@@ -374,15 +374,15 @@ export const PaginaApartaestudios: React.FC = () => {
       </div>
 
       {/* Filtros solicitados: por estado de ocupación y propietario, más búsqueda */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-white dark:bg-[#141416] p-4 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-panel p-4 rounded-lg border border-linea">
         <div className="relative sm:col-span-2">
-          <Search className="w-4 h-4 text-[#8A8D91] absolute left-3 top-2.5 pointer-events-none" />
+          <Search className="w-4 h-4 text-tenue absolute left-3 top-2.5 pointer-events-none" />
           <input
             type="text"
             placeholder="Buscar por código o dirección..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+            className="w-full pl-9 pr-4 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
           />
         </div>
 
@@ -390,7 +390,7 @@ export const PaginaApartaestudios: React.FC = () => {
           <select
             value={filtroEstado}
             onChange={(e) => setFiltroEstado(e.target.value as EstadoApartaestudio | '')}
-            className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+            className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
           >
             <option value="">Todos los estados</option>
             <option value="libre">Libre</option>
@@ -403,7 +403,7 @@ export const PaginaApartaestudios: React.FC = () => {
           <select
             value={filtroPropietario}
             onChange={(e) => setFiltroPropietario(e.target.value)}
-            className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+            className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
           >
             <option value="">Todos los propietarios</option>
             {propietarios.map((p) => (
@@ -505,7 +505,7 @@ export const PaginaApartaestudios: React.FC = () => {
             />
           </Campo>
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"
@@ -531,7 +531,7 @@ export const PaginaApartaestudios: React.FC = () => {
       >
         <form onSubmit={enviarMantenimiento} className="space-y-4">
           {errorMantenimiento && (
-            <div className="p-3 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/40 rounded text-xs text-[#7A1F2B] dark:text-[#EFA3AC]">
+            <div className="p-3 bg-peligro-bg border border-peligro/40 rounded text-xs text-peligro">
               {errorMantenimiento}
             </div>
           )}
@@ -552,7 +552,7 @@ export const PaginaApartaestudios: React.FC = () => {
             />
           </Campo>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"
@@ -582,14 +582,14 @@ export const PaginaApartaestudios: React.FC = () => {
         tamano="lg"
       >
         {cargandoDetalle ? (
-          <div className="py-12 text-center text-xs text-[#8A8D91] uppercase tracking-wider">
+          <div className="py-12 text-center text-xs text-tenue uppercase tracking-wider">
             Cargando historial de contratos...
           </div>
         ) : apartaestudioSeleccionado ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#FAFAF9] dark:bg-[#1A1A1D] p-4 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-fondo p-4 rounded-lg border border-linea">
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">Estado Actual</p>
+                <p className="text-[10px] uppercase tracking-widest text-tenue">Estado Actual</p>
                 <div className="mt-1">
                   <InsigniaEstado
                     tipo="apartaestudio"
@@ -600,8 +600,8 @@ export const PaginaApartaestudios: React.FC = () => {
               </div>
 
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">Dirección</p>
-                <p className="text-xs font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+                <p className="text-[10px] uppercase tracking-widest text-tenue">Dirección</p>
+                <p className="text-xs font-medium text-tinta mt-1">
                   {apartaestudioSeleccionado.direccion}
                   {apartaestudioSeleccionado.area_m2
                     ? ` · ${Number(apartaestudioSeleccionado.area_m2)} m²`
@@ -610,16 +610,16 @@ export const PaginaApartaestudios: React.FC = () => {
               </div>
 
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">Propietario</p>
-                <p className="text-xs font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+                <p className="text-[10px] uppercase tracking-widest text-tenue">Propietario</p>
+                <p className="text-xs font-medium text-tinta mt-1">
                   {apartaestudioSeleccionado.propietario.nombre}
                 </p>
               </div>
 
               {apartaestudioSeleccionado.descripcion && (
-                <div className="sm:col-span-3 pt-2 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
-                  <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">Descripción</p>
-                  <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] mt-0.5">
+                <div className="sm:col-span-3 pt-2 border-t border-linea">
+                  <p className="text-[10px] uppercase tracking-widest text-tenue">Descripción</p>
+                  <p className="text-xs text-tinta-2 mt-0.5">
                     {apartaestudioSeleccionado.descripcion}
                   </p>
                 </div>
@@ -628,24 +628,24 @@ export const PaginaApartaestudios: React.FC = () => {
 
             {/* Listado de Contratos */}
             <div>
-              <h4 className="font-serif-luxury text-base font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mb-3">
+              <h4 className="font-titulo text-base font-medium text-tinta mb-3">
                 Historial de Contratos Vinculados ({contratosApartaestudio.length})
               </h4>
 
               {contratosApartaestudio.length > 0 ? (
-                <div className="divide-y divide-[#E3E4E6] dark:divide-[#2A2A2E] border border-[#E3E4E6] dark:border-[#2A2A2E] rounded-[4px] overflow-hidden bg-white dark:bg-[#141416]">
+                <div className="divide-y divide-linea border border-linea rounded-lg overflow-hidden bg-panel">
                   {contratosApartaestudio.map((c) => (
                     <div key={c.id} className="p-3.5 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-[#0B0B0C] dark:text-[#FAFAF9]">
+                          <span className="text-xs font-semibold text-tinta">
                             Contrato #{c.id}
                           </span>
-                          <span className="text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+                          <span className="text-xs text-tinta-2">
                             · Residente: {c.residente.nombre}
                           </span>
                         </div>
-                        <div className="text-[11px] text-[#8A8D91] mt-0.5">
+                        <div className="text-[11px] text-tenue mt-0.5">
                           Vigencia: {formatearFechaCO(c.fecha_inicio)} al {formatearFechaCO(c.fecha_terminacion)} · Canon: {formatearMonedaCOP(c.canon_vigente)}
                         </div>
                       </div>
@@ -654,7 +654,7 @@ export const PaginaApartaestudios: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="p-4 text-center text-xs text-[#8A8D91] bg-[#FAFAF9] dark:bg-[#1A1A1D] rounded-[4px] border border-dashed border-[#C0C0C0] dark:border-[#3A3A3E]">
+                <div className="p-4 text-center text-xs text-tenue bg-fondo rounded-lg border border-dashed border-linea-fuerte">
                   No se registran contratos anteriores para este apartaestudio.
                 </div>
               )}

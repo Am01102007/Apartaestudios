@@ -189,7 +189,7 @@ export const PaginaResidentes: React.FC = () => {
       clave: 'documento',
       encabezado: 'Identificación',
       render: (r) => (
-        <span className="font-semibold text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">
+        <span className="font-semibold text-xs text-tinta">
           {r.tipo_documento} {r.numero_documento}
         </span>
       ),
@@ -199,10 +199,10 @@ export const PaginaResidentes: React.FC = () => {
       encabezado: 'Nombre Completo',
       render: (r) => (
         <div>
-          <span className="font-medium text-sm text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-medium text-sm text-tinta">
             {r.nombre}
           </span>
-          <p className="text-xs text-[#8A8D91] flex items-center gap-1">
+          <p className="text-xs text-tenue flex items-center gap-1">
             <Mail className="w-3 h-3" /> {r.correo || '—'}
           </p>
         </div>
@@ -212,8 +212,8 @@ export const PaginaResidentes: React.FC = () => {
       clave: 'telefono',
       encabezado: 'Teléfono',
       render: (r) => (
-        <span className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] flex items-center gap-1">
-          <Phone className="w-3 h-3 text-[#8A8D91]" /> {r.telefono}
+        <span className="text-xs text-tinta-2 flex items-center gap-1">
+          <Phone className="w-3 h-3 text-tenue" /> {r.telefono}
         </span>
       ),
     },
@@ -226,7 +226,7 @@ export const PaginaResidentes: React.FC = () => {
           <button
             onClick={() => abrirDetalle(r)}
             title="Ver detalle, bloqueo y contratos"
-            className="p-1.5 text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-tinta-2 hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -234,7 +234,7 @@ export const PaginaResidentes: React.FC = () => {
             <button
               onClick={() => abrirEditar(r)}
               title="Editar residente"
-              className="p-1.5 text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+              className="p-1.5 text-tinta-2 hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
             >
               <Edit2 className="w-4 h-4" />
             </button>
@@ -247,12 +247,12 @@ export const PaginaResidentes: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-linea">
         <div>
-          <span className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91]">
+          <span className="text-[11px] font-semibold tracking-widest uppercase text-tenue">
             Directorio de Arrendatarios
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-titulo font-medium text-tinta mt-1">
             Residentes
           </h1>
         </div>
@@ -264,15 +264,15 @@ export const PaginaResidentes: React.FC = () => {
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 bg-white dark:bg-[#141416] p-3 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row items-center gap-3 bg-panel p-3 rounded-lg border border-linea">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-[#8A8D91] absolute left-3 top-2.5 pointer-events-none" />
+          <Search className="w-4 h-4 text-tenue absolute left-3 top-2.5 pointer-events-none" />
           <input
             type="text"
             placeholder="Buscar por cédula, nombre o correo..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 text-xs bg-transparent border-0 outline-none text-[#0B0B0C] dark:text-[#FAFAF9] placeholder-[#8A8D91]"
+            className="w-full pl-9 pr-4 py-1.5 text-xs bg-transparent border-0 outline-none text-tinta placeholder-tenue"
           />
         </div>
 
@@ -371,10 +371,10 @@ export const PaginaResidentes: React.FC = () => {
 
           {/* Contacto de emergencia */}
           <div className="pt-2">
-            <p className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91] mb-2 flex items-center gap-1.5">
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-tenue mb-2 flex items-center gap-1.5">
               <HeartHandshake className="w-3.5 h-3.5" /> Contacto de Emergencia
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#FAFAF9] dark:bg-[#1A1A1D] p-3 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-fondo p-3 rounded-lg border border-linea">
               <Campo label="Nombre del Contacto" id="contacto_emergencia_nombre" error={erroresCampos.contacto_emergencia_nombre}>
                 <EntradaTexto
                   id="contacto_emergencia_nombre"
@@ -408,7 +408,7 @@ export const PaginaResidentes: React.FC = () => {
             />
           </Campo>
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"
@@ -433,16 +433,16 @@ export const PaginaResidentes: React.FC = () => {
         tamano="lg"
       >
         {cargandoDetalle ? (
-          <div className="py-12 text-center text-xs text-[#8A8D91] uppercase tracking-wider">
+          <div className="py-12 text-center text-xs text-tenue uppercase tracking-wider">
             Cargando historial del residente...
           </div>
         ) : detalleResidente ? (
           <div className="space-y-6">
             {/* Alerta si está bloqueado */}
             {detalleResidente.bloqueo_activo && (
-              <div className="p-4 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/40 rounded-[4px] flex items-start gap-3">
-                <ShieldAlert className="w-5 h-5 text-[#7A1F2B] dark:text-[#EFA3AC] shrink-0 mt-0.5" />
-                <div className="text-xs text-[#7A1F2B] dark:text-[#EFA3AC] leading-relaxed">
+              <div className="p-4 bg-peligro-bg border border-peligro/40 rounded-lg flex items-start gap-3">
+                <ShieldAlert className="w-5 h-5 text-peligro shrink-0 mt-0.5" />
+                <div className="text-xs text-peligro leading-relaxed">
                   <span className="font-semibold block uppercase tracking-wider">
                     Persona con Bloqueo Activo en el Sistema
                   </span>
@@ -457,33 +457,33 @@ export const PaginaResidentes: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAFAF9] dark:bg-[#1A1A1D] p-4 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-fondo p-4 rounded-lg border border-linea">
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">Identificación</p>
-                <p className="text-sm font-semibold text-[#0B0B0C] dark:text-[#FAFAF9] mt-0.5">
+                <p className="text-[10px] uppercase tracking-widest text-tenue">Identificación</p>
+                <p className="text-sm font-semibold text-tinta mt-0.5">
                   {detalleResidente.nombre}
                 </p>
-                <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+                <p className="text-xs text-tinta-2">
                   {detalleResidente.tipo_documento} {detalleResidente.numero_documento}
                 </p>
               </div>
 
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">Contacto</p>
-                <p className="text-xs text-[#0B0B0C] dark:text-[#FAFAF9] mt-0.5">
+                <p className="text-[10px] uppercase tracking-widest text-tenue">Contacto</p>
+                <p className="text-xs text-tinta mt-0.5">
                   Tel: {detalleResidente.telefono}
                 </p>
-                <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+                <p className="text-xs text-tinta-2">
                   Correo: {detalleResidente.correo || '—'}
                 </p>
               </div>
 
               {detalleResidente.contacto_emergencia_nombre && (
-                <div className="sm:col-span-2 pt-2 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
-                  <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">
+                <div className="sm:col-span-2 pt-2 border-t border-linea">
+                  <p className="text-[10px] uppercase tracking-widest text-tenue">
                     Contacto de Emergencia
                   </p>
-                  <p className="text-xs text-[#0B0B0C] dark:text-[#FAFAF9] mt-0.5">
+                  <p className="text-xs text-tinta mt-0.5">
                     {detalleResidente.contacto_emergencia_nombre} (Tel: {detalleResidente.contacto_emergencia_telefono || 'No registrado'})
                   </p>
                 </div>
@@ -492,24 +492,24 @@ export const PaginaResidentes: React.FC = () => {
 
             {/* Contratos asociados */}
             <div>
-              <h4 className="font-serif-luxury text-base font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mb-3">
+              <h4 className="font-titulo text-base font-medium text-tinta mb-3">
                 Contratos de Arrendamiento ({contratosResidente.length})
               </h4>
 
               {contratosResidente.length > 0 ? (
-                <div className="divide-y divide-[#E3E4E6] dark:divide-[#2A2A2E] border border-[#E3E4E6] dark:border-[#2A2A2E] rounded-[4px] overflow-hidden bg-white dark:bg-[#141416]">
+                <div className="divide-y divide-linea border border-linea rounded-lg overflow-hidden bg-panel">
                   {contratosResidente.map((c) => (
                     <div key={c.id} className="p-3.5 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-[#0B0B0C] dark:text-[#FAFAF9]">
+                          <span className="text-xs font-semibold text-tinta">
                             Contrato #{c.id}
                           </span>
-                          <span className="text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+                          <span className="text-xs text-tinta-2">
                             · Apto {c.apartaestudio.codigo}
                           </span>
                         </div>
-                        <div className="text-[11px] text-[#8A8D91] mt-0.5">
+                        <div className="text-[11px] text-tenue mt-0.5">
                           Periodo: {formatearFechaCO(c.fecha_inicio)} al {formatearFechaCO(c.fecha_terminacion)} · Canon: {formatearMonedaCOP(c.canon_vigente)}
                         </div>
                       </div>
@@ -518,7 +518,7 @@ export const PaginaResidentes: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="p-4 text-center text-xs text-[#8A8D91] bg-[#FAFAF9] dark:bg-[#1A1A1D] rounded-[4px] border border-dashed border-[#C0C0C0] dark:border-[#3A3A3E]">
+                <div className="p-4 text-center text-xs text-tenue bg-fondo rounded-lg border border-dashed border-linea-fuerte">
                   No existen contratos asociados a este residente.
                 </div>
               )}

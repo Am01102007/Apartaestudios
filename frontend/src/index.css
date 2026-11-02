@@ -4,31 +4,71 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @import "./estilos/variables.css";
 
-/* Luxury subtle styles */
-.plateado-gradient {
-  background: linear-gradient(135deg, #2A2A2E 0%, #1A1A1D 50%, #0B0B0C 100%);
-  border: 1px solid rgba(192, 192, 192, 0.35);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+/* Tokens de color como utilidades de Tailwind: bg-panel, text-tinta, border-linea, ring-acento… */
+@theme inline {
+  --color-fondo: var(--c-fondo);
+  --color-panel: var(--c-panel);
+  --color-sutil: var(--c-sutil);
+  --color-tinta: var(--c-tinta);
+  --color-tinta-2: var(--c-tinta-2);
+  --color-tenue: var(--c-tenue);
+  --color-sobre-tinta: var(--c-sobre-tinta);
+  --color-linea: var(--c-linea);
+  --color-linea-fuerte: var(--c-linea-fuerte);
+  --color-acento: var(--c-acento);
+  --color-acento-fuerte: var(--c-acento-fuerte);
+  --color-sobre-acento: var(--c-sobre-acento);
+  --color-peligro: var(--c-peligro);
+  --color-peligro-bg: var(--c-peligro-bg);
+  --color-exito: var(--c-exito);
+  --color-exito-bg: var(--c-exito-bg);
+  --color-aviso: var(--c-aviso);
+  --color-aviso-bg: var(--c-aviso-bg);
+
+  --font-titulo: var(--fuente-titulo);
+  --font-sans: var(--fuente-sans);
 }
 
-.plateado-button {
-  background: linear-gradient(180deg, #262629 0%, #111113 100%);
-  border: 1px solid rgba(192, 192, 192, 0.4);
-  color: #FAFAF9;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+@layer components {
+  /* Los paneles dejan ver las partículas detrás, difuminadas. */
+  .bg-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Tarjeta destacada en verde (por ejemplo, apartaestudios ocupados en el inicio). */
+  .tarjeta-acento {
+    background: linear-gradient(135deg, var(--c-acento-fuerte) 0%, var(--c-acento) 100%);
+    color: var(--c-sobre-acento);
+    box-shadow: 0 12px 30px -10px var(--c-acento);
+  }
+
+  /* Línea decorativa con brillo verde. */
+  .linea-acento {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--c-acento), transparent);
+  }
+
+  /* Texto con degradado verde para títulos de marca. */
+  .texto-acento {
+    background: linear-gradient(90deg, var(--c-acento-fuerte), var(--c-acento));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
-.plateado-button:hover:not(:disabled) {
-  border-color: #E3E4E6;
-  background: linear-gradient(180deg, #323236 0%, #1A1A1D 100%);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+/* Sombras de los paneles según el tema. */
+.shadow-xs,
+.shadow-sm {
+  box-shadow: var(--sombra-panel);
 }
 
-.plateado-subtle-border {
-  border: 1px solid rgba(192, 192, 192, 0.25);
-}
-
-.line-decor {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(192, 192, 192, 0.3), transparent);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

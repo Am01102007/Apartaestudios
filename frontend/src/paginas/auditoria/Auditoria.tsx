@@ -79,7 +79,7 @@ export const PaginaAuditoria: React.FC = () => {
       clave: 'momento',
       encabezado: 'Fecha y Hora (Bogotá)',
       render: (r) => (
-        <span className="text-xs font-mono text-[#0B0B0C] dark:text-[#FAFAF9]">
+        <span className="text-xs font-mono text-tinta">
           {formatearFechaHoraCO(r.momento)}
         </span>
       ),
@@ -89,7 +89,7 @@ export const PaginaAuditoria: React.FC = () => {
       encabezado: 'Usuario',
       render: (r) => (
         <div>
-          <span className="font-semibold text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-semibold text-xs text-tinta">
             {nombreUsuario(r.usuario_id)}
           </span>
         </div>
@@ -99,7 +99,7 @@ export const PaginaAuditoria: React.FC = () => {
       clave: 'modulo',
       encabezado: 'Entidad',
       render: (r) => (
-        <span className="text-xs font-medium px-2 py-0.5 rounded bg-[#F4F5F6] dark:bg-[#1E1E22] text-[#1A1A1D] dark:text-[#FAFAF9] border border-[#E3E4E6] dark:border-[#2A2A2E] uppercase">
+        <span className="text-xs font-medium px-2 py-0.5 rounded bg-sutil text-tinta border border-linea uppercase">
           {r.entidad}
         </span>
       ),
@@ -108,7 +108,7 @@ export const PaginaAuditoria: React.FC = () => {
       clave: 'accion',
       encabezado: 'Acción Ejecutada',
       render: (r) => (
-        <span className="text-xs font-semibold uppercase tracking-wider text-[#0B0B0C] dark:text-[#FAFAF9]">
+        <span className="text-xs font-semibold uppercase tracking-wider text-tinta">
           {r.accion}
         </span>
       ),
@@ -117,7 +117,7 @@ export const PaginaAuditoria: React.FC = () => {
       clave: 'entidad_id',
       encabezado: 'Registro',
       render: (r) => (
-        <span className="text-xs font-mono text-[#5A5D62] dark:text-[#A0A3A8]">
+        <span className="text-xs font-mono text-tinta-2">
           {r.entidad_id ? `#${r.entidad_id}` : '—'}
         </span>
       ),
@@ -126,7 +126,7 @@ export const PaginaAuditoria: React.FC = () => {
       clave: 'ip',
       encabezado: 'IP Origen',
       render: (r) => (
-        <span className="text-[11px] font-mono text-[#8A8D91]">
+        <span className="text-[11px] font-mono text-tenue">
           {r.ip || '—'}
         </span>
       ),
@@ -139,7 +139,7 @@ export const PaginaAuditoria: React.FC = () => {
         <button
           onClick={() => setRegistroSeleccionado(r)}
           title="Ver carga técnica (JSON)"
-          className="p-1.5 text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+          className="p-1.5 text-tinta-2 hover:text-tinta rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
         >
           <Eye className="w-4 h-4" />
         </button>
@@ -150,12 +150,12 @@ export const PaginaAuditoria: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-linea">
         <div>
-          <span className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91]">
+          <span className="text-[11px] font-semibold tracking-widest uppercase text-tenue">
             Trazabilidad & Cumplimiento (Solo Administrador)
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-titulo font-medium text-tinta mt-1">
             Registro de Auditoría
           </h1>
         </div>
@@ -171,14 +171,14 @@ export const PaginaAuditoria: React.FC = () => {
       </div>
 
       {/* Formulario de Filtros */}
-      <div className="bg-white dark:bg-[#141416] p-4 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E] space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
-          <span className="text-[10px] font-semibold tracking-widest uppercase text-[#8A8D91] flex items-center gap-1.5">
+      <div className="bg-panel p-4 rounded-lg border border-linea space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-linea">
+          <span className="text-[10px] font-semibold tracking-widest uppercase text-tenue flex items-center gap-1.5">
             <Filter className="w-3.5 h-3.5" /> Filtros de Auditoría
           </span>
           <button
             onClick={limpiarFiltros}
-            className="text-xs text-[#8A8D91] hover:text-[#0B0B0C] dark:hover:text-white"
+            className="text-xs text-tenue hover:text-tinta"
           >
             Limpiar filtros
           </button>
@@ -186,13 +186,13 @@ export const PaginaAuditoria: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-wider text-[#8A8D91] block mb-1">
+            <label className="text-[10px] font-medium uppercase tracking-wider text-tenue block mb-1">
               Usuario
             </label>
             <select
               value={filtroUsuario}
               onChange={(e) => setFiltroUsuario(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+              className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
             >
               <option value="">Todos los usuarios</option>
               {usuarios.map((u) => (
@@ -204,13 +204,13 @@ export const PaginaAuditoria: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-wider text-[#8A8D91] block mb-1">
+            <label className="text-[10px] font-medium uppercase tracking-wider text-tenue block mb-1">
               Entidad
             </label>
             <select
               value={filtroModulo}
               onChange={(e) => setFiltroModulo(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+              className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
             >
               <option value="">Todas las entidades</option>
               <option value="usuario">Usuarios y sesión</option>
@@ -223,7 +223,7 @@ export const PaginaAuditoria: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-wider text-[#8A8D91] block mb-1">
+            <label className="text-[10px] font-medium uppercase tracking-wider text-tenue block mb-1">
               Acción
             </label>
             <input
@@ -231,37 +231,37 @@ export const PaginaAuditoria: React.FC = () => {
               placeholder="ej. contrato.crear"
               value={filtroAccion}
               onChange={(e) => setFiltroAccion(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+              className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
             />
           </div>
 
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-wider text-[#8A8D91] block mb-1">
+            <label className="text-[10px] font-medium uppercase tracking-wider text-tenue block mb-1">
               Desde
             </label>
             <input
               type="date"
               value={filtroFechaDesde}
               onChange={(e) => setFiltroFechaDesde(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+              className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
             />
           </div>
 
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-wider text-[#8A8D91] block mb-1">
+            <label className="text-[10px] font-medium uppercase tracking-wider text-tenue block mb-1">
               Hasta
             </label>
             <input
               type="date"
               value={filtroFechaHasta}
               onChange={(e) => setFiltroFechaHasta(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+              className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
             />
           </div>
         </div>
       </div>
 
-      <p className="text-[11px] text-[#8A8D91]">
+      <p className="text-[11px] text-tenue">
         Mostrando {registros.length} de {total} eventos
       </p>
 
@@ -286,28 +286,28 @@ export const PaginaAuditoria: React.FC = () => {
       >
         {registroSeleccionado && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3 bg-[#FAFAF9] dark:bg-[#1A1A1D] p-3 rounded text-xs border border-[#E3E4E6] dark:border-[#2A2A2E]">
+            <div className="grid grid-cols-2 gap-3 bg-fondo p-3 rounded text-xs border border-linea">
               <div>
-                <span className="text-[#8A8D91] block uppercase text-[10px]">Fecha y Hora</span>
-                <span className="font-mono text-[#0B0B0C] dark:text-[#FAFAF9]">
+                <span className="text-tenue block uppercase text-[10px]">Fecha y Hora</span>
+                <span className="font-mono text-tinta">
                   {formatearFechaHoraCO(registroSeleccionado.momento)}
                 </span>
               </div>
               <div>
-                <span className="text-[#8A8D91] block uppercase text-[10px]">Usuario Responsable</span>
-                <span className="font-medium text-[#0B0B0C] dark:text-[#FAFAF9]">
+                <span className="text-tenue block uppercase text-[10px]">Usuario Responsable</span>
+                <span className="font-medium text-tinta">
                   {nombreUsuario(registroSeleccionado.usuario_id)}
                 </span>
               </div>
               <div>
-                <span className="text-[#8A8D91] block uppercase text-[10px]">Entidad / Acción</span>
-                <span className="font-medium text-[#0B0B0C] dark:text-[#FAFAF9]">
+                <span className="text-tenue block uppercase text-[10px]">Entidad / Acción</span>
+                <span className="font-medium text-tinta">
                   {registroSeleccionado.entidad} #{registroSeleccionado.entidad_id ?? '—'} → {registroSeleccionado.accion}
                 </span>
               </div>
               <div>
-                <span className="text-[#8A8D91] block uppercase text-[10px]">IP Origen</span>
-                <span className="font-mono text-[#0B0B0C] dark:text-[#FAFAF9]">
+                <span className="text-tenue block uppercase text-[10px]">IP Origen</span>
+                <span className="font-mono text-tinta">
                   {registroSeleccionado.ip || '—'}
                 </span>
               </div>
@@ -316,11 +316,11 @@ export const PaginaAuditoria: React.FC = () => {
             {(['valor_anterior', 'valor_nuevo'] as const).map((campo) =>
               registroSeleccionado[campo] ? (
                 <div key={campo}>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8A8D91] block mb-1 flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-tenue block mb-1 flex items-center gap-1.5">
                     <FileCode className="w-3.5 h-3.5" />
                     {campo === 'valor_anterior' ? 'Valor anterior' : 'Valor nuevo'}
                   </span>
-                  <pre className="text-[11px] font-mono bg-[#0B0B0C] text-[#FAFAF9] p-3 rounded overflow-x-auto max-h-48 border border-[#2A2A2E]">
+                  <pre className="text-[11px] font-mono bg-tinta text-sobre-tinta p-3 rounded overflow-x-auto max-h-48 border border-linea">
                     {JSON.stringify(registroSeleccionado[campo], null, 2)}
                   </pre>
                 </div>

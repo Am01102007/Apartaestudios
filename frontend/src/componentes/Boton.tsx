@@ -26,13 +26,13 @@ export const Boton: React.FC<BotonProps> = ({
 
   const varianteClases = {
     primario:
-      'bg-[#111113] hover:bg-[#1f1f23] text-[#FAFAF9] border border-[#3A3A3E] hover:border-[#C0C0C0] shadow-sm',
+      'bg-acento-fuerte text-sobre-acento border border-transparent shadow-[0_6px_18px_-8px_var(--c-acento)] hover:brightness-110 hover:shadow-[0_10px_24px_-8px_var(--c-acento)] active:translate-y-px',
     plata:
-      'bg-gradient-to-b from-[#2A2A2E] to-[#141416] text-[#FAFAF9] border border-[#8A8D91] hover:border-[#E3E4E6] shadow-sm',
+      'bg-acento-fuerte text-sobre-acento border border-transparent shadow-[0_6px_18px_-8px_var(--c-acento)] hover:brightness-110 hover:shadow-[0_10px_24px_-8px_var(--c-acento)] active:translate-y-px',
     secundario:
-      'bg-[#FAFAF9] hover:bg-[#EAEBED] text-[#1A1A1D] border border-[#C0C0C0] dark:bg-[#1A1A1D] dark:text-[#FAFAF9] dark:border-[#3A3A3E] dark:hover:bg-[#252529]',
+      'bg-panel text-tinta border border-linea-fuerte hover:border-acento hover:text-acento-fuerte',
     peligro:
-      'bg-[#7A1F2B] hover:bg-[#922534] text-[#FAFAF9] border border-[#5A141E] shadow-sm',
+      'bg-peligro text-sobre-tinta border border-transparent hover:brightness-110 shadow-sm',
     fantasma:
       'bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-current border border-transparent',
   };
@@ -40,7 +40,7 @@ export const Boton: React.FC<BotonProps> = ({
   return (
     <button
       disabled={disabled || cargando}
-      className={`inline-flex items-center justify-center font-medium transition-all duration-150 rounded-[4px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none focus:outline-none focus:ring-2 focus:ring-[#C0C0C0] focus:ring-offset-1 ${tamanoClases[tamano]} ${varianteClases[variante]} ${className}`}
+      className={`inline-flex items-center justify-center font-medium transition-all duration-150 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-acento focus-visible:ring-offset-2 focus-visible:ring-offset-fondo ${tamanoClases[tamano]} ${varianteClases[variante]} ${className}`}
       {...props}
     >
       {cargando ? (

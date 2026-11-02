@@ -5,7 +5,8 @@ import { Campo, EntradaTexto } from '../../componentes/Campo';
 import { Boton } from '../../componentes/Boton';
 import { ErrorApi } from '../../api/cliente';
 import { ContenedorAvisos } from '../../componentes/Avisos';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, Building2, ShieldCheck, Moon, Sun } from 'lucide-react';
+import { FondoParticulas } from '../../componentes/FondoParticulas';
 
 export const PaginaIngresar: React.FC = () => {
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -14,7 +15,7 @@ export const PaginaIngresar: React.FC = () => {
   const [erroresCampos, setErroresCampos] = useState<Record<string, string>>({});
   const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
 
-  const { iniciarSesion } = useAuth();
+  const { iniciarSesion, temaOscuro, alternarTema } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -66,36 +67,49 @@ export const PaginaIngresar: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAFAF9] dark:bg-[#0B0B0C] text-[#0B0B0C] dark:text-[#FAFAF9]">
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-fondo text-tinta overflow-hidden">
+      <FondoParticulas />
       <ContenedorAvisos />
-      <div className="w-full max-w-md">
-        {/* Logo de la marca */}
+
+      {/* Brillo verde detrás de la tarjeta */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full opacity-60 blur-3xl"
+        style={{ background: 'radial-gradient(circle, var(--c-acento-suave) 0%, transparent 70%)' }}
+      />
+
+      <button
+        onClick={alternarTema}
+        title={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        aria-label={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-panel border border-linea text-tenue hover:text-acento-fuerte hover:border-acento transition-colors cursor-pointer"
+      >
+        {temaOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      </button>
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Marca */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 border border-[#C0C0C0] rotate-45 mb-4 bg-white dark:bg-[#141416] shadow-sm">
-            <div className="w-5 h-5 bg-[#1A1A1D] dark:bg-[#C0C0C0] -rotate-45" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 bg-acento-fuerte text-sobre-acento shadow-[0_12px_30px_-8px_var(--c-acento)]">
+            <Building2 className="w-7 h-7" />
           </div>
-          <h1 className="font-serif-luxury text-3xl font-medium tracking-[0.15em] uppercase text-[#0B0B0C] dark:text-[#FAFAF9]">
-            Aura
+          <h1 className="font-titulo text-4xl font-semibold tracking-tight text-tinta">
+            Aura<span className="text-acento-fuerte">.</span>
           </h1>
-          <p className="text-xs tracking-[0.25em] uppercase text-[#8A8D91] mt-1 font-sans-clean">
-            Administración de Apartaestudios
+          <p className="text-xs tracking-[0.25em] uppercase text-tenue mt-1.5">
+            Administración de apartaestudios
           </p>
-          <div className="w-16 h-px bg-[#C0C0C0] mx-auto mt-4" />
         </div>
 
-        {/* Tarjeta de login */}
-        <div className="bg-white dark:bg-[#141416] border border-[#E3E4E6] dark:border-[#2A2A2E] rounded-[4px] p-8 shadow-sm">
+        {/* Tarjeta de ingreso */}
+        <div className="bg-panel border border-linea rounded-2xl p-8 shadow-[var(--sombra-elevada)]">
           <div className="mb-6">
-            <h2 className="text-lg font-medium text-[#1A1A1D] dark:text-[#FAFAF9]">
-              Ingreso al Sistema
-            </h2>
-            <p className="text-xs text-[#8A8D91] mt-0.5">
-              Acceso interno seguro para personal autorizado
-            </p>
+            <h2 className="font-titulo text-xl font-semibold text-tinta">Ingreso al sistema</h2>
+            <p className="text-sm text-tenue mt-1">Acceso interno para personal autorizado</p>
           </div>
 
           {errorGeneral && (
-            <div className="mb-5 p-3.5 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/30 rounded-[4px] text-xs text-[#7A1F2B] dark:text-[#EFA3AC]">
+            <div className="mb-5 p-3.5 bg-peligro-bg border border-peligro/30 rounded-lg text-sm text-peligro">
               {errorGeneral}
             </div>
           )}
@@ -119,7 +133,7 @@ export const PaginaIngresar: React.FC = () => {
                   className="pl-9"
                   disabled={cargando}
                 />
-                <User className="w-4 h-4 text-[#8A8D91] absolute left-3 top-2.5 pointer-events-none" />
+                <User className="w-4 h-4 text-tenue absolute left-3 top-2.5 pointer-events-none" />
               </div>
             </Campo>
 
@@ -141,26 +155,20 @@ export const PaginaIngresar: React.FC = () => {
                   className="pl-9"
                   disabled={cargando}
                 />
-                <Lock className="w-4 h-4 text-[#8A8D91] absolute left-3 top-2.5 pointer-events-none" />
+                <Lock className="w-4 h-4 text-tenue absolute left-3 top-2.5 pointer-events-none" />
               </div>
             </Campo>
 
             <div className="pt-2">
-              <Boton
-                type="submit"
-                variante="plata"
-                cargando={cargando}
-                className="w-full py-2.5"
-              >
-                Ingresar al Portal
+              <Boton type="submit" variante="primario" cargando={cargando} className="w-full py-2.5">
+                Ingresar
               </Boton>
             </div>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-[#E3E4E6] dark:border-[#2A2A2E] text-center">
-            <p className="text-[11px] text-[#8A8D91]">
-              Sesión protegida mediante credenciales corporativas y token CSRF
-            </p>
+          <div className="mt-6 pt-4 border-t border-linea flex items-center justify-center gap-1.5 text-xs text-tenue">
+            <ShieldCheck className="w-3.5 h-3.5 text-acento-fuerte" />
+            <span>Sesión protegida con cookie segura y token CSRF</span>
           </div>
         </div>
       </div>

@@ -19,6 +19,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { ContenedorAvisos } from './Avisos';
+import { FondoParticulas } from './FondoParticulas';
 
 export const DisenoPrincipal: React.FC = () => {
   const { usuario, esAdmin, cerrarSesion, temaOscuro, alternarTema } = useAuth();
@@ -46,52 +47,70 @@ export const DisenoPrincipal: React.FC = () => {
       : []),
   ];
 
+  const Marca = ({ compacta = false }: { compacta?: boolean }) => (
+    <div className="flex items-center gap-2.5">
+      <div
+        className={`${compacta ? 'w-7 h-7' : 'w-9 h-9'} rounded-xl bg-acento-fuerte text-sobre-acento flex items-center justify-center shadow-[0_6px_18px_-6px_var(--c-acento)]`}
+      >
+        <Building2 className={compacta ? 'w-4 h-4' : 'w-5 h-5'} />
+      </div>
+      <div className="leading-tight">
+        <span className="font-titulo text-lg font-semibold tracking-tight text-tinta">
+          Aura<span className="text-acento-fuerte">.</span>
+        </span>
+        {!compacta && (
+          <p className="text-[10px] tracking-[0.2em] text-tenue uppercase">Apartaestudios</p>
+        )}
+      </div>
+    </div>
+  );
+
+  const BotonTema = ({ className = '' }: { className?: string }) => (
+    <button
+      onClick={alternarTema}
+      title={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+      aria-label={temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+      className={`p-2 rounded-lg text-tenue hover:text-acento-fuerte hover:bg-acento/10 transition-colors cursor-pointer ${className}`}
+    >
+      {temaOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+    </button>
+  );
+
   return (
-    <div className="min-h-screen flex bg-[#FAFAF9] dark:bg-[#0B0B0C] text-[#0B0B0C] dark:text-[#FAFAF9]">
+    <div className="relative min-h-screen flex bg-fondo text-tinta">
+      <FondoParticulas />
       <ContenedorAvisos />
 
-      {/* Backdrop móvil */}
+      {/* Fondo oscuro del menú en el celular */}
       {menuMovilAbierto && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
           onClick={() => setMenuMovilAbierto(false)}
         />
       )}
 
-      {/* Barra Lateral (Sidebar) */}
+      {/* Barra lateral */}
       <aside
-        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-64 bg-[#0B0B0C] text-[#FAFAF9] border-r border-[#2A2A2E] flex flex-col justify-between transition-transform duration-200 ease-in-out md:translate-x-0 ${
+        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-64 bg-panel border-r border-linea flex flex-col justify-between transition-transform duration-200 ease-in-out md:translate-x-0 ${
           menuMovilAbierto ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Encabezado Logo */}
         <div>
-          <div className="px-6 py-6 border-b border-[#2A2A2E] flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 border border-[#C0C0C0] flex items-center justify-center rotate-45">
-                  <div className="w-2.5 h-2.5 bg-[#C0C0C0] -rotate-45" />
-                </div>
-                <span className="font-serif-luxury text-xl tracking-[0.2em] font-medium text-white uppercase">
-                  Aura
-                </span>
-              </div>
-              <p className="text-[10px] tracking-[0.25em] text-[#8A8D91] uppercase mt-1">
-                Apartaestudios · Colombia
-              </p>
-            </div>
+          <div className="px-5 py-5 flex items-center justify-between">
+            <Marca />
             <button
               onClick={() => setMenuMovilAbierto(false)}
-              className="p-1 md:hidden text-[#8A8D91] hover:text-white"
+              className="p-1 md:hidden text-tenue hover:text-tinta"
+              aria-label="Cerrar menú"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
+          <div className="linea-acento mx-5 opacity-60" />
 
-          {/* Menú de enlaces */}
-          <nav className="p-4 space-y-1">
-            <div className="px-3 py-2 text-[10px] tracking-[0.2em] uppercase text-[#8A8D91] font-semibold">
-              Módulos Principales
+          <nav className="p-3 space-y-1">
+            <div className="px-3 pt-3 pb-2 text-[10px] tracking-[0.2em] uppercase text-tenue font-semibold">
+              Módulos
             </div>
             {enlacesNavegacion.map((item) => {
               const Icono = item.icon;
@@ -102,10 +121,10 @@ export const DisenoPrincipal: React.FC = () => {
                   end={item.to === '/'}
                   onClick={() => setMenuMovilAbierto(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-[4px] text-xs font-medium tracking-wide transition-all ${
+                    `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       isActive
-                        ? 'bg-[#1A1A1D] text-[#FAFAF9] border-l-2 border-[#C0C0C0] pl-2.5 shadow-inner'
-                        : 'text-[#8A8D91] hover:text-[#FAFAF9] hover:bg-[#141416]'
+                        ? 'bg-acento/12 text-acento-fuerte shadow-[inset_3px_0_0_var(--c-acento)]'
+                        : 'text-tinta-2 hover:text-tinta hover:bg-sutil'
                     }`
                   }
                 >
@@ -117,41 +136,33 @@ export const DisenoPrincipal: React.FC = () => {
           </nav>
         </div>
 
-        {/* Sección inferior de usuario */}
-        <div className="p-4 border-t border-[#2A2A2E] bg-[#0E0E10]">
+        {/* Usuario, tema y salida */}
+        <div className="p-3 border-t border-linea">
           {usuario && (
-            <div className="mb-3 px-2 py-1.5 flex items-center justify-between">
-              <div className="overflow-hidden">
-                <p className="text-xs font-medium text-white truncate">
-                  {usuario.nombre}
-                </p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <Shield className="w-3 h-3 text-[#8A8D91]" />
-                  <span className="text-[10px] tracking-wider uppercase text-[#8A8D91]">
-                    {usuario.rol}
-                  </span>
+            <div className="mb-2 px-2 py-2 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 overflow-hidden">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-acento/15 text-acento-fuerte flex items-center justify-center text-xs font-semibold uppercase">
+                  {usuario.nombre.slice(0, 1)}
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-sm font-medium text-tinta truncate">{usuario.nombre}</p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <Shield className="w-3 h-3 text-tenue" />
+                    <span className="text-[10px] tracking-wider uppercase text-tenue">{usuario.rol}</span>
+                  </div>
                 </div>
               </div>
-
-              {/* Botón cambiar tema */}
-              <button
-                onClick={alternarTema}
-                title={temaOscuro ? 'Modo claro' : 'Modo oscuro'}
-                className="p-1.5 text-[#8A8D91] hover:text-[#C0C0C0] hover:bg-[#1A1A1D] rounded transition-colors"
-                aria-label="Alternar tema"
-              >
-                {temaOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
+              <BotonTema />
             </div>
           )}
 
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <NavLink
               to="/cambiar-contrasena"
               onClick={() => setMenuMovilAbierto(false)}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 px-3 py-2 text-xs rounded-[4px] text-[#8A8D91] hover:text-white hover:bg-[#1A1A1D] transition-colors ${
-                  isActive ? 'text-white bg-[#1A1A1D]' : ''
+                `flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-colors ${
+                  isActive ? 'text-acento-fuerte bg-acento/10' : 'text-tinta-2 hover:text-tinta hover:bg-sutil'
                 }`
               }
             >
@@ -161,7 +172,7 @@ export const DisenoPrincipal: React.FC = () => {
 
             <button
               onClick={handleCerrarSesion}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded-[4px] text-[#8A8D91] hover:text-[#E89AA3] hover:bg-[#7A1F2B]/10 transition-colors cursor-pointer text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg text-tinta-2 hover:text-peligro hover:bg-peligro-bg transition-colors cursor-pointer text-left"
             >
               <LogOut className="w-4 h-4" />
               <span>Cerrar Sesión</span>
@@ -170,31 +181,21 @@ export const DisenoPrincipal: React.FC = () => {
         </div>
       </aside>
 
-      {/* Contenido Principal */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Barra Superior Móvil */}
-        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0B0B0C] text-white border-b border-[#2A2A2E] sticky top-0 z-30">
+      {/* Contenido principal */}
+      <div className="relative z-10 flex-1 flex flex-col min-w-0">
+        {/* Barra superior en el celular */}
+        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-panel border-b border-linea sticky top-0 z-30">
           <button
             onClick={() => setMenuMovilAbierto(true)}
-            className="p-1 text-[#8A8D91] hover:text-white"
+            className="p-1 text-tinta-2 hover:text-tinta"
             aria-label="Abrir menú de navegación"
           >
             <Menu className="w-6 h-6" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border border-[#C0C0C0] rotate-45" />
-            <span className="font-serif-luxury tracking-widest text-sm uppercase">Aura</span>
-          </div>
-          <button
-            onClick={alternarTema}
-            className="p-1 text-[#8A8D91]"
-            aria-label="Alternar tema"
-          >
-            {temaOscuro ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          <Marca compacta />
+          <BotonTema />
         </header>
 
-        {/* Cuerpo de página */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           <Outlet />
         </main>

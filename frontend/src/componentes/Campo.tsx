@@ -23,19 +23,19 @@ export const Campo: React.FC<CampoProps> = ({
       <div className="flex items-center justify-between">
         <label
           htmlFor={id}
-          className="text-[11px] font-medium tracking-widest uppercase text-[#5A5D62] dark:text-[#A0A3A8]"
+          className="text-[11px] font-medium tracking-widest uppercase text-tinta-2"
         >
-          {label} {obligatorio && <span className="text-[#7A1F2B] font-bold">*</span>}
+          {label} {obligatorio && <span className="text-peligro font-bold">*</span>}
         </label>
         {ayuda && !error && (
-          <span className="text-[11px] text-[#8A8D91] italic">{ayuda}</span>
+          <span className="text-[11px] text-tenue italic">{ayuda}</span>
         )}
       </div>
 
       <div className="relative">{children}</div>
 
       {error && (
-        <p className="flex items-center gap-1.5 text-xs text-[#7A1F2B] dark:text-[#E89AA3] mt-0.5">
+        <p className="flex items-center gap-1.5 text-xs text-peligro mt-0.5">
           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
           <span>{error}</span>
         </p>
@@ -51,11 +51,11 @@ export const EntradaTexto = React.forwardRef<
   return (
     <input
       ref={ref}
-      className={`w-full px-3.5 py-2 text-sm bg-white dark:bg-[#141416] text-[#0B0B0C] dark:text-[#FAFAF9] border rounded-[4px] transition-colors outline-none focus:ring-1 ${
+      className={`w-full px-3.5 py-2 text-sm bg-panel text-tinta border rounded-lg transition-colors outline-none focus:ring-1 ${
         tieneError
-          ? 'border-[#7A1F2B] focus:border-[#7A1F2B] focus:ring-[#7A1F2B]'
-          : 'border-[#C0C0C0] dark:border-[#3A3A3E] focus:border-[#1A1A1D] dark:focus:border-[#FAFAF9] focus:ring-[#1A1A1D] dark:focus:ring-[#FAFAF9]'
-      } disabled:bg-[#F4F5F6] dark:disabled:bg-[#1E1E22] disabled:cursor-not-allowed ${className}`}
+          ? 'border-peligro focus:border-peligro focus:ring-peligro'
+          : 'border-linea-fuerte focus:border-acento focus:ring-acento'
+      } disabled:bg-sutil disabled:cursor-not-allowed ${className}`}
       {...props}
     />
   );
@@ -70,11 +70,11 @@ export const EntradaSeleccion = React.forwardRef<
   return (
     <select
       ref={ref}
-      className={`w-full px-3 py-2 text-sm bg-white dark:bg-[#141416] text-[#0B0B0C] dark:text-[#FAFAF9] border rounded-[4px] transition-colors outline-none focus:ring-1 ${
+      className={`w-full px-3 py-2 text-sm bg-panel text-tinta border rounded-lg transition-colors outline-none focus:ring-1 ${
         tieneError
-          ? 'border-[#7A1F2B] focus:border-[#7A1F2B] focus:ring-[#7A1F2B]'
-          : 'border-[#C0C0C0] dark:border-[#3A3A3E] focus:border-[#1A1A1D] dark:focus:border-[#FAFAF9] focus:ring-[#1A1A1D] dark:focus:ring-[#FAFAF9]'
-      } disabled:bg-[#F4F5F6] dark:disabled:bg-[#1E1E22] disabled:cursor-not-allowed ${className}`}
+          ? 'border-peligro focus:border-peligro focus:ring-peligro'
+          : 'border-linea-fuerte focus:border-acento focus:ring-acento'
+      } disabled:bg-sutil disabled:cursor-not-allowed ${className}`}
       {...props}
     >
       {children}
@@ -92,11 +92,11 @@ export const EntradaAreaTexto = React.forwardRef<
     <textarea
       ref={ref}
       rows={3}
-      className={`w-full px-3.5 py-2 text-sm bg-white dark:bg-[#141416] text-[#0B0B0C] dark:text-[#FAFAF9] border rounded-[4px] transition-colors outline-none focus:ring-1 resize-y ${
+      className={`w-full px-3.5 py-2 text-sm bg-panel text-tinta border rounded-lg transition-colors outline-none focus:ring-1 resize-y ${
         tieneError
-          ? 'border-[#7A1F2B] focus:border-[#7A1F2B] focus:ring-[#7A1F2B]'
-          : 'border-[#C0C0C0] dark:border-[#3A3A3E] focus:border-[#1A1A1D] dark:focus:border-[#FAFAF9] focus:ring-[#1A1A1D] dark:focus:ring-[#FAFAF9]'
-      } disabled:bg-[#F4F5F6] dark:disabled:bg-[#1E1E22] disabled:cursor-not-allowed ${className}`}
+          ? 'border-peligro focus:border-peligro focus:ring-peligro'
+          : 'border-linea-fuerte focus:border-acento focus:ring-acento'
+      } disabled:bg-sutil disabled:cursor-not-allowed ${className}`}
       {...props}
     />
   );

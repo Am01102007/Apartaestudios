@@ -126,9 +126,9 @@ const nombreAccion = (accion: string) => {
 };
 
 const claseIcono =
-  'p-1.5 rounded transition-colors cursor-pointer text-[#5A5D62] hover:text-[#0B0B0C] dark:text-[#A0A3A8] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5';
+  'p-1.5 rounded transition-colors cursor-pointer text-tinta-2 hover:text-tinta hover:bg-black/5 dark:hover:bg-white/5';
 const claseFiltro =
-  'w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]';
+  'w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta';
 
 export const PaginaContratos: React.FC = () => {
   const [contratos, setContratos] = useState<Contrato[]>([]);
@@ -348,8 +348,8 @@ export const PaginaContratos: React.FC = () => {
       encabezado: 'Contrato / Apto',
       render: (c) => (
         <div>
-          <span className="font-semibold text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">#{c.id}</span>
-          <p className="text-[11px] text-[#8A8D91]">Unidad {c.apartaestudio.codigo}</p>
+          <span className="font-semibold text-xs text-tinta">#{c.id}</span>
+          <p className="text-[11px] text-tenue">Unidad {c.apartaestudio.codigo}</p>
         </div>
       ),
     },
@@ -358,10 +358,10 @@ export const PaginaContratos: React.FC = () => {
       encabezado: 'Residente',
       render: (c) => (
         <div>
-          <span className="font-medium text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-medium text-xs text-tinta">
             {c.residente.nombre}
           </span>
-          <p className="text-[11px] text-[#8A8D91]">
+          <p className="text-[11px] text-tenue">
             {c.residente.tipo_documento} {c.residente.numero_documento}
           </p>
         </div>
@@ -371,7 +371,7 @@ export const PaginaContratos: React.FC = () => {
       clave: 'vigencia',
       encabezado: 'Vigencia',
       render: (c) => (
-        <span className="text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+        <span className="text-xs text-tinta-2">
           {formatearFechaCO(c.fecha_inicio)} al {formatearFechaCO(c.fecha_terminacion)}
         </span>
       ),
@@ -381,10 +381,10 @@ export const PaginaContratos: React.FC = () => {
       encabezado: 'Canon Vigente',
       render: (c) => (
         <div>
-          <span className="font-semibold text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-semibold text-xs text-tinta">
             {formatearMonedaCOP(c.canon_vigente)}
           </span>
-          <p className="text-[10px] text-[#8A8D91]">
+          <p className="text-[10px] text-tenue">
             Incremento anual {Number(c.porcentaje_incremento)} %
           </p>
         </div>
@@ -425,7 +425,7 @@ export const PaginaContratos: React.FC = () => {
               <button
                 onClick={() => abrir('terminar', c)}
                 title={c.estado === 'en_terminacion' ? 'Corregir terminación' : 'Registrar terminación'}
-                className="p-1.5 text-[#805B10] hover:bg-[#805B10]/10 rounded transition-colors cursor-pointer"
+                className="p-1.5 text-aviso hover:bg-aviso/10 rounded transition-colors cursor-pointer"
               >
                 <XCircle className="w-4 h-4" />
               </button>
@@ -434,7 +434,7 @@ export const PaginaContratos: React.FC = () => {
               <button
                 onClick={() => abrir('anular', c)}
                 title="Anular contrato"
-                className="p-1.5 text-[#7A1F2B] hover:bg-[#7A1F2B]/10 rounded transition-colors cursor-pointer"
+                className="p-1.5 text-peligro hover:bg-peligro/10 rounded transition-colors cursor-pointer"
               >
                 <Ban className="w-4 h-4" />
               </button>
@@ -449,12 +449,12 @@ export const PaginaContratos: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-linea">
         <div>
-          <span className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91]">
+          <span className="text-[11px] font-semibold tracking-widest uppercase text-tenue">
             Gestión Contractual
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-titulo font-medium text-tinta mt-1">
             Contratos de Arrendamiento
           </h1>
         </div>
@@ -463,7 +463,7 @@ export const PaginaContratos: React.FC = () => {
         </Boton>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white dark:bg-[#141416] p-4 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-panel p-4 rounded-lg border border-linea">
         <select
           value={filtroEstado}
           onChange={(e) => setFiltroEstado(e.target.value as EstadoContrato | '')}
@@ -529,9 +529,9 @@ export const PaginaContratos: React.FC = () => {
       >
         <form onSubmit={enviar} className="space-y-4">
           {errorGeneral && (
-            <div className="p-4 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/40 rounded-[4px] flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-[#7A1F2B] dark:text-[#EFA3AC] shrink-0 mt-0.5" />
-              <div className="text-xs text-[#7A1F2B] dark:text-[#EFA3AC] leading-relaxed">
+            <div className="p-4 bg-peligro-bg border border-peligro/40 rounded-lg flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-peligro shrink-0 mt-0.5" />
+              <div className="text-xs text-peligro leading-relaxed">
                 <span className="font-semibold block uppercase tracking-wide">
                   Validación del servidor
                 </span>
@@ -711,7 +711,7 @@ export const PaginaContratos: React.FC = () => {
             </Campo>
           )}
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-linea">
             <Boton type="button" variante="fantasma" onClick={() => setAccion(null)} disabled={guardando}>
               Cancelar
             </Boton>
@@ -735,12 +735,12 @@ export const PaginaContratos: React.FC = () => {
         tamano="lg"
       >
         {cargandoDetalle ? (
-          <div className="py-12 text-center text-xs text-[#8A8D91] uppercase tracking-wider">
+          <div className="py-12 text-center text-xs text-tenue uppercase tracking-wider">
             Cargando historial...
           </div>
         ) : detalle ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#FAFAF9] dark:bg-[#1A1A1D] p-4 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-fondo p-4 rounded-lg border border-linea">
               <Dato titulo="Inmueble">
                 Apartaestudio {detalle.apartaestudio.codigo}
                 <Sub>Canon vigente: {formatearMonedaCOP(detalle.canon_vigente)}</Sub>
@@ -768,7 +768,7 @@ export const PaginaContratos: React.FC = () => {
                 <Sub>Por {detalle.creado_por.nombre}</Sub>
               </Dato>
               {(detalle.fecha_entrega || detalle.motivo_anulacion) && (
-                <div className="sm:col-span-3 pt-2 border-t border-[#E3E4E6] dark:border-[#2A2A2E] text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+                <div className="sm:col-span-3 pt-2 border-t border-linea text-xs text-tinta-2">
                   {detalle.fecha_entrega && (
                     <p>
                       Aviso {formatearFechaCO(detalle.fecha_aviso)} · Entrega{' '}
@@ -779,15 +779,15 @@ export const PaginaContratos: React.FC = () => {
                 </div>
               )}
               {detalle.notas && (
-                <div className="sm:col-span-3 pt-2 border-t border-[#E3E4E6] dark:border-[#2A2A2E] text-xs text-[#5A5D62] dark:text-[#A0A3A8]">
+                <div className="sm:col-span-3 pt-2 border-t border-linea text-xs text-tinta-2">
                   Notas: {detalle.notas}
                 </div>
               )}
             </div>
 
             {detalle.prorrogas.length > 0 && (
-              <div className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] space-y-1">
-                <h4 className="font-serif-luxury text-base font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mb-2">
+              <div className="text-xs text-tinta-2 space-y-1">
+                <h4 className="font-titulo text-base font-medium text-tinta mb-2">
                   Prórrogas
                 </h4>
                 {detalle.prorrogas.map((p) => (
@@ -800,36 +800,36 @@ export const PaginaContratos: React.FC = () => {
             )}
 
             <div>
-              <h4 className="font-serif-luxury text-base font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mb-4 flex items-center gap-2">
-                <History className="w-4 h-4 text-[#8A8D91]" />
+              <h4 className="font-titulo text-base font-medium text-tinta mb-4 flex items-center gap-2">
+                <History className="w-4 h-4 text-tenue" />
                 Línea de Tiempo del Historial
               </h4>
-              <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#E3E4E6] dark:before:bg-[#2A2A2E]">
+              <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-linea">
                 {historial.map((h, i) => (
                   <div key={i} className="relative">
-                    <div className="absolute -left-6 top-1 w-4 h-4 rounded-full bg-[#111113] border-2 border-[#C0C0C0]" />
-                    <div className="bg-white dark:bg-[#141416] p-3.5 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+                    <div className="absolute -left-6 top-1 w-4 h-4 rounded-full bg-acento border-2 border-panel shadow-[0_0_0_3px_var(--c-acento-suave)]" />
+                    <div className="bg-panel p-3.5 rounded-lg border border-linea">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-[#0B0B0C] dark:text-[#FAFAF9]">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-tinta">
                           {nombreAccion(h.accion)}
                         </span>
-                        <span className="text-[11px] text-[#8A8D91]">{formatearFechaHoraCO(h.momento)}</span>
+                        <span className="text-[11px] text-tenue">{formatearFechaHoraCO(h.momento)}</span>
                       </div>
                       {h.valor_nuevo && (
-                        <p className="text-[11px] font-mono text-[#5A5D62] dark:text-[#A0A3A8] mt-1 break-all">
+                        <p className="text-[11px] font-mono text-tinta-2 mt-1 break-all">
                           {Object.entries(h.valor_nuevo)
                             .map(([k, v]) => `${k}: ${v}`)
                             .join(' · ')}
                         </p>
                       )}
-                      <p className="text-[10px] text-[#8A8D91] mt-1.5 flex items-center gap-1">
+                      <p className="text-[10px] text-tenue mt-1.5 flex items-center gap-1">
                         <User className="w-3 h-3" /> {h.usuario?.nombre ?? 'Sistema'}
                       </p>
                     </div>
                   </div>
                 ))}
                 {historial.length === 0 && (
-                  <div className="text-xs text-[#8A8D91] py-2">No hay eventos registrados.</div>
+                  <div className="text-xs text-tenue py-2">No hay eventos registrados.</div>
                 )}
               </div>
             </div>
@@ -848,11 +848,11 @@ export const PaginaContratos: React.FC = () => {
 
 const Dato: React.FC<{ titulo: string; children: React.ReactNode }> = ({ titulo, children }) => (
   <div>
-    <p className="text-[10px] uppercase tracking-widest text-[#8A8D91]">{titulo}</p>
-    <div className="text-sm font-semibold text-[#0B0B0C] dark:text-[#FAFAF9] mt-0.5">{children}</div>
+    <p className="text-[10px] uppercase tracking-widest text-tenue">{titulo}</p>
+    <div className="text-sm font-semibold text-tinta mt-0.5">{children}</div>
   </div>
 );
 
 const Sub: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p className="text-xs font-normal text-[#8A8D91]">{children}</p>
+  <p className="text-xs font-normal text-tenue">{children}</p>
 );

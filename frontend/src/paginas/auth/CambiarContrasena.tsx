@@ -67,25 +67,25 @@ export const PaginaCambiarContrasena: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto py-8">
-      <div className="bg-white dark:bg-[#141416] border border-[#E3E4E6] dark:border-[#2A2A2E] rounded-[4px] p-8 shadow-sm">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
-          <div className="w-10 h-10 rounded-[4px] bg-[#F4F5F6] dark:bg-[#1A1A1D] border border-[#C0C0C0] dark:border-[#3A3A3E] flex items-center justify-center text-[#1A1A1D] dark:text-[#FAFAF9]">
+      <div className="bg-panel border border-linea rounded-lg p-8 shadow-sm">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-linea">
+          <div className="w-10 h-10 rounded-lg bg-sutil border border-linea-fuerte flex items-center justify-center text-tinta">
             <KeyRound className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9]">
+            <h1 className="text-xl font-titulo font-medium text-tinta">
               Cambio de Contraseña
             </h1>
-            <p className="text-xs text-[#8A8D91]">
+            <p className="text-xs text-tenue">
               Usuario: <span className="font-semibold text-current">{usuario?.nombre_usuario}</span>
             </p>
           </div>
         </div>
 
         {debeCambiarContrasena && (
-          <div className="mb-6 p-4 bg-[#FAF6EE] dark:bg-[#241F14] border border-[#805B10]/30 rounded-[4px] flex items-start gap-3">
-            <ShieldAlert className="w-5 h-5 text-[#805B10] shrink-0 mt-0.5" />
-            <div className="text-xs text-[#805B10] dark:text-[#E8C576] leading-relaxed">
+          <div className="mb-6 p-4 bg-aviso-bg border border-aviso/30 rounded-lg flex items-start gap-3">
+            <ShieldAlert className="w-5 h-5 text-aviso shrink-0 mt-0.5" />
+            <div className="text-xs text-aviso leading-relaxed">
               <span className="font-semibold block mb-0.5">Cambio de contraseña requerido:</span>
               Por políticas de seguridad interna, debes actualizar tu contraseña temporal antes de poder acceder a los módulos del sistema.
             </div>
@@ -93,7 +93,7 @@ export const PaginaCambiarContrasena: React.FC = () => {
         )}
 
         {errorGeneral && (
-          <div className="mb-5 p-3.5 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/30 rounded-[4px] text-xs text-[#7A1F2B] dark:text-[#EFA3AC]">
+          <div className="mb-5 p-3.5 bg-peligro-bg border border-peligro/30 rounded-lg text-xs text-peligro">
             {errorGeneral}
           </div>
         )}
@@ -151,7 +151,7 @@ export const PaginaCambiarContrasena: React.FC = () => {
             />
           </Campo>
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-linea">
             {!debeCambiarContrasena && (
               <Boton
                 type="button"

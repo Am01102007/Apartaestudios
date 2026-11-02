@@ -51,30 +51,30 @@ export const Modal: React.FC<ModalProps> = ({
     >
       {/* Telón de fondo */}
       <div
-        className="fixed inset-0 bg-[#0B0B0C]/75 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity"
         onClick={alCerrar}
       />
 
       {/* Contenedor del Modal */}
       <div
-        className={`relative w-full ${anchoClases[tamano]} bg-[#FAFAF9] dark:bg-[#141416] text-[#0B0B0C] dark:text-[#FAFAF9] border border-[#C0C0C0]/50 dark:border-[#3A3A3E] rounded-[4px] shadow-2xl z-10 my-8 overflow-hidden`}
+        className={`relative w-full ${anchoClases[tamano]} bg-fondo text-tinta border border-linea-fuerte/50 rounded-lg shadow-2xl z-10 my-8 overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Cabecera */}
-        <div className="px-6 py-5 border-b border-[#E3E4E6] dark:border-[#2A2A2E] flex items-start justify-between bg-white dark:bg-[#18181B]">
+        <div className="px-6 py-5 border-b border-linea flex items-start justify-between bg-panel">
           <div>
-            <h2 className="text-xl sm:text-2xl font-serif-luxury font-medium tracking-tight text-[#0B0B0C] dark:text-[#FAFAF9]">
+            <h2 className="text-xl sm:text-2xl font-titulo font-medium tracking-tight text-tinta">
               {titulo}
             </h2>
             {subtitulo && (
-              <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] mt-1 font-sans-clean">
+              <p className="text-xs text-tinta-2 mt-1 ">
                 {subtitulo}
               </p>
             )}
           </div>
           <button
             onClick={alCerrar}
-            className="p-1.5 text-[#8A8D91] hover:text-[#0B0B0C] dark:hover:text-[#FAFAF9] hover:bg-black/5 dark:hover:bg-white/5 rounded-[4px] transition-colors cursor-pointer"
+            className="p-1.5 text-tenue hover:text-tinta hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
             aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />

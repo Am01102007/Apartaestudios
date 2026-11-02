@@ -190,7 +190,7 @@ export const PaginaBloqueos: React.FC = () => {
       clave: 'documento',
       encabezado: 'Documento',
       render: (b) => (
-        <span className="font-semibold text-xs text-[#0B0B0C] dark:text-[#FAFAF9]">
+        <span className="font-semibold text-xs text-tinta">
           {b.tipo_documento} {b.numero_documento}
         </span>
       ),
@@ -200,10 +200,10 @@ export const PaginaBloqueos: React.FC = () => {
       encabezado: 'Persona Bloqueada',
       render: (b) => (
         <div>
-          <span className="font-medium text-sm text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <span className="font-medium text-sm text-tinta">
             {b.nombre}
           </span>
-          <p className="text-[11px] text-[#8A8D91]">
+          <p className="text-[11px] text-tenue">
             Registrado por: {b.bloqueado_por.nombre} · {formatearFechaHoraCO(b.bloqueado_en)}
           </p>
         </div>
@@ -214,11 +214,11 @@ export const PaginaBloqueos: React.FC = () => {
       encabezado: 'Motivo del Bloqueo',
       render: (b) => (
         <div className="max-w-xs">
-          <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] line-clamp-2" title={b.motivo ?? undefined}>
+          <p className="text-xs text-tinta-2 line-clamp-2" title={b.motivo ?? undefined}>
             {b.motivo ?? 'Reservado para administradores'}
           </p>
           {b.motivo_levantamiento && (
-            <p className="text-[10px] text-[#2F4F4A] dark:text-[#84C9BE] mt-1 italic">
+            <p className="text-[10px] text-exito mt-1 italic">
               Levantamiento: {b.motivo_levantamiento} ({b.levantado_por?.nombre})
             </p>
           )}
@@ -252,9 +252,9 @@ export const PaginaBloqueos: React.FC = () => {
               Levantar Bloqueo
             </Boton>
           ) : b.activo ? (
-            <span className="text-[11px] text-[#8A8D91] italic">Activo</span>
+            <span className="text-[11px] text-tenue italic">Activo</span>
           ) : (
-            <span className="text-[11px] text-[#8A8D91] italic">Levantado</span>
+            <span className="text-[11px] text-tenue italic">Levantado</span>
           )}
         </div>
       ),
@@ -264,12 +264,12 @@ export const PaginaBloqueos: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-linea">
         <div>
-          <span className="text-[11px] font-semibold tracking-widest uppercase text-[#8A8D91]">
+          <span className="text-[11px] font-semibold tracking-widest uppercase text-tenue">
             Control de Seguridad & Restricciones
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-titulo font-medium text-tinta mt-1">
             Bloqueos de Personas
           </h1>
         </div>
@@ -285,14 +285,14 @@ export const PaginaBloqueos: React.FC = () => {
       </div>
 
       {/* Herramienta obligatoria: Verificar Documento (GET /bloqueos/verificar) */}
-      <div className="bg-white dark:bg-[#141416] p-6 rounded-[4px] border border-[#C0C0C0] dark:border-[#3A3A3E] shadow-xs">
+      <div className="bg-panel p-6 rounded-lg border border-linea-fuerte shadow-xs">
         <div className="flex items-center gap-2 mb-3">
-          <FileSearch className="w-5 h-5 text-[#8A8D91]" />
-          <h2 className="text-base font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9]">
+          <FileSearch className="w-5 h-5 text-tenue" />
+          <h2 className="text-base font-titulo font-medium text-tinta">
             Herramienta: Verificar Documento en Base de Restricciones
           </h2>
         </div>
-        <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8] mb-4">
+        <p className="text-xs text-tinta-2 mb-4">
           Consulta al instante si un arrendatario o postulante tiene restricciones activas que le
           impidan firmar contratos.
         </p>
@@ -328,11 +328,11 @@ export const PaginaBloqueos: React.FC = () => {
 
         {/* Resultado de verificación */}
         {resultadoVerificacion !== null && (
-          <div className="mt-4 pt-4 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="mt-4 pt-4 border-t border-linea">
             {resultadoVerificacion.bloqueado ? (
-              <div className="p-4 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/40 rounded-[4px] flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-[#7A1F2B] dark:text-[#EFA3AC] shrink-0 mt-0.5" />
-                <div className="text-xs text-[#7A1F2B] dark:text-[#EFA3AC]">
+              <div className="p-4 bg-peligro-bg border border-peligro/40 rounded-lg flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-peligro shrink-0 mt-0.5" />
+                <div className="text-xs text-peligro">
                   <span className="font-semibold text-sm block">
                     PERSONA BLOQUEADA: No se permite emitir contratos
                   </span>
@@ -342,9 +342,9 @@ export const PaginaBloqueos: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-[#F2F7F6] dark:bg-[#0E201D] border border-[#2F4F4A]/40 rounded-[4px] flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#2F4F4A] dark:text-[#8CD5C8] shrink-0" />
-                <div className="text-xs text-[#2F4F4A] dark:text-[#8CD5C8]">
+              <div className="p-4 bg-exito-bg border border-exito/40 rounded-lg flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-exito shrink-0" />
+                <div className="text-xs text-exito">
                   <span className="font-semibold text-sm block">
                     Documento Habilitado
                   </span>
@@ -357,15 +357,15 @@ export const PaginaBloqueos: React.FC = () => {
       </div>
 
       {/* Filtros de la tabla */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 bg-white dark:bg-[#141416] p-3 rounded-[4px] border border-[#E3E4E6] dark:border-[#2A2A2E]">
+      <div className="flex flex-col sm:flex-row items-center gap-3 bg-panel p-3 rounded-lg border border-linea">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-[#8A8D91] absolute left-3 top-2.5 pointer-events-none" />
+          <Search className="w-4 h-4 text-tenue absolute left-3 top-2.5 pointer-events-none" />
           <input
             type="text"
             placeholder="Buscar por cédula o nombre en la lista..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 text-xs bg-transparent border-0 outline-none text-[#0B0B0C] dark:text-[#FAFAF9]"
+            className="w-full pl-9 pr-4 py-1.5 text-xs bg-transparent border-0 outline-none text-tinta"
           />
         </div>
 
@@ -373,7 +373,7 @@ export const PaginaBloqueos: React.FC = () => {
           <select
             value={filtroActivo}
             onChange={(e) => setFiltroActivo(e.target.value as EstadoBloqueo)}
-            className="w-full px-3 py-1.5 text-xs bg-transparent border border-[#C0C0C0] dark:border-[#3A3A3E] rounded-[4px] text-[#0B0B0C] dark:text-[#FAFAF9]"
+            className="w-full px-3 py-1.5 text-xs bg-transparent border border-linea-fuerte rounded-lg text-tinta"
           >
             <option value="todos">Todos los registros</option>
             <option value="activos">Solo Bloqueos Activos</option>
@@ -483,7 +483,7 @@ export const PaginaBloqueos: React.FC = () => {
             />
           </Campo>
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"
@@ -509,16 +509,16 @@ export const PaginaBloqueos: React.FC = () => {
       >
         <form onSubmit={manejarLevantarBloqueo} className="space-y-4">
           {errorLevantamiento && (
-            <div className="p-3 bg-[#FCF4F5] dark:bg-[#251013] border border-[#7A1F2B]/40 rounded text-xs text-[#7A1F2B] dark:text-[#EFA3AC]">
+            <div className="p-3 bg-peligro-bg border border-peligro/40 rounded text-xs text-peligro">
               {errorLevantamiento}
             </div>
           )}
 
-          <div className="p-3 bg-[#FAFAF9] dark:bg-[#1A1A1D] rounded border border-[#E3E4E6] dark:border-[#2A2A2E] text-xs space-y-1">
-            <span className="text-[#8A8D91] block uppercase tracking-wider text-[10px]">
+          <div className="p-3 bg-fondo rounded border border-linea text-xs space-y-1">
+            <span className="text-tenue block uppercase tracking-wider text-[10px]">
               Motivo de Bloqueo Original
             </span>
-            <p className="text-[#0B0B0C] dark:text-[#FAFAF9]">{bloqueoALevantar?.motivo}</p>
+            <p className="text-tinta">{bloqueoALevantar?.motivo}</p>
           </div>
 
           <Campo
@@ -537,7 +537,7 @@ export const PaginaBloqueos: React.FC = () => {
             />
           </Campo>
 
-          <div className="pt-3 flex items-center justify-end gap-2 border-t border-[#E3E4E6] dark:border-[#2A2A2E]">
+          <div className="pt-3 flex items-center justify-end gap-2 border-t border-linea">
             <Boton
               type="button"
               variante="fantasma"

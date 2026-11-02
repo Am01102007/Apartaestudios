@@ -36,7 +36,7 @@ export default function App() {
             path="/cambiar-contrasena"
             element={
               <RutaProtegida>
-                <div className="min-h-screen bg-[#FAFAF9] dark:bg-[#0B0B0C] p-4 flex items-center justify-center">
+                <div className="min-h-screen bg-fondo p-4 flex items-center justify-center">
                   <PaginaCambiarContrasena />
                 </div>
               </RutaProtegida>

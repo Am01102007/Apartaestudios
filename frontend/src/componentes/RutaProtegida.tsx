@@ -18,12 +18,12 @@ export const RutaProtegida: React.FC<RutaProtegidaProps> = ({
 
   if (cargando) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAF9] dark:bg-[#0B0B0C] text-[#0B0B0C] dark:text-[#FAFAF9]">
-        <div className="w-8 h-8 border border-[#C0C0C0] flex items-center justify-center rotate-45 mb-4 animate-pulse">
-          <div className="w-3.5 h-3.5 bg-[#C0C0C0] -rotate-45" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-fondo text-tinta">
+        <div className="w-8 h-8 border border-linea-fuerte flex items-center justify-center rotate-45 mb-4 animate-pulse">
+          <div className="w-3.5 h-3.5 bg-linea-fuerte -rotate-45" />
         </div>
-        <Loader2 className="w-5 h-5 animate-spin text-[#8A8D91] mb-2" />
-        <p className="text-xs tracking-widest uppercase text-[#5A5D62] dark:text-[#A0A3A8]">
+        <Loader2 className="w-5 h-5 animate-spin text-tenue mb-2" />
+        <p className="text-xs tracking-widest uppercase text-tinta-2">
           Verificando sesión segura...
         </p>
       </div>
@@ -44,13 +44,13 @@ export const RutaProtegida: React.FC<RutaProtegidaProps> = ({
   if (requiereAdmin && !esAdmin) {
     return (
       <div className="py-16 text-center max-w-lg mx-auto">
-        <div className="w-14 h-14 rounded-full bg-[#FCF4F5] dark:bg-[#251013] text-[#7A1F2B] dark:text-[#E89AA3] flex items-center justify-center mx-auto mb-4 border border-[#7A1F2B]/30">
+        <div className="w-14 h-14 rounded-full bg-peligro-bg text-peligro flex items-center justify-center mx-auto mb-4 border border-peligro/30">
           <ShieldAlert className="w-7 h-7" />
         </div>
-        <h2 className="text-2xl font-serif-luxury font-medium text-[#0B0B0C] dark:text-[#FAFAF9]">
+        <h2 className="text-2xl font-titulo font-medium text-tinta">
           Acceso Restringido
         </h2>
-        <p className="text-sm text-[#5A5D62] dark:text-[#A0A3A8] mt-2 font-sans-clean">
+        <p className="text-sm text-tinta-2 mt-2 ">
           No tienes permiso para esta acción. Este módulo está reservado exclusivamente para administradores.
         </p>
         <div className="mt-6">

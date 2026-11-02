@@ -30,7 +30,7 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
   tamano = 'md',
 }) => {
   const tamanoClase =
-    tamano === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-xs tracking-wider';
+    tamano === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-[11px] tracking-wider';
 
   // 1. Estado apartaestudio
   if (tipo === 'apartaestudio') {
@@ -38,9 +38,9 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'libre') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#F4F5F6] text-[#1A1A1D] border border-[#C0C0C0] dark:bg-[#1A1A1D] dark:text-[#FAFAF9] dark:border-[#3A3A3E] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-sutil text-tinta border border-linea-fuerte ${tamanoClase}`}
         >
-          <CheckCircle2 className="w-3.5 h-3.5 text-[#5A5D62] dark:text-[#C0C0C0]" />
+          <CheckCircle2 className="w-3.5 h-3.5" />
           Libre
         </span>
       );
@@ -48,7 +48,7 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'ocupado') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#0B0B0C] text-[#FAFAF9] border border-[#2A2A2E] dark:bg-[#FAFAF9] dark:text-[#0B0B0C] dark:border-[#E3E4E6] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-acento/15 text-acento-fuerte border border-acento/40 ${tamanoClase}`}
         >
           <Lock className="w-3.5 h-3.5" />
           Ocupado
@@ -58,9 +58,9 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'mantenimiento') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#EAEBED] text-[#4A4D52] border border-[#8A8D91] dark:bg-[#222326] dark:text-[#C0C0C0] dark:border-[#4A4D52] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-aviso-bg text-aviso border border-aviso/40 ${tamanoClase}`}
         >
-          <Wrench className="w-3.5 h-3.5 text-[#8A8D91]" />
+          <Wrench className="w-3.5 h-3.5" />
           Mantenimiento
         </span>
       );
@@ -73,9 +73,9 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'vigente') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#F2F7F6] text-[#2F4F4A] border border-[#2F4F4A]/30 dark:bg-[#122926] dark:text-[#84C9BE] dark:border-[#2F4F4A] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-exito-bg text-exito border border-exito/30 ${tamanoClase}`}
         >
-          <FileCheck2 className="w-3.5 h-3.5 text-[#2F4F4A] dark:text-[#84C9BE]" />
+          <FileCheck2 className="w-3.5 h-3.5" />
           Vigente
         </span>
       );
@@ -83,9 +83,9 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'vencido') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#FCF4F5] text-[#7A1F2B] border border-[#7A1F2B]/30 dark:bg-[#2E1015] dark:text-[#E89AA3] dark:border-[#7A1F2B] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-peligro-bg text-peligro border border-peligro/40 ${tamanoClase}`}
         >
-          <Clock className="w-3.5 h-3.5 text-[#7A1F2B] dark:text-[#E89AA3]" />
+          <Clock className="w-3.5 h-3.5" />
           Vencido
         </span>
       );
@@ -93,9 +93,9 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'por_iniciar' || estado === 'en_terminacion') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#F4F5F6] text-[#1A1A1D] border border-[#8A8D91] dark:bg-[#1A1A1D] dark:text-[#E3E4E6] dark:border-[#4A4D52] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-sutil text-tinta border border-linea-fuerte ${tamanoClase}`}
         >
-          <Clock className="w-3.5 h-3.5 text-[#8A8D91]" />
+          <Clock className="w-3.5 h-3.5" />
           {NOMBRES_ESTADO_CONTRATO[estado]}
         </span>
       );
@@ -103,9 +103,9 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'terminado' || estado === 'renovado') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#EAEBED] text-[#5A5D62] border border-[#C0C0C0] dark:bg-[#1A1A1D] dark:text-[#A0A3A8] dark:border-[#3A3A3E] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-sutil text-tenue border border-linea ${tamanoClase}`}
         >
-          <CheckCircle2 className="w-3.5 h-3.5 text-[#8A8D91]" />
+          <CheckCircle2 className="w-3.5 h-3.5" />
           {NOMBRES_ESTADO_CONTRATO[estado]}
         </span>
       );
@@ -113,7 +113,7 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estado === 'anulado') {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#2A2A2E] text-[#E3E4E6] border border-[#5A5D62] dark:bg-[#1A1A1D] dark:text-[#8A8D91] dark:border-[#3A3A3E] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-sutil text-tenue border border-linea ${tamanoClase}`}
         >
           <Ban className="w-3.5 h-3.5" />
           Anulado
@@ -128,18 +128,18 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (estaBloqueado) {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#FCF4F5] text-[#7A1F2B] border border-[#7A1F2B]/40 dark:bg-[#2E1015] dark:text-[#E89AA3] dark:border-[#7A1F2B] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-peligro-bg text-peligro border border-peligro/40 ${tamanoClase}`}
         >
-          <AlertCircle className="w-3.5 h-3.5 text-[#7A1F2B] dark:text-[#E89AA3]" />
+          <AlertCircle className="w-3.5 h-3.5" />
           Bloqueado
         </span>
       );
     }
     return (
       <span
-        className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#F2F7F6] text-[#2F4F4A] border border-[#2F4F4A]/30 dark:bg-[#122926] dark:text-[#84C9BE] ${tamanoClase}`}
+        className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-exito-bg text-exito border border-exito/30 ${tamanoClase}`}
       >
-        <ShieldCheck className="w-3.5 h-3.5 text-[#2F4F4A] dark:text-[#84C9BE]" />
+        <ShieldCheck className="w-3.5 h-3.5" />
         Habilitado
       </span>
     );
@@ -151,18 +151,18 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     if (activo) {
       return (
         <span
-          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#F2F7F6] text-[#2F4F4A] border border-[#2F4F4A]/30 dark:bg-[#122926] dark:text-[#84C9BE] ${tamanoClase}`}
+          className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-exito-bg text-exito border border-exito/30 ${tamanoClase}`}
         >
-          <UserCheck className="w-3.5 h-3.5 text-[#2F4F4A] dark:text-[#84C9BE]" />
+          <UserCheck className="w-3.5 h-3.5" />
           Activo
         </span>
       );
     }
     return (
       <span
-        className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#EAEBED] text-[#5A5D62] border border-[#C0C0C0] dark:bg-[#1A1A1D] dark:text-[#8A8D91] ${tamanoClase}`}
+        className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-sutil text-tenue border border-linea ${tamanoClase}`}
       >
-        <UserX className="w-3.5 h-3.5 text-[#8A8D91]" />
+        <UserX className="w-3.5 h-3.5" />
         Inactivo
       </span>
     );
@@ -173,7 +173,7 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
     const rol = String(valor);
     return (
       <span
-        className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-[4px] bg-[#1A1A1D] text-[#FAFAF9] border border-[#8A8D91] dark:bg-[#2A2A2E] dark:text-[#FAFAF9] ${tamanoClase}`}
+        className={`inline-flex items-center gap-1.5 uppercase font-medium rounded-full bg-tinta text-sobre-tinta border border-transparent ${tamanoClase}`}
       >
         {rol === 'administrador' ? 'Administrador' : 'Empleado'}
       </span>
@@ -181,7 +181,7 @@ export const InsigniaEstado: React.FC<InsigniaEstadoProps> = ({
   }
 
   return (
-    <span className={`inline-flex items-center font-medium rounded-[4px] bg-gray-100 text-gray-800 ${tamanoClase}`}>
+    <span className={`inline-flex items-center font-medium rounded-lg bg-sutil text-tinta ${tamanoClase}`}>
       {String(valor)}
     </span>
   );

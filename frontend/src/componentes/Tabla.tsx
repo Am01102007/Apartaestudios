@@ -40,16 +40,16 @@ export function Tabla<T>({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#141416] border border-[#E3E4E6] dark:border-[#2A2A2E] rounded-[4px] shadow-xs overflow-hidden">
+    <div className="w-full bg-panel border border-linea rounded-lg shadow-xs overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#E3E4E6] dark:border-[#2A2A2E] bg-[#FAFAF9] dark:bg-[#18181B]">
+            <tr className="border-b border-linea bg-fondo">
               {columnas.map((col) => (
                 <th
                   key={col.clave}
                   style={col.ancho ? { width: col.ancho } : undefined}
-                  className={`px-4 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-[#5A5D62] dark:text-[#A0A3A8] ${
+                  className={`px-4 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-tinta-2 ${
                     alinearClases[col.alineacion || 'izquierda']
                   }`}
                 >
@@ -58,13 +58,13 @@ export function Tabla<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E3E4E6] dark:divide-[#242428] text-sm font-sans-clean">
+          <tbody className="divide-y divide-linea text-sm ">
             {cargando ? (
               <tr>
                 <td colSpan={columnas.length} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center justify-center gap-3">
-                    <Loader2 className="w-6 h-6 animate-spin text-[#8A8D91]" />
-                    <span className="text-xs uppercase tracking-wider text-[#5A5D62] dark:text-[#A0A3A8]">
+                    <Loader2 className="w-6 h-6 animate-spin text-tenue" />
+                    <span className="text-xs uppercase tracking-wider text-tinta-2">
                       Cargando información...
                     </span>
                   </div>
@@ -74,13 +74,13 @@ export function Tabla<T>({
               <tr>
                 <td colSpan={columnas.length} className="px-6 py-14 text-center">
                   <div className="flex flex-col items-center justify-center gap-3 max-w-md mx-auto">
-                    <div className="w-10 h-10 rounded-full bg-[#FCF4F5] dark:bg-[#2E1015] flex items-center justify-center text-[#7A1F2B] dark:text-[#E89AA3]">
+                    <div className="w-10 h-10 rounded-full bg-peligro-bg flex items-center justify-center text-peligro">
                       <AlertCircle className="w-5 h-5" />
                     </div>
-                    <h4 className="text-sm font-medium text-[#7A1F2B] dark:text-[#E89AA3]">
+                    <h4 className="text-sm font-medium text-peligro">
                       Error al cargar los datos
                     </h4>
-                    <p className="text-xs text-[#5A5D62] dark:text-[#A0A3A8]">{error}</p>
+                    <p className="text-xs text-tinta-2">{error}</p>
                     {alReintentar && (
                       <Boton
                         tamano="sm"
@@ -99,13 +99,13 @@ export function Tabla<T>({
               <tr>
                 <td colSpan={columnas.length} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center justify-center gap-2 max-w-sm mx-auto">
-                    <div className="w-10 h-10 rounded-full bg-[#F4F5F6] dark:bg-[#1E1E22] flex items-center justify-center text-[#8A8D91] mb-1">
+                    <div className="w-10 h-10 rounded-full bg-sutil flex items-center justify-center text-tenue mb-1">
                       <Inbox className="w-5 h-5" />
                     </div>
-                    <h4 className="text-sm font-medium text-[#1A1A1D] dark:text-[#FAFAF9]">
+                    <h4 className="text-sm font-medium text-tinta">
                       {mensajeVacio}
                     </h4>
-                    <p className="text-xs text-[#8A8D91]">{subtituloVacio}</p>
+                    <p className="text-xs text-tenue">{subtituloVacio}</p>
                     {accionVacio && <div className="mt-3">{accionVacio}</div>}
                   </div>
                 </td>
@@ -118,12 +118,12 @@ export function Tabla<T>({
                 return (
                   <tr
                     key={id}
-                    className="hover:bg-[#FAFAF9] dark:hover:bg-[#1A1A1D] transition-colors"
+                    className="hover:bg-fondo transition-colors"
                   >
                     {columnas.map((col) => (
                       <td
                         key={col.clave}
-                        className={`px-4 py-3.5 text-[#0B0B0C] dark:text-[#FAFAF9] ${
+                        className={`px-4 py-3.5 text-tinta ${
                           alinearClases[col.alineacion || 'izquierda']
                         }`}
                       >
