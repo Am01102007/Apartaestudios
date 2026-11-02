@@ -15,7 +15,7 @@ from app.modulos.residentes.esquemas import (
     ResidenteEditar,
     ResidenteSalida,
 )
-from app.modulos.usuarios.dependencias import SesionActual, SesionAdministrador, requiere_sesion
+from app.modulos.usuarios.dependencias import SesionActual, requiere_sesion
 
 router = APIRouter(
     prefix="/residentes", tags=["residentes"], dependencies=[Depends(requiere_sesion)]
@@ -33,7 +33,7 @@ def listar(
 
 
 @router.post("", response_model=ResidenteSalida, status_code=201, summary="Registrar residente")
-def crear(datos: ResidenteCrear, actual: SesionAdministrador, bd: BD, ip: IP):
+def crear(datos: ResidenteCrear, actual: SesionActual, bd: BD, ip: IP):
     residente = servicio.crear(bd, datos, actor_id=actual.usuario_id, ip=ip)
     bd.commit()
     return residente
@@ -56,7 +56,7 @@ def detalle(residente_id: int, actual: SesionActual, bd: BD, reloj: Reloj):
 
 
 @router.patch("/{residente_id}", response_model=ResidenteSalida, summary="Editar residente")
-def editar(residente_id: int, datos: ResidenteEditar, actual: SesionAdministrador, bd: BD, ip: IP):
+def editar(residente_id: int, datos: ResidenteEditar, actual: SesionActual, bd: BD, ip: IP):
     residente = servicio.editar(bd, residente_id, datos, actor_id=actual.usuario_id, ip=ip)
     bd.commit()
     return residente

@@ -27,13 +27,18 @@ def auditorias(sesion_bd, entidad_id):
     )
 
 
-def test_r01_el_administrador_registra_y_el_empleado_consulta(cliente_admin, cliente_empleado):
+def test_r01_administrador_y_empleado_registran_y_editan(cliente_admin, cliente_empleado):
     residente = crear_residente(cliente_admin)
     assert residente["numero_documento"] == "1020304"
     assert residente["correo"] == "carlos@correo.com"
 
+    # Decisión del 2 de noviembre: el empleado registra y edita residentes para poder firmar
+    # contratos con personas nuevas.
     r = cliente_empleado.post(URL, json=datos_residente(numero_documento="999999"))
-    assert r.status_code == 403
+    assert r.status_code == 201
+    r = cliente_empleado.patch(f"{URL}/{residente['id']}", json={"telefono": "3001112233"})
+    assert r.status_code == 200
+    assert r.json()["telefono"] == "3001112233"
     assert cliente_empleado.get(f"{URL}/{residente['id']}").status_code == 200
 
 
