@@ -90,9 +90,10 @@ def test_r06_dos_bloqueos_simultaneos_del_mismo_documento(fabrica, admin_id):
 
 
 def test_r06_el_indice_unico_respalda_la_regla(fabrica, admin_id, monkeypatch):
-    # Sin el bloqueo del documento, las dos pasan la verificación previa a la vez: solo el
-    # índice único parcial puede detener a la segunda.
+    # Sin los bloqueos del documento y del nombre, las dos pasan la verificación previa a la
+    # vez: solo el índice único parcial puede detener a la segunda.
     monkeypatch.setattr(repositorio, "bloquear_documento", lambda *a, **k: None)
+    monkeypatch.setattr(repositorio, "bloquear_nombre", lambda *a, **k: None)
     salida = threading.Barrier(2)
     original = repositorio.activo_de
 
@@ -129,7 +130,7 @@ def test_ca03_base_la_verificacion_espera_a_un_bloqueo_en_curso(fabrica, admin_i
         bloqueando.wait(timeout=10)
         try:
             with fabrica() as bd:
-                servicio.exigir_sin_bloqueo(bd, "CC", "990000003")
+                servicio.exigir_sin_bloqueo(bd, "CC", "990000003", "Otra persona")
         finally:
             verificacion_terminada.set()
 

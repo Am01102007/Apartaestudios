@@ -227,3 +227,16 @@ Maryam decidió que el empleado registre residentes, para que pueda firmar contr
 nuevas sin depender del administrador, y que el empleado no edite ni desactive nada. Editar
 residentes y contratos, y todo lo de propietarios, apartaestudios, mantenimiento y bloqueos, queda
 solo para el administrador.
+
+## Cambio: el bloqueo se verifica por documento o por nombre (2026-11-02)
+
+Maryam pidió que el bloqueo se verifique tanto por el nombre como por el número de cédula. Al
+crear o renovar un contrato, y en el detalle de un residente, una persona cuenta como bloqueada
+si hay un bloqueo activo con su mismo documento (tipo y número) **o** con su mismo nombre
+completo. El nombre se compara sin tildes, sin distinguir mayúsculas y sin espacios de más, así
+que "Mauricio Herrera Peña" y "mauricio  herrera pena" coinciden. Un nombre parcial (por ejemplo,
+sin el segundo apellido) no coincide.
+
+Para la concurrencia, bloquear y verificar toman también un bloqueo de PostgreSQL sobre el nombre
+normalizado, además del del documento. `GET /bloqueos/verificar` sigue consultando solo por
+documento, y un mismo documento sigue pudiendo tener un único bloqueo activo (RR-04).

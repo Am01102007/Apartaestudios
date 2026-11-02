@@ -37,11 +37,21 @@ def bloqueo_activo(sesion: Session, tipo: TipoDocumento, numero: str) -> Bloqueo
     return repositorio.activo_de(sesion, tipo, numero)
 
 
-def exigir_sin_bloqueo(sesion: Session, tipo: TipoDocumento, numero: str) -> None:
-    """RN-07: falla si el documento tiene un bloqueo activo. Toma el bloqueo del documento
-    hasta el fin de la transacción, para que nadie lo bloquee mientras se firma el contrato."""
+def bloqueo_de_persona(
+    sesion: Session, tipo: TipoDocumento, numero: str, nombre: str
+) -> Bloqueo | None:
+    """Bloqueo activo que coincide con el documento o con el nombre de la persona."""
+    return repositorio.activo_de_persona(sesion, tipo, numero, nombre)
+
+
+def exigir_sin_bloqueo(sesion: Session, tipo: TipoDocumento, numero: str, nombre: str) -> None:
+    """RN-07: falla si hay un bloqueo activo con el mismo documento o con el mismo
+    nombre (sin tildes, mayúsculas ni espacios de más). Toma el bloqueo del documento y del
+    nombre hasta el fin de la transacción, para que nadie bloquee a la persona mientras se
+    firma el contrato."""
     repositorio.bloquear_documento(sesion, tipo, numero)
-    if repositorio.activo_de(sesion, tipo, numero) is not None:
+    repositorio.bloquear_nombre(sesion, nombre)
+    if repositorio.activo_de_persona(sesion, tipo, numero, nombre) is not None:
         raise ReglaDeNegocio(
             "La persona tiene un bloqueo activo y no puede firmar contratos nuevos.",
             codigo="persona_bloqueada",
@@ -59,6 +69,7 @@ def bloquear(
 ) -> Bloqueo:
     tipo, numero = datos.tipo_documento, datos.numero_documento
     repositorio.bloquear_documento(sesion, tipo, numero)
+    repositorio.bloquear_nombre(sesion, datos.nombre)
     if repositorio.activo_de(sesion, tipo, numero) is not None:
         raise _ya_bloqueado(tipo, numero)
 

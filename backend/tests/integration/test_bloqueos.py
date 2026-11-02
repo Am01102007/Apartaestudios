@@ -158,10 +158,10 @@ def test_r12_bloquear_y_levantar_quedan_auditados(cliente_admin, sesion_bd):
 
 
 def test_exigir_sin_bloqueo_para_el_modulo_de_contratos(cliente_admin, sesion_bd):
-    servicio.exigir_sin_bloqueo(sesion_bd, "CC", "1020304")  # sin bloqueo: no falla
+    servicio.exigir_sin_bloqueo(sesion_bd, "CC", "1020304", "Nadie")  # sin bloqueo: no falla
     crear_bloqueo(cliente_admin)
     with pytest.raises(ReglaDeNegocio) as error:
-        servicio.exigir_sin_bloqueo(sesion_bd, "CC", "1020304")
+        servicio.exigir_sin_bloqueo(sesion_bd, "CC", "1020304", "Nadie")
     assert error.value.codigo == "persona_bloqueada"
 
 

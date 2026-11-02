@@ -223,7 +223,9 @@ def crear(
 ) -> Contrato:
     _exigir_inicio_no_pasado(datos.fecha_inicio, hoy)
     _, residente = _bloquear_partes(sesion, datos.apartaestudio_id, datos.residente_id)
-    bloqueos.exigir_sin_bloqueo(sesion, residente.tipo_documento, residente.numero_documento)
+    bloqueos.exigir_sin_bloqueo(
+        sesion, residente.tipo_documento, residente.numero_documento, residente.nombre
+    )
     if repositorio.apartaestudio_reservado(sesion, datos.apartaestudio_id, hoy):
         raise _reservado()
 
@@ -368,7 +370,9 @@ def renovar(
     )
     anterior = _obtener(sesion, contrato_id, bloquear=True)
     _en_curso_sin_renovacion(sesion, anterior, hoy, "renovar")
-    bloqueos.exigir_sin_bloqueo(sesion, residente.tipo_documento, residente.numero_documento)
+    bloqueos.exigir_sin_bloqueo(
+        sesion, residente.tipo_documento, residente.numero_documento, residente.nombre
+    )
 
     inicio = estados.inicio_renovacion(anterior.fecha_inicio, anterior.fecha_terminacion, hoy)
     if datos.fecha_terminacion <= inicio:

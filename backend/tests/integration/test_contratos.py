@@ -136,6 +136,30 @@ def test_ca03_persona_bloqueada_no_firma(cliente_admin, cliente_empleado):
     assert cliente_admin.get(URL).json() == []
 
 
+@pytest.mark.parametrize(
+    "bloqueo",
+    [
+        # Mismo nombre, escrito distinto y con otro documento.
+        {"numero_documento": "99887766", "nombre": "  carlos   PEREZ "},
+        # Mismo documento, con otro nombre.
+        {"nombre": "Carlos Andrés Pérez Gómez"},
+    ],
+)
+def test_ca03_basta_que_coincida_el_documento_o_el_nombre(cliente_admin, bloqueo):
+    apartaestudio, residente = escenario(cliente_admin)
+    crear_bloqueo(cliente_admin, **bloqueo)
+    r = cliente_admin.post(URL, json=datos_contrato(apartaestudio["id"], residente["id"]))
+    assert r.status_code == 409
+    assert r.json()["error"]["codigo"] == "persona_bloqueada"
+
+
+def test_ca03_otra_persona_sin_coincidencias_si_firma(cliente_admin):
+    apartaestudio, residente = escenario(cliente_admin)
+    crear_bloqueo(cliente_admin, numero_documento="99887766", nombre="Carlos Pérez Gómez")
+    r = cliente_admin.post(URL, json=datos_contrato(apartaestudio["id"], residente["id"]))
+    assert r.status_code == 201, r.text
+
+
 def test_c07_una_persona_puede_tener_varios_contratos(cliente_admin):
     apartaestudio, residente = escenario(cliente_admin)
     otro = crear_apartaestudio(cliente_admin, apartaestudio["propietario"]["id"], codigo="202")

@@ -1,7 +1,7 @@
-from sqlalchemy import or_, select, text
+from sqlalchemy import and_, func, or_, select, text
 from sqlalchemy.orm import Session
 
-from app.core.documentos import TipoDocumento, normalizar_documento
+from app.core.documentos import TipoDocumento, normalizar_documento, normalizar_nombre
 from app.db.consultas import patron_busqueda
 from app.modulos.bloqueos.modelos import Bloqueo, EstadoBloqueo
 
@@ -25,6 +25,39 @@ def activo_de(sesion: Session, tipo: TipoDocumento, numero: str) -> Bloqueo | No
             Bloqueo.numero_documento == numero,
             Bloqueo.levantado_en.is_(None),
         )
+    )
+
+
+def bloquear_nombre(sesion: Session, nombre: str) -> None:
+    """Igual que `bloquear_documento`, pero sobre el nombre normalizado de la persona."""
+    sesion.execute(
+        text("SELECT pg_advisory_xact_lock(hashtextextended(:clave, 0))"),
+        {"clave": f"nombre:{normalizar_nombre(nombre)}"},
+    )
+
+
+def _nombre_normalizado(columna):
+    """La versión SQL de `normalizar_nombre`: sin tildes, minúsculas y un solo espacio."""
+    sin_tildes = func.translate(columna, "ÁÉÍÓÚÜÑáéíóúüñ", "AEIOUUNaeiouun")
+    return func.btrim(func.regexp_replace(func.lower(sin_tildes), r"\s+", " ", "g"))
+
+
+def activo_de_persona(
+    sesion: Session, tipo: TipoDocumento, numero: str, nombre: str
+) -> Bloqueo | None:
+    """Bloqueo activo que coincide con el documento o con el nombre completo, sin importar
+    tildes, mayúsculas ni espacios de más."""
+    return sesion.scalar(
+        select(Bloqueo)
+        .where(
+            Bloqueo.levantado_en.is_(None),
+            or_(
+                and_(Bloqueo.tipo_documento == tipo, Bloqueo.numero_documento == numero),
+                _nombre_normalizado(Bloqueo.nombre) == normalizar_nombre(nombre),
+            ),
+        )
+        .order_by(Bloqueo.id)
+        .limit(1)
     )
 
 

@@ -55,10 +55,10 @@ def obtener(sesion: Session, residente_id: int, *, bloquear: bool = False) -> Re
 
 
 def detalle(sesion: Session, residente_id: int) -> tuple[Residente, Bloqueo | None]:
-    """R-04: el residente y su bloqueo activo, si tiene (se busca por su documento)."""
+    """R-04: el residente y su bloqueo activo, si tiene (por su documento o su nombre)."""
     residente = obtener(sesion, residente_id)
-    return residente, bloqueos.bloqueo_activo(
-        sesion, residente.tipo_documento, residente.numero_documento
+    return residente, bloqueos.bloqueo_de_persona(
+        sesion, residente.tipo_documento, residente.numero_documento, residente.nombre
     )
 
 

@@ -5,6 +5,7 @@ Todos los dominios usan exactamente la misma normalización, para que un documen
 """
 
 import re
+import unicodedata
 from enum import StrEnum
 
 from sqlalchemy import Enum
@@ -32,6 +33,18 @@ def columna_tipo() -> Enum:
 def normalizar_documento(valor: str) -> str:
     """`1.234.567` → `1234567`; `ab-12 3` → `AB123`."""
     return _SEPARADORES.sub("", valor).upper()
+
+
+def normalizar_nombre(valor: str) -> str:
+    """`  José  ÁLVAREZ ` → `jose alvarez`: sin tildes, minúsculas y un solo espacio.
+
+    Debe dar lo mismo que `_nombre_normalizado` del repositorio de bloqueos, para que la
+    comparación sea igual en Python y en PostgreSQL.
+    """
+    sin_tildes = "".join(
+        c for c in unicodedata.normalize("NFD", valor) if unicodedata.category(c) != "Mn"
+    )
+    return " ".join(sin_tildes.lower().split())
 
 
 def error_documento(tipo: TipoDocumento | None, numero: str | None) -> str | None:
