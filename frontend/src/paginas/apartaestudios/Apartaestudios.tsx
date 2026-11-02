@@ -24,6 +24,7 @@ import { Modal } from '../../componentes/Modal';
 import { Campo, EntradaTexto, EntradaSeleccion, EntradaAreaTexto } from '../../componentes/Campo';
 import { InsigniaEstado } from '../../componentes/InsigniaEstado';
 import { useAuth } from '../../contexto/AuthContext';
+import { puede } from '../../utilidades/permisos';
 import { ErrorApi } from '../../api/cliente';
 import { formatearMonedaCOP, formatearFechaCO, vaciosANulo } from '../../utilidades/formato';
 import {
@@ -85,7 +86,8 @@ export const PaginaApartaestudios: React.FC = () => {
   const [formulario, setFormulario] = useState<FormularioApartaestudio>(FORMULARIO_VACIO);
   const [erroresCampos, setErroresCampos] = useState<Record<string, string>>({});
 
-  const { agregarNotificacion } = useAuth();
+  const { agregarNotificacion, usuario } = useAuth();
+  const puedeGestionar = puede(usuario, 'gestionar_apartaestudios');
 
   const cargarDatos = useCallback(async () => {
     setCargando(true);
@@ -313,6 +315,7 @@ export const PaginaApartaestudios: React.FC = () => {
           >
             <Eye className="w-4 h-4" />
           </button>
+          {puedeGestionar && (<>
           <button
             onClick={() => abrirEditar(a)}
             title="Editar inmueble"
@@ -345,6 +348,7 @@ export const PaginaApartaestudios: React.FC = () => {
           >
             <Power className="w-4 h-4" />
           </button>
+          </>)}
         </div>
       ),
     },
@@ -362,9 +366,11 @@ export const PaginaApartaestudios: React.FC = () => {
             Apartaestudios
           </h1>
         </div>
-        <Boton variante="plata" onClick={abrirCrear} icono={<Plus className="w-4 h-4" />}>
-          Nuevo Apartaestudio
-        </Boton>
+        {puedeGestionar && (
+          <Boton variante="plata" onClick={abrirCrear} icono={<Plus className="w-4 h-4" />}>
+            Nuevo Apartaestudio
+          </Boton>
+        )}
       </div>
 
       {/* Filtros solicitados: por estado de ocupación y propietario, más búsqueda */}

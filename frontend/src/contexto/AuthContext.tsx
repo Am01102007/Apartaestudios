@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { UsuarioActual } from '../api/tipos';
 import { obtenerYo, login as apiLogin, logout as apiLogout } from '../api/auth';
-import { configurarListenersCliente } from '../api/cliente';
+import { configurarListenersCliente, obtenerUltimaRespuestaServidor } from '../api/cliente';
+
+const MINUTOS_INACTIVIDAD = 30;
 
 interface NotificacionItem {
   id: string;
@@ -101,6 +103,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Cargar sesión inicial llamando a GET /api/v1/auth/yo
     refrescarSesion();
   }, [agregarNotificacion, refrescarSesion]);
+
+  // Al vencer el tiempo de inactividad se le pregunta al servidor: si la sesión expiró, la pantalla se
+  // limpia sola y vuelve al ingreso, sin esperar a que el usuario haga clic en algo.
+  useEffect(() => {
+    if (!usuario) return;
+    const revisar = async () => {
+      if (Date.now() - obtenerUltimaRespuestaServidor() < MINUTOS_INACTIVIDAD * 60 * 1000) return;
+      try {
+        await obtenerYo();
+      } catch {
+        setUsuario(null);
+        agregarNotificacion('advertencia', 'Tu sesión expiró por inactividad. Ingresa de nuevo.');
+      }
+    };
+    const intervalo = window.setInterval(revisar, 30 * 1000);
+    const alVolver = () => {
+      if (document.visibilityState === 'visible') revisar();
+    };
+    document.addEventListener('visibilitychange', alVolver);
+    return () => {
+      window.clearInterval(intervalo);
+      document.removeEventListener('visibilitychange', alVolver);
+    };
+  }, [usuario, agregarNotificacion]);
 
   const iniciarSesion = async (nombre_usuario: string, contrasena: string): Promise<UsuarioActual> => {
     const usuarioAutenticado = await apiLogin(nombre_usuario, contrasena);

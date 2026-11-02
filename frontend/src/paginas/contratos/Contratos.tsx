@@ -31,6 +31,7 @@ import { Campo, EntradaTexto, EntradaSeleccion, EntradaAreaTexto } from '../../c
 import { InsigniaEstado } from '../../componentes/InsigniaEstado';
 import { useAuth } from '../../contexto/AuthContext';
 import { ErrorApi } from '../../api/cliente';
+import { puede } from '../../utilidades/permisos';
 import {
   formatearFechaCO,
   formatearFechaHoraCO,
@@ -152,7 +153,8 @@ export const PaginaContratos: React.FC = () => {
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
   const [cargandoDetalle, setCargandoDetalle] = useState(false);
 
-  const { agregarNotificacion, esAdmin } = useAuth();
+  const { agregarNotificacion, usuario } = useAuth();
+  const puedeAnular = puede(usuario, 'anular_contratos');
 
   const cargarDatos = useCallback(async () => {
     setCargando(true);
@@ -427,7 +429,7 @@ export const PaginaContratos: React.FC = () => {
                 <XCircle className="w-4 h-4" />
               </button>
             )}
-            {esAdmin && c.estado === 'por_iniciar' && c.contrato_anterior_id === null && (
+            {puedeAnular && c.estado === 'por_iniciar' && c.contrato_anterior_id === null && (
               <button
                 onClick={() => abrir('anular', c)}
                 title="Anular contrato"

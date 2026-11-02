@@ -14,6 +14,7 @@ import { Modal } from '../../componentes/Modal';
 import { Campo, EntradaTexto, EntradaSeleccion, EntradaAreaTexto } from '../../componentes/Campo';
 import { InsigniaEstado } from '../../componentes/InsigniaEstado';
 import { useAuth } from '../../contexto/AuthContext';
+import { puede } from '../../utilidades/permisos';
 import { ErrorApi } from '../../api/cliente';
 import { formatearFechaHoraCO } from '../../utilidades/formato';
 import {
@@ -62,7 +63,8 @@ export const PaginaBloqueos: React.FC = () => {
     null
   );
 
-  const { agregarNotificacion } = useAuth();
+  const { agregarNotificacion, usuario } = useAuth();
+  const puedeGestionar = puede(usuario, 'gestionar_bloqueos');
 
   const cargarBloqueos = useCallback(async () => {
     setCargando(true);
@@ -240,7 +242,7 @@ export const PaginaBloqueos: React.FC = () => {
       alineacion: 'derecha',
       render: (b) => (
         <div className="flex items-center justify-end">
-          {b.activo ? (
+          {b.activo && puedeGestionar ? (
             <Boton
               tamano="sm"
               variante="secundario"
@@ -249,6 +251,8 @@ export const PaginaBloqueos: React.FC = () => {
             >
               Levantar Bloqueo
             </Boton>
+          ) : b.activo ? (
+            <span className="text-[11px] text-[#8A8D91] italic">Activo</span>
           ) : (
             <span className="text-[11px] text-[#8A8D91] italic">Levantado</span>
           )}
@@ -269,13 +273,15 @@ export const PaginaBloqueos: React.FC = () => {
             Bloqueos de Personas
           </h1>
         </div>
-        <Boton
-          variante="peligro"
-          onClick={abrirModalBloquear}
-          icono={<ShieldAlert className="w-4 h-4" />}
-        >
-          Bloquear Persona
-        </Boton>
+        {puedeGestionar && (
+          <Boton
+            variante="peligro"
+            onClick={abrirModalBloquear}
+            icono={<ShieldAlert className="w-4 h-4" />}
+          >
+            Bloquear Persona
+          </Boton>
+        )}
       </div>
 
       {/* Herramienta obligatoria: Verificar Documento (GET /bloqueos/verificar) */}

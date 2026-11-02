@@ -22,6 +22,11 @@ type ListenerNotificacion = (tipo: 'error' | 'advertencia' | 'info', mensaje: st
 type ListenerNoAutorizado = () => void;
 
 let listenerNotificacion: ListenerNotificacion | null = null;
+// Momento de la última respuesta exitosa del servidor: el servidor cierra la sesión tras 30 minutos
+// sin peticiones, así que la pantalla usa este dato para no seguir mostrando datos de una sesión vencida.
+let ultimaRespuestaServidor = Date.now();
+
+export const obtenerUltimaRespuestaServidor = () => ultimaRespuestaServidor;
 let listenerNoAutorizado: ListenerNoAutorizado | null = null;
 
 export function configurarListenersCliente(
@@ -127,6 +132,8 @@ export async function clienteHttp<T>(
     }
     throw errorApi;
   }
+
+  ultimaRespuestaServidor = Date.now();
 
   if (respuesta.status === 204) {
     return {} as T;

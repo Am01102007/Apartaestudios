@@ -20,6 +20,7 @@ import { Modal } from '../../componentes/Modal';
 import { Campo, EntradaTexto, EntradaSeleccion } from '../../componentes/Campo';
 import { InsigniaEstado } from '../../componentes/InsigniaEstado';
 import { useAuth } from '../../contexto/AuthContext';
+import { puede } from '../../utilidades/permisos';
 import { ErrorApi } from '../../api/cliente';
 import { vaciosANulo } from '../../utilidades/formato';
 import { OpcionesDocumento } from '../../componentes/OpcionesDocumento';
@@ -72,7 +73,8 @@ export const PaginaPropietarios: React.FC = () => {
   const [formulario, setFormulario] = useState<FormularioPropietario>(FORMULARIO_VACIO);
   const [erroresCampos, setErroresCampos] = useState<Record<string, string>>({});
 
-  const { agregarNotificacion } = useAuth();
+  const { agregarNotificacion, usuario } = useAuth();
+  const puedeGestionar = puede(usuario, 'gestionar_propietarios');
 
   const cargarPropietarios = useCallback(async () => {
     setCargando(true);
@@ -250,6 +252,7 @@ export const PaginaPropietarios: React.FC = () => {
           >
             <Eye className="w-4 h-4" />
           </button>
+          {puedeGestionar && (<>
           <button
             onClick={() => abrirEditar(p)}
             title="Editar propietario"
@@ -268,6 +271,7 @@ export const PaginaPropietarios: React.FC = () => {
           >
             <Power className="w-4 h-4" />
           </button>
+          </>)}
         </div>
       ),
     },
@@ -285,13 +289,15 @@ export const PaginaPropietarios: React.FC = () => {
             Propietarios
           </h1>
         </div>
-        <Boton
-          variante="plata"
-          onClick={abrirCrear}
-          icono={<Plus className="w-4 h-4" />}
-        >
-          Nuevo Propietario
-        </Boton>
+        {puedeGestionar && (
+          <Boton
+            variante="plata"
+            onClick={abrirCrear}
+            icono={<Plus className="w-4 h-4" />}
+          >
+            Nuevo Propietario
+          </Boton>
+        )}
       </div>
 
       {/* Barra de Filtro y Búsqueda */}

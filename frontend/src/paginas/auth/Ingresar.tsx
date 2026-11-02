@@ -4,6 +4,7 @@ import { useAuth } from '../../contexto/AuthContext';
 import { Campo, EntradaTexto } from '../../componentes/Campo';
 import { Boton } from '../../componentes/Boton';
 import { ErrorApi } from '../../api/cliente';
+import { ContenedorAvisos } from '../../componentes/Avisos';
 import { Lock, User } from 'lucide-react';
 
 export const PaginaIngresar: React.FC = () => {
@@ -66,6 +67,7 @@ export const PaginaIngresar: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAFAF9] dark:bg-[#0B0B0C] text-[#0B0B0C] dark:text-[#FAFAF9]">
+      <ContenedorAvisos />
       <div className="w-full max-w-md">
         {/* Logo de la marca */}
         <div className="text-center mb-8">

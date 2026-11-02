@@ -26,8 +26,9 @@ export const DisenoPrincipal: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCerrarSesion = async () => {
+    // Primero se sale de la pantalla actual (sin dejarla en el historial) y luego se cierra la sesión.
+    navigate('/ingresar', { replace: true });
     await cerrarSesion();
-    navigate('/ingresar');
   };
 
   const enlacesNavegacion = [
