@@ -79,7 +79,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
       RAILWAY_SERVICE_ID: ${{ vars.RAILWAY_SERVICE_ID }}
       RAILWAY_API_URL: ${{ vars.RAILWAY_API_URL }}
     steps:
@@ -90,7 +89,6 @@ jobs:
       - name: Verificar configuración del destino
         run: |
           test -n "$RAILWAY_TOKEN" || { echo 'Falta RAILWAY_TOKEN'; exit 1; }
-          test -n "$RAILWAY_PROJECT_ID" || { echo 'Falta RAILWAY_PROJECT_ID'; exit 1; }
           test -n "$RAILWAY_SERVICE_ID" || { echo 'Falta RAILWAY_SERVICE_ID'; exit 1; }
           test -n "$RAILWAY_API_URL" || { echo 'Falta RAILWAY_API_URL'; exit 1; }
       - name: Desplegar el backend en Railway
